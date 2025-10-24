@@ -1,0 +1,131 @@
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- Restaurant Info -->
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-primary mb-3">
+                        <span class="me-2">🍽️</span>Horchata Mexican Food
+                    </h5>
+                    <p class="text-muted">
+                        Auténtica comida mexicana preparada con ingredientes frescos y recetas tradicionales. 
+                        Disfruta de nuestros sabores únicos con servicio pickup.
+                    </p>
+                    <div class="d-flex">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-primary mb-3">Enlaces Rápidos</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.php" class="text-muted text-decoration-none">Inicio</a></li>
+                        <li class="mb-2"><a href="menu.php" class="text-muted text-decoration-none">Menú</a></li>
+                        <li class="mb-2"><a href="reviews.php" class="text-muted text-decoration-none">Reseñas</a></li>
+                        <li class="mb-2"><a href="#contact" class="text-muted text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="text-primary mb-3">Información de Contacto</h6>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                        <span class="text-muted">123 Main Street, Ciudad, Estado</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone text-primary me-2"></i>
+                        <span class="text-muted">(555) 123-4567</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-envelope text-primary me-2"></i>
+                        <span class="text-muted">info@horchatamexicanfood.com</span>
+                    </div>
+                </div>
+                
+                <!-- Business Hours -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="text-primary mb-3">Horarios de Atención</h6>
+                    <div class="text-muted">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Lunes - Jueves:</span>
+                            <span>9:00 AM - 9:00 PM</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Viernes - Sábado:</span>
+                            <span>9:00 AM - 10:00 PM</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Domingo:</span>
+                            <span>10:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <!-- Bottom Footer -->
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        &copy; <?php echo date('Y'); ?> Horchata Mexican Food. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted text-decoration-none me-3">Política de Privacidad</a>
+                    <a href="#" class="text-muted text-decoration-none">Términos de Servicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">
+                <i class="fas fa-shopping-cart me-2"></i>Tu Carrito
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="cartItems">
+                <!-- Cart items will be loaded here via AJAX -->
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                    <p>Tu carrito está vacío</p>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Total:</strong>
+                    <span class="h5 text-primary mb-0" id="cartTotal">$0.00</span>
+                </div>
+                <button class="btn btn-primary w-100" id="checkoutBtn" disabled>
+                    <i class="fas fa-credit-card me-2"></i>Proceder al Pago
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <?php if (isset($page_scripts)): ?>
+        <?php foreach ($page_scripts as $script): ?>
+            <script src="<?php echo $script; ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</body>
+</html>
