@@ -7,11 +7,10 @@ Sistema web completo para gestión de pedidos pickup, reseñas verificadas y adm
 ### **Opción 1: Instalación Automática (Recomendada)**
 
 1. **Subir archivos** al servidor
-2. **Verificar conexión:** `http://tudominio.com/check-database.php`
-3. **Crear tablas:** `http://tudominio.com/create-tables.php`
-4. **Instalar menú:** `http://tudominio.com/install-menu.php`
-5. **Configurar PayPal** en `config/development.php`
-6. **¡Listo para recibir pedidos!**
+2. **Instalación completa:** `http://tudominio.com/complete-install.php`
+3. **Generar imágenes:** `http://tudominio.com/generate-placeholders.php`
+4. **Configurar PayPal** en `config/development.php`
+5. **¡Listo para recibir pedidos!**
 
 ### **Opción 2: Instalación Manual**
 
