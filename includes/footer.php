@@ -37,15 +37,15 @@
                     <h6 class="footer-subtitle mb-3">Información de Contacto</h6>
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-map-marker-alt footer-icon me-2"></i>
-                        <span class="footer-text">123 Main Street, Ciudad, Estado</span>
+                        <span class="footer-text">10814 Jefferson Blvd, Culver City, CA</span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-phone footer-icon me-2"></i>
-                        <span class="footer-text">(555) 123-4567</span>
+                        <span class="footer-text">+1 (310) 204-2659</span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-envelope footer-icon me-2"></i>
-                        <span class="footer-text">info@horchatamexicanfood.com</span>
+                        <span class="footer-text">contact@horchatamexicanfood.com</span>
                     </div>
                 </div>
                 
@@ -54,16 +54,12 @@
                     <h6 class="footer-subtitle mb-3">Horarios de Atención</h6>
                     <div class="footer-text">
                         <div class="d-flex justify-content-between mb-1">
-                            <span>Lunes - Jueves:</span>
-                            <span>9:00 AM - 9:00 PM</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Viernes - Sábado:</span>
-                            <span>9:00 AM - 10:00 PM</span>
+                            <span>Lunes - Sábado:</span>
+                            <span>8:30 AM - 9:00 PM</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Domingo:</span>
-                            <span>10:00 AM - 8:00 PM</span>
+                            <span>9:00 AM - 8:00 PM</span>
                         </div>
                     </div>
                 </div>
@@ -79,8 +75,8 @@
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <a href="#" class="footer-link text-decoration-none me-3">Política de Privacidad</a>
-                    <a href="#" class="footer-link text-decoration-none">Términos de Servicio</a>
+                    <a href="terms.php" class="footer-link text-decoration-none me-3">Términos y Condiciones</a>
+                    <a href="accessibility.php" class="footer-link text-decoration-none">Accesibilidad</a>
                 </div>
             </div>
         </div>

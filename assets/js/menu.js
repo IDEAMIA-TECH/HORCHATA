@@ -73,32 +73,16 @@ function displayCategoryFilters(categories) {
     const container = $('#categoryFilters');
     let html = '';
     
-    // Mapeo de iconos específicos para cada categoría mexicana
-    const categoryIcons = {
-        1: 'fas fa-sun',           // Breakfast Plates
-        2: 'fas fa-bread-slice',   // Breakfast Burritos
-        3: 'fas fa-star',          // Daily Specials
-        4: 'fas fa-fish',          // Seafood
-        5: 'fas fa-fire',          // Special Burritos
-        6: 'fas fa-utensils',      // Combinations
-        7: 'fas fa-taco',          // Tacos & Quesadillas
-        8: 'fas fa-ice-cream',     // Desserts
-        9: 'fas fa-cheese',        // Nachos & Sides
-        10: 'fas fa-leaf'          // Salads & Burgers
-    };
-    
     categories.forEach((category, index) => {
         console.log(`🔍 Menu: Procesando categoría ${index}:`, category);
         
-        const icon = categoryIcons[category.id] || 'fas fa-utensils';
-        
         html += `
             <button class="category-filter-btn" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 12px; border: none; border-radius: 12px; background: #ffffff; color: #1a1a1a; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
-                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: #d4af37;">
-                    <i class="${icon}"></i>
+                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: ${category.color};">
+                    <i class="${category.icon}"></i>
                 </div>
                 <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #1a1a1a;">
-                    ${category.name}
+                    ${category.name_es}
                 </div>
             </button>
         `;

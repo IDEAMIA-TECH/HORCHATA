@@ -335,59 +335,35 @@ function displayCategories(categories) {
     categories.forEach((category, index) => {
         console.log(`🏠 Home: Procesando categoría ${index}:`, category);
         
-        // Mapeo de categorías a imágenes reales
-        const categoryImages = {
-            1: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=300&fit=crop&crop=center', // Breakfast
-            2: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Burritos
-            3: 'https://images.unsplash.com/photo-1565299507177-b0ac66773828?w=400&h=300&fit=crop&crop=center', // Specials
-            4: 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&h=300&fit=crop&crop=center', // Seafood
-            5: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop&crop=center', // Special Burritos
-            6: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Combinations
-            7: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Tacos
-            8: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop&crop=center', // Desserts
-            9: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop&crop=center', // Nachos
-            10: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center' // Salads
-        };
-
-        // Iconos específicos para cada categoría
-        const categoryIcons = {
-            1: 'fas fa-sun', // Breakfast
-            2: 'fas fa-bread-slice', // Burritos
-            3: 'fas fa-star', // Specials
-            4: 'fas fa-fish', // Seafood
-            5: 'fas fa-fire', // Special Burritos
-            6: 'fas fa-utensils', // Combinations
-            7: 'fas fa-taco', // Tacos
-            8: 'fas fa-ice-cream', // Desserts
-            9: 'fas fa-cheese', // Nachos
-            10: 'fas fa-leaf' // Salads
-        };
-
-        const categoryImage = categoryImages[category.id] || 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center';
-        const categoryIcon = categoryIcons[category.id] || 'fas fa-utensils';
-
         html += `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="category-card text-center" onclick="window.location.href='menu.php?category=${category.id}'">
-                    <div class="category-image mb-3">
-                        <img src="${categoryImage}" alt="${category.name}" class="img-fluid rounded-3">
+                <div class="category-card" data-category-id="${category.id}">
+                    <div class="category-image-container">
+                        <img src="${category.image}" alt="${category.name_es}" class="category-image" loading="lazy">
+                        <div class="category-overlay">
+                            <div class="category-icon" style="color: ${category.color};">
+                                <i class="${category.icon}"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="category-icon mb-3">
-                        <i class="${categoryIcon} fa-2x text-primary"></i>
-                    </div>
-                    <h5 class="category-title">${category.name}</h5>
-                    <p class="category-description">${category.description || ''}</p>
-                    <div class="category-count">
-                        <span class="badge bg-primary">${category.product_count} productos</span>
+                    <div class="category-content">
+                        <h5 class="category-title">${category.name_es}</h5>
+                        <p class="category-description">${category.description_es}</p>
+                        <a href="${category.url}" class="category-link">
+                            Ver Menú <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         `;
     });
     
-    console.log('🏠 Home: HTML generado para categorías:', html);
     container.html(html);
-    console.log('✅ Home: Categorías mostradas');
+    
+    // Configurar animaciones de entrada
+    setupCategoryAnimations();
+    
+    console.log('✅ Home: Categorías mostradas correctamente');
 }
 
 /**

@@ -28,6 +28,10 @@ try {
             submitReview();
             break;
             
+        case 'get_public_reviews':
+            getPublicReviews();
+            break;
+            
         case 'get_reviews':
             getReviews();
             break;
@@ -243,5 +247,82 @@ function getReviewStats() {
             ]
         ]
     ]);
+}
+
+/**
+ * Obtener reseñas públicas para mostrar en el sitio
+ */
+function getPublicReviews() {
+    global $pdo;
+    
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 12;
+    $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+    
+    try {
+        // Obtener reseñas aprobadas
+        $sql = "SELECT r.*, o.customer_name, o.customer_email, o.order_number
+                FROM reviews r
+                LEFT JOIN orders o ON r.order_id = o.id
+                WHERE r.is_approved = 1
+                ORDER BY r.created_at DESC
+                LIMIT ? OFFSET ?";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$limit, $offset]);
+        $reviews = $stmt->fetchAll();
+        
+        // Obtener estadísticas
+        $stats_sql = "SELECT 
+                        COUNT(*) as total_reviews,
+                        AVG(rating) as avg_rating,
+                        COUNT(CASE WHEN recommend = 1 THEN 1 END) as recommendations
+                      FROM reviews 
+                      WHERE is_approved = 1";
+        
+        $stats_stmt = $pdo->query($stats_sql);
+        $stats = $stats_stmt->fetch();
+        
+        // Formatear reseñas
+        $formatted_reviews = [];
+        foreach ($reviews as $review) {
+            $formatted_reviews[] = [
+                'id' => $review['id'],
+                'rating' => (int)$review['rating'],
+                'food_quality' => (int)$review['food_quality'],
+                'preparation_time' => (int)$review['preparation_time'],
+                'presentation' => (int)$review['presentation'],
+                'service' => (int)$review['service'],
+                'comments' => $review['comments'],
+                'recommend' => (bool)$review['recommend'],
+                'customer_name' => $review['customer_name'] ?: 'Cliente Anónimo',
+                'order_number' => $review['order_number'],
+                'created_at' => $review['created_at']
+            ];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'data' => $formatted_reviews,
+            'stats' => [
+                'total_reviews' => (int)$stats['total_reviews'],
+                'avg_rating' => $stats['avg_rating'] ? round($stats['avg_rating'], 2) : 0,
+                'recommendations' => (int)$stats['recommendations']
+            ],
+            'pagination' => [
+                'limit' => $limit,
+                'offset' => $offset,
+                'has_more' => count($formatted_reviews) === $limit
+            ]
+        ]);
+        
+    } catch (Exception $e) {
+        error_log("Error en getPublicReviews: " . $e->getMessage());
+        
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al cargar las reseñas públicas',
+            'error' => $e->getMessage()
+        ]);
+    }
 }
 ?>

@@ -14,6 +14,7 @@
     
     <!-- Custom CSS -->
     <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/categories.css" rel="stylesheet">
     
     <!-- Page specific CSS -->
     <?php if (isset($page_styles)): ?>
@@ -57,7 +58,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reviews.php' ? 'active' : ''; ?>" href="reviews.php">
+                        <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reviews-public.php' ? 'active' : ''; ?>" href="reviews-public.php">
                             <i class="fas fa-star me-1"></i>Reseñas
                         </a>
                     </li>

@@ -248,7 +248,7 @@ include 'includes/header.php';
                         <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
                     </div>
                     <h5>Ubicación</h5>
-                    <p class="text-muted">123 Main Street<br>Ciudad, Estado 12345</p>
+                    <p class="text-muted">10814 Jefferson Blvd<br>Culver City, CA</p>
                 </div>
             </div>
             <div class="col-lg-4 mb-4">
@@ -257,7 +257,7 @@ include 'includes/header.php';
                         <i class="fas fa-phone fa-2x text-primary"></i>
                     </div>
                     <h5>Teléfono</h5>
-                    <p class="text-muted">(555) 123-4567</p>
+                    <p class="text-muted">+1 (310) 204-2659</p>
                 </div>
             </div>
             <div class="col-lg-4 mb-4">
@@ -266,7 +266,7 @@ include 'includes/header.php';
                         <i class="fas fa-clock fa-2x text-primary"></i>
                     </div>
                     <h5>Horarios</h5>
-                    <p class="text-muted">Lun-Jue: 9:00 AM - 9:00 PM<br>Vie-Sáb: 9:00 AM - 10:00 PM<br>Dom: 10:00 AM - 8:00 PM</p>
+                    <p class="text-muted">Lun-Sáb: 8:30 AM - 9:00 PM<br>Domingo: 9:00 AM - 8:00 PM</p>
                 </div>
             </div>
         </div>
