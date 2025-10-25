@@ -95,8 +95,12 @@ function loadFeaturedProducts() {
         },
         dataType: 'json',
         success: function(response) {
+            console.log('🏠 Home: Respuesta de productos destacados:', response);
             if (response.success) {
+                console.log('🏠 Home: Productos cargados:', response.data);
                 displayFeaturedProducts(response.data);
+            } else {
+                console.error('❌ Home: Error en respuesta:', response.message);
             }
         },
         error: function() {
@@ -109,18 +113,25 @@ function loadFeaturedProducts() {
  * Mostrar productos destacados
  */
 function displayFeaturedProducts(products) {
+    console.log('🏠 Home: Mostrando productos destacados:', products);
     const container = $('#featuredProducts');
     if (container.length === 0) return;
     
+    if (!products || products.length === 0) {
+        container.html('<div class="col-12 text-center"><p class="text-muted">No hay productos destacados disponibles</p></div>');
+        return;
+    }
+    
     let html = '';
     products.forEach(function(product) {
+        console.log('🏠 Home: Procesando producto:', product);
         html += `
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card" onclick="window.location.href='product.php?id=${product.id}'">
                     <div class="product-image" style="background-image: url('${product.image || 'assets/images/placeholder.jpg'}')"></div>
                     <div class="product-info">
-                        <h5 class="product-title">${product.name_en}</h5>
-                        <p class="product-description">${product.description_en || ''}</p>
+                        <h5 class="product-title">${product.name || 'Producto'}</h5>
+                        <p class="product-description">${product.description || ''}</p>
                         <div class="product-price">
                             <span class="price">$${parseFloat(product.price).toFixed(2)}</span>
                         </div>
