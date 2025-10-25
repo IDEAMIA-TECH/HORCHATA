@@ -7,9 +7,8 @@
                 <!-- Restaurant Info -->
                 <div class="col-lg-4 mb-4">
                     <div class="footer-logo mb-3">
-                        <img src="assets/images/LOGO.JPG" alt="Horchata Mexican Food" class="footer-logo-img me-3" style="height: 60px; width: auto;">
+                        <img src="assets/images/LOGO.JPG" alt="Auténtica Comida Mexicana" class="footer-logo-img me-3" style="height: 60px; width: auto;">
                         <div class="footer-logo-text">
-                            <h5 class="footer-title mb-1">Horchata Mexican Food</h5>
                             <p class="footer-subtitle mb-0">Auténtica Comida Mexicana</p>
                         </div>
                     </div>

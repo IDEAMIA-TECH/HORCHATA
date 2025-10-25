@@ -35,9 +35,8 @@
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center" href="index.php">
-                <img src="assets/images/LOGO.JPG" alt="Horchata Mexican Food" class="logo-img me-2" style="height: 50px; width: auto;">
+                <img src="assets/images/LOGO.JPG" alt="Auténtica Comida Mexicana" class="logo-img me-2" style="height: 50px; width: auto;">
                 <div class="logo-text">
-                    <div class="logo-title">Horchata Mexican Food</div>
                     <div class="logo-subtitle">Auténtica Comida Mexicana</div>
                 </div>
             </a>
