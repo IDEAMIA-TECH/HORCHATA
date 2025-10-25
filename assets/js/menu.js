@@ -77,9 +77,9 @@ function displayCategoryFilters(categories) {
         console.log(`🔍 Menu: Procesando categoría ${index}:`, category);
         
         html += `
-            <button class="category-filter-btn" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 12px; border: none; border-radius: 12px; background: #ffffff; color: #1a1a1a; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
-                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: ${category.color};">
-                    <i class="${category.icon}"></i>
+            <button class="category-filter-btn" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border: none; border-radius: 12px; background: #ffffff; color: #1a1a1a; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
+                <div class="category-image" style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <img src="${category.image}" alt="${category.name_es}" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
                 </div>
                 <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #1a1a1a;">
                     ${category.name_es}
