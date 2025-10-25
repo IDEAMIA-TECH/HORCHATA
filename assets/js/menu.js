@@ -187,7 +187,6 @@ function displayMenuContent(products, categoryId = null) {
     // Si se está filtrando por una categoría específica, mostrar solo esa categoría
     if (categoryId && categoryId !== 'all') {
         console.log('🔍 Menu: Mostrando solo categoría filtrada:', categoryId);
-        
         // Obtener el nombre de la categoría del primer producto
         const categoryName = products[0]?.category_name || 'Categoría';
         
