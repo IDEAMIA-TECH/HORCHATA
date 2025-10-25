@@ -199,7 +199,7 @@ function displayMenuContent(products) {
                         <p class="product-description">${product.description || ''}</p>
                         <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                         <div class="product-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${product.price}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                            <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
                                 <i class="fas fa-plus me-2"></i>Agregar al Carrito
                             </button>
                         </div>

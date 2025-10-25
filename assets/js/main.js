@@ -100,8 +100,19 @@ function initCart() {
  * Agregar producto al carrito
  */
 function addToCart(productId, productName, productPrice, productImage) {
+    console.log('🛒 Main: Agregando al carrito:', {productId, productName, productPrice, productImage});
+    
+    // Validar datos
+    if (!productId || !productName) {
+        console.error('❌ Main: Datos del producto inválidos');
+        return;
+    }
+    
+    const price = parseFloat(productPrice) || 0;
+    const image = productImage || 'assets/images/placeholder.jpg';
+    
     let cart = getCartItems();
-    const existingItem = cart.find(item => item.id === productId);
+    const existingItem = cart.find(item => item.id == productId);
     
     if (existingItem) {
         existingItem.quantity += 1;
@@ -109,11 +120,13 @@ function addToCart(productId, productName, productPrice, productImage) {
         cart.push({
             id: productId,
             name: productName,
-            price: productPrice,
-            image: productImage,
+            price: price,
+            image: image,
             quantity: 1
         });
     }
+    
+    console.log('🛒 Main: Carrito actualizado:', cart);
     
     saveCartToStorage(cart);
     updateCartDisplay();
@@ -191,8 +204,12 @@ function loadCartFromStorage() {
  */
 function updateCartDisplay() {
     const cart = getCartItems();
-    const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const cartCount = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+    const cartTotal = cart.reduce((total, item) => {
+        const price = parseFloat(item.price) || 0;
+        const quantity = parseInt(item.quantity) || 0;
+        return total + (price * quantity);
+    }, 0);
     
     // Actualizar contador
     $('#cartCount').text(cartCount);
@@ -225,19 +242,25 @@ function updateCartOffcanvas(cart) {
     
     let html = '';
     cart.forEach(item => {
+        const price = parseFloat(item.price) || 0;
+        const quantity = parseInt(item.quantity) || 0;
+        const name = item.name || 'Producto';
+        const image = item.image || 'assets/images/placeholder.jpg';
+        const id = item.id || 0;
+        
         html += `
             <div class="cart-item">
-                <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                <img src="${image}" alt="${name}" class="cart-item-image">
                 <div class="cart-item-info">
-                    <div class="cart-item-name">${item.name}</div>
-                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                    <div class="cart-item-name">${name}</div>
+                    <div class="cart-item-price">$${price.toFixed(2)}</div>
                 </div>
                 <div class="cart-quantity">
-                    <button class="quantity-btn" data-action="decrease" data-product-id="${item.id}">-</button>
-                    <span class="mx-2">${item.quantity}</span>
-                    <button class="quantity-btn" data-action="increase" data-product-id="${item.id}">+</button>
+                    <button class="quantity-btn" data-action="decrease" data-product-id="${id}">-</button>
+                    <span class="mx-2">${quantity}</span>
+                    <button class="quantity-btn" data-action="increase" data-product-id="${id}">+</button>
                 </div>
-                <button class="btn btn-sm btn-outline-danger remove-from-cart" data-product-id="${item.id}">
+                <button class="btn btn-sm btn-outline-danger remove-from-cart" data-product-id="${id}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
