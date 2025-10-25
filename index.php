@@ -17,29 +17,76 @@ include 'includes/header.php';
 
 <!-- Hero Section -->
 <section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="hero-content">
-                    <h1 class="animate-on-scroll">Auténtica Comida Mexicana</h1>
-                    <p class="animate-on-scroll">
-                        Descubre los sabores tradicionales de México con nuestros platillos preparados 
-                        con ingredientes frescos y recetas auténticas. Disfruta de una experiencia 
-                        culinaria única con servicio pickup.
-                    </p>
-                    <div class="hero-buttons animate-on-scroll">
-                        <a href="menu.php" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-utensils me-2"></i>Ver Menú
-                        </a>
-                        <a href="#featured" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-star me-2"></i>Especialidades
-                        </a>
+    <div class="hero-background">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <div class="hero-badge mb-4">
+                            <span class="badge bg-primary-custom px-3 py-2">
+                                <i class="fas fa-star me-2"></i>Auténtica Cocina Mexicana
+                            </span>
+                        </div>
+                        <h1 class="hero-title animate-on-scroll">
+                            Sabores que <span class="text-primary-custom">Conquistan</span> el Corazón
+                        </h1>
+                        <p class="hero-description animate-on-scroll">
+                            Descubre la magia de la cocina mexicana tradicional con ingredientes frescos, 
+                            recetas auténticas y el sabor que solo Horchata Mexican Food puede ofrecerte.
+                        </p>
+                        <div class="hero-stats mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">8+</h3>
+                                        <p class="stat-label">Años</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">1000+</h3>
+                                        <p class="stat-label">Clientes</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">150+</h3>
+                                        <p class="stat-label">Platillos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-buttons animate-on-scroll">
+                            <a href="menu.php" class="btn btn-primary-custom btn-lg me-3 shadow-lg">
+                                <i class="fas fa-utensils me-2"></i>Explorar Menú
+                            </a>
+                            <a href="#featured" class="btn btn-outline-light btn-lg shadow-lg">
+                                <i class="fas fa-star me-2"></i>Especialidades
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="hero-image text-center animate-on-scroll">
-                    <img src="assets/images/hero-dish.jpg" alt="Plato mexicano" class="img-fluid rounded-3 shadow-lg" style="max-height: 500px;">
+                <div class="col-lg-6">
+                    <div class="hero-image-container">
+                        <div class="hero-image-main">
+                            <img src="assets/images/hero-dish.jpg" alt="Plato mexicano" class="img-fluid rounded-4 shadow-xl">
+                        </div>
+                        <div class="hero-floating-cards">
+                            <div class="floating-card card-1">
+                                <i class="fas fa-fire text-warning"></i>
+                                <span>Picante</span>
+                            </div>
+                            <div class="floating-card card-2">
+                                <i class="fas fa-leaf text-success"></i>
+                                <span>Fresco</span>
+                            </div>
+                            <div class="floating-card card-3">
+                                <i class="fas fa-heart text-danger"></i>
+                                <span>Hecho con Amor</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,25 +94,35 @@ include 'includes/header.php';
 </section>
 
 <!-- Featured Products Section -->
-<section id="featured" class="py-5">
+<section id="featured" class="featured-section py-5">
     <div class="container">
-        <div class="section-header">
-            <h2>Nuestras Especialidades</h2>
-            <p>Los platillos más populares de nuestro menú, preparados con amor y tradición</p>
+        <div class="section-header text-center mb-5">
+            <div class="section-badge mb-3">
+                <span class="badge bg-primary-custom px-3 py-2">
+                    <i class="fas fa-star me-2"></i>Especialidades
+                </span>
+            </div>
+            <h2 class="section-title">Nuestras Especialidades</h2>
+            <p class="section-description">
+                Los platillos más populares de nuestro menú, preparados con amor y tradición mexicana
+            </p>
         </div>
         
-        <div class="row" id="featuredProducts">
+        <div class="row g-4" id="featuredProducts">
             <!-- Productos destacados se cargarán aquí via AJAX -->
             <div class="col-12 text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary-custom" role="status">
+                        <span class="visually-hidden">Cargando especialidades...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Preparando los mejores sabores para ti</p>
                 </div>
             </div>
         </div>
         
-        <div class="text-center mt-4">
-            <a href="menu.php" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-utensils me-2"></i>Ver Menú Completo
+        <div class="text-center mt-5">
+            <a href="menu.php" class="btn btn-primary-custom btn-lg px-5 py-3 shadow-lg">
+                <i class="fas fa-utensils me-2"></i>Explorar Menú Completo
             </a>
         </div>
     </div>
@@ -113,18 +170,28 @@ include 'includes/header.php';
 </section>
 
 <!-- Categories Section -->
-<section class="py-5">
+<section class="categories-section py-5">
     <div class="container">
-        <div class="section-header">
-            <h2>Nuestras Categorías</h2>
-            <p>Explora la variedad de sabores que tenemos para ofrecerte</p>
+        <div class="section-header text-center mb-5">
+            <div class="section-badge mb-3">
+                <span class="badge bg-primary-custom px-3 py-2">
+                    <i class="fas fa-utensils me-2"></i>Categorías
+                </span>
+            </div>
+            <h2 class="section-title">Nuestras Categorías</h2>
+            <p class="section-description">
+                Explora la variedad de sabores auténticos que tenemos para ofrecerte
+            </p>
         </div>
         
-        <div class="row" id="categoriesContainer">
+        <div class="row g-4" id="categoriesContainer">
             <!-- Categorías se cargarán aquí via AJAX -->
             <div class="col-12 text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary-custom" role="status">
+                        <span class="visually-hidden">Cargando categorías...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Organizando nuestros sabores para ti</p>
                 </div>
             </div>
         </div>
@@ -132,24 +199,34 @@ include 'includes/header.php';
 </section>
 
 <!-- Reviews Section -->
-<section class="py-5 bg-light">
+<section class="reviews-section py-5">
     <div class="container">
-        <div class="section-header">
-            <h2>Lo que Dicen Nuestros Clientes</h2>
-            <p>Reseñas verificadas de clientes que han disfrutado de nuestros platillos</p>
+        <div class="section-header text-center mb-5">
+            <div class="section-badge mb-3">
+                <span class="badge bg-primary-custom px-3 py-2">
+                    <i class="fas fa-star me-2"></i>Testimonios
+                </span>
+            </div>
+            <h2 class="section-title">Lo que Dicen Nuestros Clientes</h2>
+            <p class="section-description">
+                Reseñas verificadas de clientes que han disfrutado de nuestros platillos auténticos
+            </p>
         </div>
         
-        <div class="row" id="reviewsContainer">
+        <div class="row g-4" id="reviewsContainer">
             <!-- Reseñas se cargarán aquí via AJAX -->
             <div class="col-12 text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary-custom" role="status">
+                        <span class="visually-hidden">Cargando testimonios...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Recopilando las mejores experiencias</p>
                 </div>
             </div>
         </div>
         
-        <div class="text-center mt-4">
-            <a href="reviews.php" class="btn btn-outline-primary">
+        <div class="text-center mt-5">
+            <a href="reviews.php" class="btn btn-primary-custom btn-lg px-5 py-3 shadow-lg">
                 <i class="fas fa-star me-2"></i>Ver Todas las Reseñas
             </a>
         </div>

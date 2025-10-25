@@ -390,51 +390,606 @@ footer a:hover {
     to { transform: rotate(360deg); }
 }
 
-/* Category Cards */
+/* =============================================
+   HERO SECTION - DISEÑO MODERNO Y ELEGANTE
+   ============================================= */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    z-index: -2;
+}
+
+.hero-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23d4af37" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+    z-index: -1;
+}
+
+.hero-content {
+    color: white;
+    z-index: 2;
+    position: relative;
+}
+
+.hero-badge {
+    display: inline-block;
+}
+
+.hero-badge .badge {
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f) !important;
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 500px;
+}
+
+.hero-stats {
+    margin: 2rem 0;
+}
+
+.stat-item {
+    text-align: center;
+    color: white;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hero-buttons .btn {
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.hero-buttons .btn-primary-custom {
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f);
+    border: none;
+    color: white;
+}
+
+.hero-buttons .btn-primary-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+}
+
+.hero-buttons .btn-outline-light:hover {
+    background: white;
+    color: var(--dark-color);
+    transform: translateY(-3px);
+}
+
+.hero-image-container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-image-main {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+    transition: all 0.3s ease;
+}
+
+.hero-image-main:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.05);
+}
+
+.hero-floating-cards {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.floating-card {
+    position: absolute;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    animation: float 3s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-card.card-1 {
+    top: 20%;
+    right: -20px;
+    animation-delay: 0s;
+}
+
+.floating-card.card-2 {
+    bottom: 30%;
+    left: -30px;
+    animation-delay: 1s;
+}
+
+.floating-card.card-3 {
+    top: 60%;
+    right: -10px;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* =============================================
+   SECTION HEADERS - DISEÑO ELEGANTE
+   ============================================= */
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-badge {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.section-badge .badge {
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f) !important;
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f);
+    border-radius: 2px;
+}
+
+.section-description {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* =============================================
+   LOADING SPINNERS - DISEÑO MEJORADO
+   ============================================= */
+.loading-spinner {
+    padding: 3rem 0;
+}
+
+.loading-spinner .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 4px;
+}
+
+/* =============================================
+   PRODUCT CARDS - DISEÑO MODERNO
+   ============================================= */
+.product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    height: 100%;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+.product-image {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.1), transparent);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover .product-image::before {
+    opacity: 1;
+}
+
+.product-info {
+    padding: 25px;
+    position: relative;
+}
+
+.product-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.product-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.product-title a:hover {
+    color: var(--primary-color);
+}
+
+.product-description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.btn-group .btn {
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f);
+    border: none;
+}
+
+.btn-group .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* =============================================
+   CATEGORY CARDS - DISEÑO ELEGANTE
+   ============================================= */
 .category-card {
     background: white;
-    border-radius: 12px;
-    padding: 30px 20px;
-    box-shadow: var(--shadow);
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(212, 175, 55, 0.1);
     height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.05), transparent);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover::before {
+    opacity: 1;
 }
 
 .category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     border-color: var(--primary-color);
 }
 
 .category-icon {
     color: var(--primary-color);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
 }
 
 .category-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: var(--dark-color);
     margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
 }
 
 .category-description {
     color: var(--text-light);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
     line-height: 1.5;
+    position: relative;
+    z-index: 2;
 }
 
 .category-count {
     margin-top: auto;
+    position: relative;
+    z-index: 2;
 }
 
 .category-count .badge {
     font-size: 0.8rem;
-    padding: 6px 12px;
+    padding: 8px 16px;
+    border-radius: 25px;
+    background: linear-gradient(45deg, var(--primary-color), #f4d03f);
+    border: none;
+    font-weight: 600;
+}
+
+/* =============================================
+   REVIEW CARDS - DISEÑO PROFESIONAL
+   ============================================= */
+.review-card {
+    background: white;
     border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.review-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.02), transparent);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover::before {
+    opacity: 1;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.review-rating {
+    display: flex;
+    gap: 3px;
+}
+
+.review-rating i {
+    font-size: 1rem;
+    color: #ffc107;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.review-date {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.review-content {
+    flex-grow: 1;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 2;
+}
+
+.review-text {
+    font-style: italic;
+    color: var(--dark-color);
+    line-height: 1.6;
+    margin: 0;
+    font-size: 1rem;
+    position: relative;
+}
+
+.review-text::before {
+    content: '"';
+    font-size: 3rem;
+    color: var(--primary-color);
+    position: absolute;
+    top: -10px;
+    left: -15px;
+    opacity: 0.3;
+    font-family: 'Playfair Display', serif;
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.review-author {
+    color: var(--dark-color);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.review-verified {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.review-verified i {
+    font-size: 0.9rem;
+    color: #28a745;
+}
+
+/* =============================================
+   RESPONSIVE DESIGN
+   ============================================= */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .floating-card {
+        display: none;
+    }
+    
+    .hero-image-main {
+        transform: none;
+    }
+    
+    .category-card {
+        padding: 30px 20px;
+    }
+    
+    .review-card {
+        padding: 25px;
+    }
 }
 
 /* Review Cards */
