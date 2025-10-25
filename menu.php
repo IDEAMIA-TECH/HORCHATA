@@ -73,9 +73,12 @@ include 'includes/header.php';
                 <div class="menu-navigation-wrapper">
                     <!-- Category Filters -->
                     <div class="menu-filters mb-4">
-                        <div class="d-flex flex-wrap justify-content-center gap-3">
-                            <button class="btn btn-primary-custom category-filter active" data-category="all">
-                                <i class="fas fa-th me-2"></i>Todos
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <button class="category-filter active" data-category="all">
+                                <div class="category-icon">
+                                    <i class="fas fa-th"></i>
+                                </div>
+                                <div class="category-name">Todos</div>
                             </button>
                             <div id="categoryFilters">
                                 <!-- Categorías se cargarán aquí via AJAX -->

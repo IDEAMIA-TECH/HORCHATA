@@ -79,15 +79,34 @@ function displayCategoryFilters(categories) {
     const container = $('#categoryFilters');
     let html = '';
     
+    // Mapeo de iconos específicos para cada categoría mexicana
+    const categoryIcons = {
+        1: 'fas fa-sun',           // Breakfast Plates
+        2: 'fas fa-bread-slice',   // Breakfast Burritos
+        3: 'fas fa-star',            // Daily Specials
+        4: 'fas fa-fish',           // Seafood
+        5: 'fas fa-fire',           // Special Burritos
+        6: 'fas fa-utensils',       // Combinations
+        7: 'fas fa-taco',           // Tacos & Quesadillas
+        8: 'fas fa-ice-cream',      // Desserts
+        9: 'fas fa-cheese',         // Nachos & Sides
+        10: 'fas fa-leaf'           // Salads & Burgers
+    };
+    
     categories.forEach((category, index) => {
         console.log(`🔍 Menu: Procesando categoría ${index}:`, category);
         console.log(`🔍 Menu: category.id = ${category.id}`);
         console.log(`🔍 Menu: category.name = ${category.name}`);
         console.log(`🔍 Menu: category.name_es = ${category.name_es}`);
         
+        const icon = categoryIcons[category.id] || 'fas fa-utensils';
+        
         html += `
-            <button class="btn btn-outline-primary category-filter" data-category="${category.id}">
-                <i class="fas fa-utensils me-2"></i>${category.name}
+            <button class="category-filter-btn" data-category="${category.id}">
+                <div class="category-icon">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="category-name">${category.name}</div>
             </button>
         `;
     });
@@ -165,9 +184,9 @@ function setupSearch() {
  * Configurar filtros de categoría
  */
 function setupCategoryFilters() {
-    $(document).on('click', '.category-filter', function() {
+    $(document).on('click', '.category-filter, .category-filter-btn', function() {
         // Actualizar estado activo
-        $('.category-filter').removeClass('active');
+        $('.category-filter, .category-filter-btn').removeClass('active');
         $(this).addClass('active');
         
         // Obtener categoría seleccionada
