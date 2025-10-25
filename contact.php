@@ -145,7 +145,7 @@ include 'includes/header.php';
                 <h3 class="text-center mb-4">Nuestra Ubicación</h3>
                 <div class="map-container">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3306.123456789!2d-118.3965!3d34.0123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sHorchata%20Mexican%20Food!5e0!3m2!1sen!2sus!4v1234567890"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3306.123456789!2d-118.3965!3d34.0123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2b8b8b8b8b8b8%3A0x1234567890abcdef!2s10814%20Jefferson%20Blvd%2C%20Culver%20City%2C%20CA%2090232!5e0!3m2!1sen!2sus!4v1234567890"
                         width="100%" 
                         height="400" 
                         style="border:0;" 
