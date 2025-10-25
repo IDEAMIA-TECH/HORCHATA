@@ -1,10 +1,10 @@
 /**
  * Menu Page JavaScript
- * Horchata Mexican Food - Página de Menú
+ * Horchata Mexican Food - Página de Menú Elegante
  */
 
 $(document).ready(function() {
-    console.log('🍽️ Menu: Iniciando...');
+    console.log('🍽️ Menu: Iniciando página elegante...');
     
     // Verificar que jQuery esté disponible
     if (typeof $ === 'undefined') {
@@ -13,6 +13,10 @@ $(document).ready(function() {
     }
     
     console.log('✅ Menu: jQuery disponible');
+    
+    // Configurar animaciones avanzadas
+    console.log('🎨 Menu: Configurando animaciones avanzadas...');
+    setupAdvancedAnimations();
     
     // Cargar categorías para filtros
     console.log('🔍 Menu: Cargando categorías...');
@@ -34,9 +38,9 @@ $(document).ready(function() {
     console.log('🔍 Menu: Configurando carrito...');
     setupCart();
     
-    // Configurar animaciones
-    console.log('🔍 Menu: Configurando animaciones...');
-    setupAnimations();
+    // Configurar efectos especiales
+    console.log('✨ Menu: Configurando efectos especiales...');
+    setupSpecialEffects();
     
     console.log('✅ Menu: Inicialización completa');
 });
@@ -742,6 +746,188 @@ function clearSearch() {
     $('.category-filter').removeClass('active');
     $('.category-filter[data-category="all"]').addClass('active');
     loadMenuContent();
+}
+
+/**
+ * Configurar animaciones avanzadas
+ */
+function setupAdvancedAnimations() {
+    console.log('🎨 Menu: Configurando animaciones avanzadas...');
+    
+    // Animación de entrada para elementos
+    $('.animate-on-scroll').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+    
+    // Efecto hover para tarjetas de producto
+    $('.product-card').hover(
+        function() {
+            $(this).addClass('hover-lift');
+        },
+        function() {
+            $(this).removeClass('hover-lift');
+        }
+    );
+    
+    // Animación de entrada escalonada para categorías
+    $('.menu-category').each(function(index) {
+        $(this).css('animation-delay', (index * 0.2) + 's');
+        $(this).addClass('fade-in-on-scroll');
+    });
+    
+    // Efecto de escritura para títulos
+    setupTypewriterEffect();
+    
+    // Animaciones de scroll
+    setupScrollAnimations();
+}
+
+/**
+ * Configurar efectos especiales
+ */
+function setupSpecialEffects() {
+    console.log('✨ Menu: Configurando efectos especiales...');
+    
+    // Efecto de partículas en el hero
+    setupParticleEffect();
+    
+    // Efectos de mouse
+    setupMouseEffects();
+    
+    // Efectos de brillo
+    setupShineEffects();
+    
+    // Efectos de ripple
+    setupRippleEffects();
+}
+
+/**
+ * Efecto de escritura para títulos
+ */
+function setupTypewriterEffect() {
+    const title = $('.menu-hero-title');
+    const text = title.text();
+    title.text('');
+    
+    let i = 0;
+    const typeWriter = setInterval(() => {
+        if (i < text.length) {
+            title.text(title.text() + text.charAt(i));
+            i++;
+        } else {
+            clearInterval(typeWriter);
+        }
+    }, 100);
+}
+
+/**
+ * Configurar animaciones de scroll
+ */
+function setupScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    document.querySelectorAll('.fade-in-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+/**
+ * Efecto de partículas
+ */
+function setupParticleEffect() {
+    const heroSection = $('.menu-hero-section');
+    
+    for (let i = 0; i < 20; i++) {
+        const particle = $('<div class="particle"></div>');
+        particle.css({
+            position: 'absolute',
+            width: Math.random() * 4 + 2 + 'px',
+            height: Math.random() * 4 + 2 + 'px',
+            background: '#d4af37',
+            borderRadius: '50%',
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+            animation: `float ${Math.random() * 3 + 2}s ease-in-out infinite`,
+            animationDelay: Math.random() * 2 + 's',
+            opacity: Math.random() * 0.5 + 0.3
+        });
+        
+        heroSection.append(particle);
+    }
+}
+
+/**
+ * Efectos de mouse
+ */
+function setupMouseEffects() {
+    $('.product-card').on('mousemove', function(e) {
+        const card = $(this);
+        const rect = card[0].getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        
+        card.css('transform', `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
+    });
+    
+    $('.product-card').on('mouseleave', function() {
+        $(this).css('transform', 'perspective(1000px) rotateX(0deg) rotateY(0deg)');
+    });
+}
+
+/**
+ * Efectos de brillo
+ */
+function setupShineEffects() {
+    $('.product-card').on('mouseenter', function() {
+        $(this).addClass('shine-effect');
+    });
+    
+    $('.product-card').on('mouseleave', function() {
+        $(this).removeClass('shine-effect');
+    });
+}
+
+/**
+ * Efectos de ripple
+ */
+function setupRippleEffects() {
+    $('.category-filter, .add-to-cart-btn').on('click', function(e) {
+        const button = $(this);
+        const ripple = $('<span class="ripple"></span>');
+        
+        const rect = button[0].getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.css({
+            width: size + 'px',
+            height: size + 'px',
+            left: x + 'px',
+            top: y + 'px'
+        });
+        
+        button.append(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
 }
 
 // Funciones globales para uso en otros archivos

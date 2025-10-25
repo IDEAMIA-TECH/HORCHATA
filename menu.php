@@ -17,33 +17,47 @@ include 'includes/header.php';
 ?>
 
 <!-- Hero Section -->
-<section class="hero-section" style="min-height: 40vh;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8 mx-auto text-center">
-                <div class="hero-content">
-                    <h1 class="animate-on-scroll">Nuestro Menú</h1>
-                    <p class="animate-on-scroll">
-                        Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, 
-                        preparados con ingredientes frescos y recetas familiares.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Menu Categories Filter -->
-<section class="py-4 bg-light">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <button class="btn btn-outline-primary category-filter active" data-category="all">
-                        <i class="fas fa-th me-2"></i>Todos
-                    </button>
-                    <div id="categoryFilters">
-                        <!-- Categorías se cargarán aquí via AJAX -->
+<section class="menu-hero-section">
+    <div class="menu-hero-background">
+        <div class="menu-hero-overlay"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="menu-hero-content">
+                        <div class="menu-hero-badge mb-4">
+                            <span class="badge bg-white text-dark px-3 py-2">
+                                <i class="fas fa-utensils me-2"></i>Menú Completo
+                            </span>
+                        </div>
+                        <h1 class="menu-hero-title animate-on-scroll">
+                            Sabores <span class="text-primary-custom">Auténticos</span> de México
+                        </h1>
+                        <p class="menu-hero-description animate-on-scroll">
+                            Explora nuestra colección de platillos tradicionales, preparados con ingredientes frescos 
+                            y las recetas familiares que han pasado de generación en generación.
+                        </p>
+                        <div class="menu-hero-stats mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">150+</h3>
+                                        <p class="stat-label">Platillos</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">10</h3>
+                                        <p class="stat-label">Categorías</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item">
+                                        <h3 class="stat-number">100%</h3>
+                                        <p class="stat-label">Auténtico</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,16 +65,45 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- Search Bar -->
-<section class="py-3 bg-white">
+<!-- Menu Navigation -->
+<section class="menu-navigation-section">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 mx-auto">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar platillos...">
-                    <button class="btn btn-outline-primary" type="button" id="searchBtn">
-                        <i class="fas fa-search"></i>
-                    </button>
+            <div class="col-12">
+                <div class="menu-navigation-wrapper">
+                    <!-- Category Filters -->
+                    <div class="menu-filters mb-4">
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <button class="btn btn-primary-custom category-filter active" data-category="all">
+                                <i class="fas fa-th me-2"></i>Todos
+                            </button>
+                            <div id="categoryFilters">
+                                <!-- Categorías se cargarán aquí via AJAX -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="menu-search-wrapper">
+                        <div class="row">
+                            <div class="col-lg-6 mx-auto">
+                                <div class="search-container">
+                                    <div class="search-input-group">
+                                        <input type="text" class="form-control search-input" id="searchInput" placeholder="Buscar platillos deliciosos...">
+                                        <button class="btn btn-primary-custom search-btn" type="button" id="searchBtn">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="search-suggestions">
+                                        <span class="suggestion-tag">Tacos</span>
+                                        <span class="suggestion-tag">Burritos</span>
+                                        <span class="suggestion-tag">Quesadillas</span>
+                                        <span class="suggestion-tag">Enchiladas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,29 +111,90 @@ include 'includes/header.php';
 </section>
 
 <!-- Menu Content -->
-<section class="py-5">
+<section class="menu-content-section">
     <div class="container">
         <!-- Loading State -->
-        <div id="loadingState" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando menú...</span>
+        <div id="loadingState" class="menu-loading-state">
+            <div class="loading-animation">
+                <div class="loading-spinner">
+                    <i class="fas fa-utensils fa-2x"></i>
+                </div>
+                <h4 class="loading-title">Preparando tu menú...</h4>
+                <p class="loading-description">Cargando nuestros deliciosos platillos</p>
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
-            <p class="mt-3 text-muted">Cargando nuestro delicioso menú...</p>
         </div>
         
         <!-- Menu Categories -->
-        <div id="menuContent" style="display: none;">
+        <div id="menuContent" class="menu-content-wrapper" style="display: none;">
             <!-- Contenido del menú se cargará aquí -->
         </div>
         
         <!-- Empty State -->
-        <div id="emptyState" class="text-center py-5" style="display: none;">
-            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
-            <h4 class="text-muted">No se encontraron platillos</h4>
-            <p class="text-muted">Intenta con otros términos de búsqueda o explora nuestras categorías.</p>
-            <button class="btn btn-primary" onclick="clearSearch()">
-                <i class="fas fa-refresh me-2"></i>Limpiar Búsqueda
-            </button>
+        <div id="emptyState" class="menu-empty-state" style="display: none;">
+            <div class="empty-animation">
+                <div class="empty-icon">
+                    <i class="fas fa-search fa-3x"></i>
+                </div>
+                <h4 class="empty-title">¡Ups! No encontramos ese platillo</h4>
+                <p class="empty-description">
+                    No se encontraron platillos con esos términos. 
+                    Intenta con otros ingredientes o explora nuestras categorías.
+                </p>
+                <div class="empty-actions">
+                    <button class="btn btn-primary-custom" onclick="clearSearch()">
+                        <i class="fas fa-refresh me-2"></i>Limpiar Búsqueda
+                    </button>
+                    <button class="btn btn-outline-primary-custom" onclick="showAllCategories()">
+                        <i class="fas fa-th me-2"></i>Ver Todas las Categorías
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Menu Features -->
+<section class="menu-features-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h5 class="feature-title">Platillos Picantes</h5>
+                    <p class="feature-description">
+                        Nuestros platillos más picantes para los amantes del chile
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h5 class="feature-title">Ingredientes Frescos</h5>
+                    <p class="feature-description">
+                        Utilizamos solo los ingredientes más frescos y de calidad
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h5 class="feature-title">Hecho con Amor</h5>
+                    <p class="feature-description">
+                        Cada platillo se prepara con el amor de nuestras recetas familiares
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
