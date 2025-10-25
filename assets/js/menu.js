@@ -76,7 +76,7 @@ function displayCategoryFilters(categories) {
     categories.forEach(category => {
         html += `
             <button class="btn btn-outline-primary category-filter" data-category="${category.id}">
-                <i class="fas fa-utensils me-2"></i>${category.name_en}
+                <i class="fas fa-utensils me-2"></i>${category.name}
             </button>
         `;
     });
