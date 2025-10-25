@@ -18,46 +18,37 @@ include 'includes/header.php';
 
 <!-- Hero Section -->
 <section class="menu-hero-section">
-    <div class="menu-hero-background">
-        <div class="menu-hero-overlay"></div>
-        <div class="container">
-            <div class="row align-items-center min-vh-50">
-                <div class="col-lg-8 mx-auto text-center">
-                    <div class="menu-hero-content">
-                        <div class="menu-hero-badge mb-4">
-                            <span class="badge bg-white text-dark px-3 py-2">
-                                <i class="fas fa-utensils me-2"></i>Menú Completo
-                            </span>
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="menu-hero-content">
+                    <h1 class="menu-hero-title">
+                        Nuestro <span class="text-primary-custom">Menú</span>
+                    </h1>
+                    <p class="menu-hero-description">
+                        Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, 
+                        preparados con ingredientes frescos y recetas familiares.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Navigation -->
+<section class="category-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="category-filters-container">
+                    <button class="category-filter-btn active" data-category="all">
+                        <div class="category-icon">
+                            <i class="fas fa-th"></i>
                         </div>
-                        <h1 class="menu-hero-title animate-on-scroll">
-                            Sabores <span class="text-primary-custom">Auténticos</span> de México
-                        </h1>
-                        <p class="menu-hero-description animate-on-scroll">
-                            Explora nuestra colección de platillos tradicionales, preparados con ingredientes frescos 
-                            y las recetas familiares que han pasado de generación en generación.
-                        </p>
-                        <div class="menu-hero-stats mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="stat-item">
-                                        <h3 class="stat-number">150+</h3>
-                                        <p class="stat-label">Platillos</p>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-item">
-                                        <h3 class="stat-number">10</h3>
-                                        <p class="stat-label">Categorías</p>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-item">
-                                        <h3 class="stat-number">100%</h3>
-                                        <p class="stat-label">Auténtico</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="category-name">Todos</div>
+                    </button>
+                    <div id="categoryFilters">
+                        <!-- Categorías se cargarán aquí via AJAX -->
                     </div>
                 </div>
             </div>
@@ -65,48 +56,16 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- Menu Navigation -->
-<section class="menu-navigation-section">
+<!-- Search Section -->
+<section class="search-section">
     <div class="container">
         <div class="row">
-            <div class="col-12">
-                <div class="menu-navigation-wrapper">
-                    <!-- Category Filters -->
-                    <div class="menu-filters mb-4">
-                        <div class="d-flex flex-wrap justify-content-center gap-2">
-                            <button class="category-filter active" data-category="all">
-                                <div class="category-icon">
-                                    <i class="fas fa-th"></i>
-                                </div>
-                                <div class="category-name">Todos</div>
-                            </button>
-                            <div id="categoryFilters">
-                                <!-- Categorías se cargarán aquí via AJAX -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Search Bar -->
-                    <div class="menu-search-wrapper">
-                        <div class="row">
-                            <div class="col-lg-6 mx-auto">
-                                <div class="search-container">
-                                    <div class="search-input-group">
-                                        <input type="text" class="form-control search-input" id="searchInput" placeholder="Buscar platillos deliciosos...">
-                                        <button class="btn btn-primary-custom search-btn" type="button" id="searchBtn">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                    <div class="search-suggestions">
-                                        <span class="suggestion-tag">Tacos</span>
-                                        <span class="suggestion-tag">Burritos</span>
-                                        <span class="suggestion-tag">Quesadillas</span>
-                                        <span class="suggestion-tag">Enchiladas</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-lg-6 mx-auto">
+                <div class="search-container">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar platillos...">
+                    <button class="btn btn-primary" type="button" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
