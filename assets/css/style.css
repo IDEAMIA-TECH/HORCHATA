@@ -1050,6 +1050,29 @@ html, body {
         margin-bottom: 10px;
     }
 }
+}
+
+.footer-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+}
+
+/* Responsive Footer Logo */
+@media (max-width: 768px) {
+    .footer-logo {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .footer-logo-img {
+        height: 50px !important;
+        margin-bottom: 10px;
+    }
+}
 
 .footer-triciclo::before {
     content: '';

@@ -6,9 +6,13 @@
             <div class="row">
                 <!-- Restaurant Info -->
                 <div class="col-lg-4 mb-4">
-                    <h5 class="footer-title mb-3">
-                        <span class="me-2">🍽️</span>Horchata Mexican Food
-                    </h5>
+                    <div class="footer-logo mb-3">
+                        <img src="assets/images/LOGO.JPG" alt="Horchata Mexican Food" class="footer-logo-img me-3" style="height: 60px; width: auto;">
+                        <div class="footer-logo-text">
+                            <h5 class="footer-title mb-1">Horchata Mexican Food</h5>
+                            <p class="footer-subtitle mb-0">Auténtica Comida Mexicana</p>
+                        </div>
+                    </div>
                     <p class="footer-text">
                         Auténtica comida mexicana preparada con ingredientes frescos y recetas tradicionales. 
                         Disfruta de nuestros sabores únicos con servicio pickup.
