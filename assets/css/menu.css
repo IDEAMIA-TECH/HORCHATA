@@ -49,27 +49,27 @@
 }
 
 /* =============================================
-   CATEGORY NAVIGATION - HORIZONTAL
+   CATEGORY NAVIGATION
    ============================================= */
 .category-navigation {
-    background: #d4af37;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid #c09f30;
-    overflow-x: auto;
-    white-space: nowrap;
+    background: #f8f9fa;
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .category-filters-container {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
-    align-items: center;
     gap: 0.5rem;
-    min-width: max-content;
+    align-items: center;
+    overflow-x: auto;
     padding: 0 1rem;
+    white-space: nowrap;
 }
 
-/* Botones de categoría con iconos - HORIZONTAL */
+/* Botones de categoría con iconos */
 .category-filter-btn {
     display: flex;
     flex-direction: column;
@@ -91,17 +91,16 @@
 }
 
 .category-filter-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     background: #f8f9fa;
 }
 
 .category-filter-btn.active {
-    background: #ffffff;
-    color: #d4af37;
+    background: #d4af37;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-    border: 2px solid #ffffff;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
 
 .category-icon {
@@ -118,7 +117,7 @@
 
 .category-filter-btn.active .category-icon {
     transform: scale(1.1);
-    color: #d4af37;
+    color: #ffffff;
 }
 
 .category-name {
@@ -136,7 +135,12 @@
 }
 
 .category-filter-btn.active .category-name {
-    color: #d4af37;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.category-filter-btn.active .category-name {
+    color: #ffffff;
     font-weight: 700;
 }
 
@@ -430,7 +434,7 @@
 }
 
 /* =============================================
-   RESPONSIVE DESIGN - HORIZONTAL MENU
+   RESPONSIVE DESIGN
    ============================================= */
 @media (max-width: 768px) {
     .menu-hero-title {
