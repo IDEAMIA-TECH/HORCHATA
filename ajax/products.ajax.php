@@ -20,7 +20,7 @@ require_once '../includes/db_connect.php';
 
 try {
     // Obtener parámetros
-    $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+    $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : null;
     $featured = isset($_GET['featured']) ? (int)$_GET['featured'] : 0;
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
@@ -36,8 +36,35 @@ try {
     
     // Filtros
     if ($category_id) {
-        $sql .= " AND p.category_id = ?";
-        $params[] = $category_id;
+        // Si es un número, usar ID numérico
+        if (is_numeric($category_id)) {
+            $sql .= " AND p.category_id = ?";
+            $params[] = (int)$category_id;
+        } else {
+            // Mapeo de IDs estáticos a nombres reales de categorías
+            $category_mapping = [
+                'burritos' => ['Breakfast Burritos', 'Special Burritos'],
+                'tacos' => ['Tacos & Quesadillas'],
+                'nachos' => ['Nachos & Sides'],
+                'seafood' => ['Seafood'],
+                'hamburger' => ['Salads & Burgers'],
+                'combination_plates' => ['Combinations'],
+                'daily_special' => ['Daily Specials'],
+                'desayunos' => ['Breakfast Plates']
+            ];
+            
+            if (isset($category_mapping[$category_id])) {
+                $category_names = $category_mapping[$category_id];
+                $placeholders = str_repeat('?,', count($category_names) - 1) . '?';
+                $sql .= " AND (c.name_en IN ($placeholders) OR c.name_es IN ($placeholders))";
+                $params = array_merge($params, $category_names, $category_names);
+            } else {
+                // Si no está en el mapeo, buscar por nombre exacto
+                $sql .= " AND (c.name_en = ? OR c.name_es = ?)";
+                $params[] = $category_id;
+                $params[] = $category_id;
+            }
+        }
     }
     
     if ($featured) {

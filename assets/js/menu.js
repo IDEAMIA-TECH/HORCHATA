@@ -130,16 +130,23 @@ function showCategoriesError() {
  */
 function loadMenuContent(categoryId = null) {
     console.log('🔍 Menu: Cargando contenido del menú...', categoryId);
+    console.log('🔍 Menu: Tipo de categoryId:', typeof categoryId);
     
     // Mostrar loading
     $('#loadingState').show();
     $('#menuContent').hide();
     $('#emptyState').hide();
+    console.log('🔍 Menu: Estados de UI actualizados');
     
     const data = {};
     if (categoryId && categoryId !== 'all') {
         data.category_id = categoryId;
+        console.log('🔍 Menu: Filtro de categoría aplicado:', data);
+    } else {
+        console.log('🔍 Menu: Cargando todos los productos');
     }
+    
+    console.log('🔍 Menu: Enviando petición AJAX con datos:', data);
     
     $.ajax({
         url: 'ajax/products.ajax.php',
@@ -148,6 +155,7 @@ function loadMenuContent(categoryId = null) {
         dataType: 'json',
         success: function(response) {
             console.log('✅ Menu: Productos cargados:', response);
+            console.log('✅ Menu: Número de productos:', response.data ? response.data.length : 0);
             if (response.success) {
                 displayMenuContent(response.data);
             } else {
@@ -157,6 +165,8 @@ function loadMenuContent(categoryId = null) {
         },
         error: function(xhr, status, error) {
             console.error('❌ Menu: Error AJAX al cargar productos:', error);
+            console.error('❌ Menu: Status:', status);
+            console.error('❌ Menu: Response:', xhr.responseText);
             showEmptyState();
         }
     });
@@ -317,21 +327,27 @@ function updateUrl(categoryId) {
 function setupCategoryFilters() {
     console.log('🔍 Menu: Configurando filtros de categoría...');
     
-    $(document).on('click', '.category-filter-btn', function() {
+    $(document).on('click', '.category-filter-btn', function(e) {
+        e.preventDefault();
         const categoryId = $(this).data('category');
         console.log('🔍 Menu: Categoría seleccionada:', categoryId);
+        console.log('🔍 Menu: Elemento clickeado:', $(this));
         
         // Actualizar estado activo
         $('.category-filter-btn').removeClass('active');
         $(this).addClass('active');
+        console.log('🔍 Menu: Estado activo actualizado');
         
         // Limpiar búsqueda
         $('#searchInput').val('');
+        console.log('🔍 Menu: Búsqueda limpiada');
         
         // Actualizar URL sin recargar la página
         updateUrl(categoryId);
+        console.log('🔍 Menu: URL actualizada');
         
         // Cargar productos de la categoría
+        console.log('🔍 Menu: Iniciando carga de productos para categoría:', categoryId);
         loadMenuContent(categoryId);
     });
 }
