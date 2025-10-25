@@ -81,7 +81,7 @@ function loadFeaturedProducts() {
         url: 'ajax/products.ajax.php',
         method: 'GET',
         data: { 
-            action: 'get_featured',
+            featured: 1,
             limit: 6
         },
         dataType: 'json',
@@ -100,7 +100,7 @@ function loadFeaturedProducts() {
  * Mostrar productos destacados
  */
 function displayFeaturedProducts(products) {
-    const container = $('#featured-products');
+    const container = $('#featuredProducts');
     if (container.length === 0) return;
     
     let html = '';
