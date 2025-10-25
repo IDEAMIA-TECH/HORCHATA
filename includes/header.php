@@ -15,6 +15,13 @@
     <!-- Custom CSS -->
     <link href="assets/css/style.css" rel="stylesheet">
     
+    <!-- Page specific CSS -->
+    <?php if (isset($page_styles)): ?>
+        <?php foreach ($page_styles as $style): ?>
+            <link href="<?php echo $style; ?>" rel="stylesheet">
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
     <!-- Meta tags -->
     <meta name="description" content="Auténtica comida mexicana en Horchata Mexican Food. Pedidos pickup, menú tradicional, reseñas verificadas.">
     <meta name="keywords" content="comida mexicana, horchata, tacos, burritos, pedidos online, pickup">
