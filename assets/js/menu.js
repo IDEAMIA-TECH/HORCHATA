@@ -14,13 +14,17 @@ $(document).ready(function() {
     
     console.log('✅ Menu: jQuery disponible');
     
+    // Leer parámetros de la URL
+    const urlParams = getUrlParameters();
+    console.log('🔍 Menu: Parámetros de URL:', urlParams);
+    
     // Cargar categorías para filtros
     console.log('🔍 Menu: Cargando categorías...');
-    loadCategoryFilters();
+    loadCategoryFilters(urlParams.category);
     
-    // Cargar menú completo
+    // Cargar menú con parámetros de URL
     console.log('🔍 Menu: Cargando menú...');
-    loadMenuContent();
+    loadMenuContent(urlParams.category);
     
     // Configurar búsqueda
     console.log('🔍 Menu: Configurando búsqueda...');
@@ -38,10 +42,25 @@ $(document).ready(function() {
 });
 
 /**
+ * Obtener parámetros de la URL
+ */
+function getUrlParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {};
+    
+    for (const [key, value] of urlParams) {
+        params[key] = value;
+    }
+    
+    console.log('🔍 Menu: Parámetros extraídos:', params);
+    return params;
+}
+
+/**
  * Cargar filtros de categoría
  */
-function loadCategoryFilters() {
-    console.log('🔍 Menu: Cargando filtros de categoría...');
+function loadCategoryFilters(activeCategory = null) {
+    console.log('🔍 Menu: Cargando filtros de categoría...', activeCategory);
     
     $.ajax({
         url: 'ajax/categories.ajax.php',
@@ -51,7 +70,7 @@ function loadCategoryFilters() {
         success: function(response) {
             console.log('✅ Menu: Categorías cargadas:', response);
             if (response.success) {
-                displayCategoryFilters(response.data);
+                displayCategoryFilters(response.data, activeCategory);
             } else {
                 console.error('❌ Menu: Error al cargar categorías:', response.message);
                 showCategoriesError();
@@ -67,8 +86,8 @@ function loadCategoryFilters() {
 /**
  * Mostrar filtros de categoría
  */
-function displayCategoryFilters(categories) {
-    console.log('🔍 Menu: displayCategoryFilters llamada con:', categories);
+function displayCategoryFilters(categories, activeCategory = null) {
+    console.log('🔍 Menu: displayCategoryFilters llamada con:', categories, 'Categoría activa:', activeCategory);
     
     const container = $('#categoryFilters');
     let html = '';
@@ -76,12 +95,17 @@ function displayCategoryFilters(categories) {
     categories.forEach((category, index) => {
         console.log(`🔍 Menu: Procesando categoría ${index}:`, category);
         
+        // Determinar si esta categoría debe estar activa
+        const isActive = activeCategory && category.id === activeCategory;
+        const activeStyle = isActive ? 'background: #d4af37; color: #ffffff; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);' : 'background: #ffffff; color: #1a1a1a;';
+        const activeClass = isActive ? ' active' : '';
+        
         html += `
-            <button class="category-filter-btn" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border: none; border-radius: 12px; background: #ffffff; color: #1a1a1a; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
+            <button class="category-filter-btn${activeClass}" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border: none; border-radius: 12px; ${activeStyle} transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
                 <div class="category-image" style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <img src="${category.image}" alt="${category.name_es}" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
                 </div>
-                <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #1a1a1a;">
+                <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: ${isActive ? '#ffffff' : '#1a1a1a'};">
                     ${category.name_es}
                 </div>
             </button>
@@ -271,6 +295,23 @@ function searchProducts(searchTerm) {
 }
 
 /**
+ * Actualizar URL con parámetros
+ */
+function updateUrl(categoryId) {
+    const url = new URL(window.location);
+    
+    if (categoryId && categoryId !== 'all') {
+        url.searchParams.set('category', categoryId);
+    } else {
+        url.searchParams.delete('category');
+    }
+    
+    // Actualizar URL sin recargar la página
+    window.history.pushState({}, '', url);
+    console.log('🔍 Menu: URL actualizada:', url.toString());
+}
+
+/**
  * Configurar filtros de categoría
  */
 function setupCategoryFilters() {
@@ -286,6 +327,9 @@ function setupCategoryFilters() {
         
         // Limpiar búsqueda
         $('#searchInput').val('');
+        
+        // Actualizar URL sin recargar la página
+        updateUrl(categoryId);
         
         // Cargar productos de la categoría
         loadMenuContent(categoryId);
