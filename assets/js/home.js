@@ -368,6 +368,43 @@ function displayCategories(categories) {
 }
 
 /**
+ * Configurar animaciones de categorías
+ */
+function setupCategoryAnimations() {
+    console.log('🏠 Home: Configurando animaciones de categorías...');
+    
+    // Animaciones de entrada para las tarjetas de categorías
+    $('.category-card').each(function(index) {
+        $(this).css({
+            'animation-delay': (index * 0.1) + 's',
+            'opacity': '0',
+            'transform': 'translateY(30px)'
+        });
+        
+        // Animar entrada
+        setTimeout(() => {
+            $(this).css({
+                'opacity': '1',
+                'transform': 'translateY(0)',
+                'transition': 'all 0.6s ease'
+            });
+        }, index * 100);
+    });
+    
+    // Efectos hover para las tarjetas
+    $('.category-card').hover(
+        function() {
+            $(this).css('transform', 'translateY(-8px)');
+        },
+        function() {
+            $(this).css('transform', 'translateY(0)');
+        }
+    );
+    
+    console.log('✅ Home: Animaciones de categorías configuradas');
+}
+
+/**
  * Mostrar error de categorías
  */
 function showCategoriesError(message) {

@@ -268,7 +268,7 @@ function getPublicReviews() {
                 LIMIT ? OFFSET ?";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$limit, $offset]);
+        $stmt->execute([(int)$limit, (int)$offset]);
         $reviews = $stmt->fetchAll();
         
         // Obtener estadísticas
