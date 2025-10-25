@@ -49,80 +49,94 @@
 }
 
 /* =============================================
-   CATEGORY NAVIGATION
+   CATEGORY NAVIGATION - HORIZONTAL
    ============================================= */
 .category-navigation {
-    background: #f8f9fa;
-    padding: 2rem 0;
-    border-bottom: 1px solid #e5e5e5;
+    background: #d4af37;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #c09f30;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .category-filters-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
     justify-content: center;
-    gap: 1rem;
     align-items: center;
+    gap: 0.5rem;
+    min-width: max-content;
+    padding: 0 1rem;
 }
 
-/* Botones de categoría con iconos */
+/* Botones de categoría con iconos - HORIZONTAL */
 .category-filter-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 15px;
+    padding: 15px 12px;
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     background: #ffffff;
     color: #1a1a1a;
     transition: all 0.3s ease;
     cursor: pointer;
-    min-width: 100px;
+    min-width: 80px;
+    max-width: 100px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .category-filter-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     background: #f8f9fa;
 }
 
 .category-filter-btn.active {
-    background: #d4af37;
-    color: #ffffff;
+    background: #ffffff;
+    color: #d4af37;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+    border: 2px solid #ffffff;
 }
 
 .category-icon {
-    font-size: 1.8rem;
-    margin-bottom: 8px;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
     transition: all 0.3s ease;
+    color: #d4af37;
 }
 
 .category-filter-btn:hover .category-icon {
     transform: scale(1.1);
+    color: #d4af37;
 }
 
 .category-filter-btn.active .category-icon {
     transform: scale(1.1);
-    color: #ffffff;
+    color: #d4af37;
 }
 
 .category-name {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.1;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    color: #1a1a1a;
+}
+
+.category-filter-btn:hover .category-name {
+    color: #1a1a1a;
 }
 
 .category-filter-btn.active .category-name {
-    color: #ffffff;
+    color: #d4af37;
     font-weight: 700;
 }
 
@@ -416,7 +430,7 @@
 }
 
 /* =============================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - HORIZONTAL MENU
    ============================================= */
 @media (max-width: 768px) {
     .menu-hero-title {
@@ -427,24 +441,29 @@
         font-size: 1rem;
     }
     
+    .category-navigation {
+        padding: 1rem 0;
+    }
+    
     .category-filters-container {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.5rem;
+        justify-content: flex-start;
+        gap: 0.3rem;
+        padding: 0 0.5rem;
     }
     
     .category-filter-btn {
-        min-width: 80px;
-        padding: 15px 10px;
+        min-width: 70px;
+        max-width: 80px;
+        padding: 12px 8px;
     }
     
     .category-icon {
-        font-size: 1.5rem;
-        margin-bottom: 6px;
+        font-size: 1.3rem;
+        margin-bottom: 4px;
     }
     
     .category-name {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
     }
     
     .category-products {
@@ -459,18 +478,23 @@
 }
 
 @media (max-width: 480px) {
+    .category-navigation {
+        padding: 0.8rem 0;
+    }
+    
     .category-filter-btn {
-        min-width: 70px;
-        padding: 12px 8px;
+        min-width: 60px;
+        max-width: 70px;
+        padding: 10px 6px;
     }
     
     .category-icon {
-        font-size: 1.3rem;
-        margin-bottom: 4px;
+        font-size: 1.2rem;
+        margin-bottom: 3px;
     }
     
     .category-name {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
     
     .search-container {
