@@ -46,7 +46,7 @@ function loadCategoryFilters() {
     $.ajax({
         url: 'ajax/categories.ajax.php',
         method: 'GET',
-        data: { limit: 20 },
+        data: { action: 'get_categories', limit: 20 },
         dataType: 'json',
         success: function(response) {
             console.log('✅ Menu: Categorías cargadas:', response);
