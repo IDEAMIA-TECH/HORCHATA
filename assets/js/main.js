@@ -55,8 +55,43 @@ function initCart() {
     
     // Proceder al checkout
     $(document).on('click', '#checkoutBtn', function() {
-        if (getCartItems().length > 0) {
-            window.location.href = 'checkout.php';
+        console.log('🛒 Checkout: Botón clickeado');
+        
+        const cartItems = getCartItems();
+        console.log('🛒 Checkout: Items en carrito:', cartItems);
+        
+        if (cartItems.length > 0) {
+            console.log('🛒 Checkout: Enviando datos al servidor...');
+            
+            // Enviar datos del carrito al servidor
+            $.ajax({
+                url: 'ajax/cart.ajax.php',
+                method: 'POST',
+                data: {
+                    action: 'prepare_checkout',
+                    cart_data: JSON.stringify(cartItems)
+                },
+                success: function(response) {
+                    console.log('🛒 Checkout: Respuesta del servidor:', response);
+                    
+                    if (response.success) {
+                        console.log('🛒 Checkout: Redirigiendo a checkout.php');
+                        window.location.href = 'checkout.php';
+                    } else {
+                        console.error('❌ Checkout: Error del servidor:', response.message);
+                        alert('Error al procesar el carrito: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Checkout: Error AJAX:', error);
+                    console.log('🛒 Checkout: Fallback - redirigiendo directamente');
+                    // Fallback: redirigir directamente
+                    window.location.href = 'checkout.php';
+                }
+            });
+        } else {
+            console.log('🛒 Checkout: Carrito vacío');
+            alert('Tu carrito está vacío. Agrega algunos productos antes de proceder al pago.');
         }
     });
 }

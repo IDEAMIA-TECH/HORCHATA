@@ -17,19 +17,24 @@ if (empty($cart_items)) {
     exit;
 }
 
-// Calcular totales
-$subtotal = 0;
-$tax_rate = 0.0825; // 8.25% de impuestos
-$tax = 0;
-$total = 0;
+// Usar totales calculados en la sesión o calcular si no existen
+$subtotal = $_SESSION['cart_subtotal'] ?? 0;
+$tax = $_SESSION['cart_tax'] ?? 0;
+$total = $_SESSION['cart_total'] ?? 0;
 
-foreach ($cart_items as $item) {
-    $item_total = $item['price'] * $item['quantity'];
-    $subtotal += $item_total;
+// Si no hay totales en sesión, calcular
+if ($subtotal == 0) {
+    $tax_rate = 0.0825; // 8.25% de impuestos
+    $subtotal = 0;
+    
+    foreach ($cart_items as $item) {
+        $item_total = $item['price'] * $item['quantity'];
+        $subtotal += $item_total;
+    }
+    
+    $tax = $subtotal * $tax_rate;
+    $total = $subtotal + $tax;
 }
-
-$tax = $subtotal * $tax_rate;
-$total = $subtotal + $tax;
 
 // Configurar página
 $page_title = 'Checkout';
