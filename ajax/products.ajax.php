@@ -23,7 +23,7 @@ try {
     $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : null;
     $featured = isset($_GET['featured']) ? (int)$_GET['featured'] : 0;
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 200;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     
     // Construir consulta
@@ -84,6 +84,7 @@ try {
     // Ejecutar consulta
     $stmt = executeQuery($sql, $params);
     $products = $stmt ? $stmt->fetchAll() : [];
+    
     
     // Formatear datos
     $formatted_products = [];
