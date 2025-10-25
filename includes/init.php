@@ -16,18 +16,7 @@ define('SUPPORTED_LANGUAGES', ['en', 'es']);
 // Procesar cambio de idioma
 if (isset($_GET['lang']) && in_array($_GET['lang'], SUPPORTED_LANGUAGES)) {
     $_SESSION['language'] = $_GET['lang'];
-    
-    // Redirigir para limpiar la URL
-    $url = strtok($_SERVER["REQUEST_URI"], '?');
-    $params = $_GET;
-    unset($params['lang']);
-    
-    if (!empty($params)) {
-        $url .= '?' . http_build_query($params);
-    }
-    
-    header('Location: ' . $url);
-    exit;
+    // No redirigir automáticamente para evitar bucles de refresh
 }
 
 // Establecer idioma por defecto si no está definido
