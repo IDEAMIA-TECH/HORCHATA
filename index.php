@@ -70,7 +70,7 @@ include 'includes/header.php';
                 <div class="col-lg-6">
                     <div class="hero-image-container">
                         <div class="hero-image-main">
-                            <img src="assets/images/hero-dish.jpg" alt="Plato mexicano" class="img-fluid rounded-4 shadow-xl">
+                            <img src="assets/images/hero/mexican-food-from-the-state-horchata-scaled-e1742425754315.jpg" alt="Plato mexicano" class="img-fluid rounded-4 shadow-xl">
                         </div>
                         <div class="hero-floating-cards">
                             <div class="floating-card card-1 hover-3d pulse-effect">
