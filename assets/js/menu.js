@@ -157,7 +157,7 @@ function loadMenuContent(categoryId = null) {
             console.log('✅ Menu: Productos cargados:', response);
             console.log('✅ Menu: Número de productos:', response.data ? response.data.length : 0);
             if (response.success) {
-                displayMenuContent(response.data);
+                displayMenuContent(response.data, categoryId);
             } else {
                 console.error('❌ Menu: Error al cargar productos:', response.message);
                 showEmptyState();
@@ -175,38 +175,33 @@ function loadMenuContent(categoryId = null) {
 /**
  * Mostrar contenido del menú
  */
-function displayMenuContent(products) {
-    console.log('🔍 Menu: displayMenuContent llamada con:', products);
+function displayMenuContent(products, categoryId = null) {
+    console.log('🔍 Menu: displayMenuContent llamada con:', products, 'CategoryId:', categoryId);
     
     if (!products || products.length === 0) {
         showEmptyState();
         return;
     }
     
-    // Agrupar productos por categoría
-    const categories = {};
-    products.forEach(product => {
-        if (!categories[product.category_id]) {
-            categories[product.category_id] = {
-                id: product.category_id,
-                name: product.category_name,
-                products: []
-            };
-        }
-        categories[product.category_id].products.push(product);
-    });
-    
     let html = '';
-    Object.values(categories).forEach(category => {
+    
+    // Si se está filtrando por una categoría específica, mostrar solo esa categoría
+    if (categoryId && categoryId !== 'all') {
+        console.log('🔍 Menu: Mostrando solo categoría filtrada:', categoryId);
+        
+        // Obtener el nombre de la categoría del primer producto
+        const categoryName = products[0]?.category_name || 'Categoría';
+        
         html += `
             <div class="menu-category">
                 <div class="category-header">
-                    <h2 class="category-title">${category.name}</h2>
+                    <h2 class="category-title">${categoryName}</h2>
+                    <p class="category-description">${products.length} platillo${products.length !== 1 ? 's' : ''} disponible${products.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div class="category-products">
         `;
         
-        category.products.forEach(product => {
+        products.forEach(product => {
             html += `
                 <div class="product-card">
                     <div class="product-image">
@@ -230,7 +225,58 @@ function displayMenuContent(products) {
                 </div>
             </div>
         `;
-    });
+    } else {
+        console.log('🔍 Menu: Mostrando todas las categorías');
+        
+        // Agrupar productos por categoría
+        const categories = {};
+        products.forEach(product => {
+            if (!categories[product.category_id]) {
+                categories[product.category_id] = {
+                    id: product.category_id,
+                    name: product.category_name,
+                    products: []
+                };
+            }
+            categories[product.category_id].products.push(product);
+        });
+        
+        Object.values(categories).forEach(category => {
+            html += `
+                <div class="menu-category">
+                    <div class="category-header">
+                        <h2 class="category-title">${category.name}</h2>
+                        <p class="category-description">${category.products.length} platillo${category.products.length !== 1 ? 's' : ''}</p>
+                    </div>
+                    <div class="category-products">
+            `;
+            
+            category.products.forEach(product => {
+                html += `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image || 'assets/images/placeholder.jpg'}" alt="${product.name}">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="product-description">${product.description || ''}</p>
+                            <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+                            <div class="product-actions">
+                                <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                                    <i class="fas fa-plus me-2"></i>Agregar al Carrito
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+    }
     
     $('#menuContent').html(html);
     $('#loadingState').hide();
