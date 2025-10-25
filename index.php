@@ -129,7 +129,7 @@ include 'includes/header.php';
 </section>
 
 <!-- About Section -->
-<section class="py-5 bg-light">
+<section class="about-section py-5">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
