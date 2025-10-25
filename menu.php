@@ -9,7 +9,7 @@ require_once 'includes/db_connect.php';
 require_once 'includes/init.php';
 
 // Configurar página
-$page_title = 'Menú';
+$page_title = __('menu');
 $page_scripts = ['assets/js/menu.js'];
 $page_styles = ['assets/css/menu.css'];
 
@@ -24,11 +24,10 @@ include 'includes/header.php';
             <div class="col-lg-8 mx-auto text-center">
                 <div class="menu-hero-content">
                             <h1 class="menu-hero-title">
-                                Nuestro <span class="text-primary-custom">Menú</span>
+                                <?php echo __('our_menu'); ?>
                             </h1>
                             <p class="menu-hero-description">
-                                Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, 
-                                preparados con ingredientes frescos y recetas familiares.
+                                <?php echo __('discover_authentic'); ?>
                             </p>
                 </div>
             </div>
@@ -47,7 +46,7 @@ include 'includes/header.php';
                             <i class="fas fa-th"></i>
                         </div>
                         <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #ffffff;">
-                            Todos
+                            <?php echo __('all_categories'); ?>
                         </div>
                     </button>
                     <div id="categoryFilters" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.5rem; align-items: center;">
@@ -65,7 +64,7 @@ include 'includes/header.php';
         <div class="row">
             <div class="col-lg-6 mx-auto">
                 <div class="search-container">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar platillos...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="<?php echo __('search_dishes'); ?>">
                     <button class="btn btn-primary" type="button" id="searchBtn">
                         <i class="fas fa-search"></i>
                     </button>
@@ -84,8 +83,8 @@ include 'includes/header.php';
                 <div class="loading-spinner">
                     <i class="fas fa-utensils fa-2x"></i>
                 </div>
-                <h4 class="loading-title">Preparando tu menú...</h4>
-                <p class="loading-description">Cargando nuestros deliciosos platillos</p>
+                <h4 class="loading-title"><?php echo __('preparing_menu'); ?></h4>
+                <p class="loading-description"><?php echo __('loading_delicious'); ?></p>
                 <div class="loading-dots">
                     <span></span>
                     <span></span>
@@ -105,17 +104,16 @@ include 'includes/header.php';
                 <div class="empty-icon">
                     <i class="fas fa-search fa-3x"></i>
                 </div>
-                <h4 class="empty-title">¡Ups! No encontramos ese platillo</h4>
+                <h4 class="empty-title"><?php echo __('oops_not_found'); ?></h4>
                 <p class="empty-description">
-                    No se encontraron platillos con esos términos. 
-                    Intenta con otros ingredientes o explora nuestras categorías.
+                    <?php echo __('no_dishes_found'); ?>
                 </p>
                 <div class="empty-actions">
                     <button class="btn btn-primary-custom" onclick="clearSearch()">
-                        <i class="fas fa-refresh me-2"></i>Limpiar Búsqueda
+                        <i class="fas fa-refresh me-2"></i><?php echo __('clear_search'); ?>
                     </button>
                     <button class="btn btn-outline-primary-custom" onclick="showAllCategories()">
-                        <i class="fas fa-th me-2"></i>Ver Todas las Categorías
+                        <i class="fas fa-th me-2"></i><?php echo __('view_all_categories'); ?>
                     </button>
                 </div>
             </div>
@@ -132,9 +130,9 @@ include 'includes/header.php';
                     <div class="feature-icon">
                         <i class="fas fa-fire"></i>
                     </div>
-                    <h5 class="feature-title">Platillos Picantes</h5>
+                    <h5 class="feature-title"><?php echo __('spicy_dishes'); ?></h5>
                     <p class="feature-description">
-                        Nuestros platillos más picantes para los amantes del chile
+                        <?php echo __('spicy_description'); ?>
                     </p>
                 </div>
             </div>
@@ -143,9 +141,9 @@ include 'includes/header.php';
                     <div class="feature-icon">
                         <i class="fas fa-leaf"></i>
                     </div>
-                    <h5 class="feature-title">Ingredientes Frescos</h5>
+                    <h5 class="feature-title"><?php echo __('fresh_ingredients_title'); ?></h5>
                     <p class="feature-description">
-                        Utilizamos solo los ingredientes más frescos y de calidad
+                        <?php echo __('fresh_ingredients_description'); ?>
                     </p>
                 </div>
             </div>
@@ -154,9 +152,9 @@ include 'includes/header.php';
                     <div class="feature-icon">
                         <i class="fas fa-heart"></i>
                     </div>
-                    <h5 class="feature-title">Hecho con Amor</h5>
+                    <h5 class="feature-title"><?php echo __('made_with_love_title'); ?></h5>
                     <p class="feature-description">
-                        Cada platillo se prepara con el amor de nuestras recetas familiares
+                        <?php echo __('made_with_love_description'); ?>
                     </p>
                 </div>
             </div>

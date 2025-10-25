@@ -107,7 +107,39 @@ function __($key, $default = '') {
         'loading_specialties' => 'Preparando los mejores sabores para ti',
         'loading_categories' => 'Organizando nuestros sabores para ti',
         'loading_testimonials' => 'Recopilando las mejores experiencias',
-        'explore_full_menu' => 'Explorar Menú Completo'
+        'explore_full_menu' => 'Explorar Menú Completo',
+        // Menu Page
+        'our_menu' => 'Nuestro Menú',
+        'discover_authentic' => 'Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, preparados con ingredientes frescos y recetas familiares.',
+        'all_categories' => 'Todos',
+        'search_dishes' => 'Buscar platillos...',
+        'preparing_menu' => 'Preparando tu menú...',
+        'loading_delicious' => 'Cargando nuestros deliciosos platillos',
+        'oops_not_found' => '¡Ups! No encontramos ese platillo',
+        'no_dishes_found' => 'No se encontraron platillos con esos términos. Intenta con otros ingredientes o explora nuestras categorías.',
+        'clear_search' => 'Limpiar Búsqueda',
+        'view_all_categories' => 'Ver Todas las Categorías',
+        'spicy_dishes' => 'Platillos Picantes',
+        'spicy_description' => 'Nuestros platillos más picantes para los amantes del chile',
+        'fresh_ingredients_title' => 'Ingredientes Frescos',
+        'fresh_ingredients_description' => 'Utilizamos solo los ingredientes más frescos y de calidad',
+        'made_with_love_title' => 'Hecho con Amor',
+        'made_with_love_description' => 'Cada platillo se prepara con el amor de nuestras recetas familiares',
+        // Additional translations
+        'popular_dishes_description' => 'Los platillos más populares de nuestro menú, preparados con amor y tradición mexicana',
+        'footer_description' => 'Auténtica comida mexicana preparada con ingredientes frescos y recetas tradicionales. Disfruta de nuestros sabores únicos con servicio pickup.',
+        'quick_links' => 'Enlaces Rápidos',
+        'contact_info' => 'Información de Contacto',
+        'business_hours' => 'Horarios de Atención',
+        'monday_saturday' => 'Lunes - Sábado',
+        'sunday' => 'Domingo',
+        'all_rights_reserved' => 'Todos los derechos reservados',
+        'terms_conditions' => 'Términos y Condiciones',
+        'accessibility' => 'Accesibilidad',
+        'your_cart' => 'Tu Carrito',
+        'cart_empty' => 'Tu carrito está vacío',
+        'total' => 'Total',
+        'proceed_payment' => 'Proceder al Pago'
     ];
     
     // Textos en inglés
@@ -184,7 +216,24 @@ function __($key, $default = '') {
         'loading_specialties' => 'Preparing the best flavors for you',
         'loading_categories' => 'Organizing our flavors for you',
         'loading_testimonials' => 'Collecting the best experiences',
-        'explore_full_menu' => 'Explore Full Menu'
+        'explore_full_menu' => 'Explore Full Menu',
+        // Menu Page
+        'our_menu' => 'Our Menu',
+        'discover_authentic' => 'Discover authentic Mexican cuisine with our traditional dishes, prepared with fresh ingredients and family recipes.',
+        'all_categories' => 'All',
+        'search_dishes' => 'Search dishes...',
+        'preparing_menu' => 'Preparing your menu...',
+        'loading_delicious' => 'Loading our delicious dishes',
+        'oops_not_found' => 'Oops! We didn\'t find that dish',
+        'no_dishes_found' => 'No dishes were found with those terms. Try other ingredients or explore our categories.',
+        'clear_search' => 'Clear Search',
+        'view_all_categories' => 'View All Categories',
+        'spicy_dishes' => 'Spicy Dishes',
+        'spicy_description' => 'Our spiciest dishes for chili lovers',
+        'fresh_ingredients_title' => 'Fresh Ingredients',
+        'fresh_ingredients_description' => 'We use only the freshest and highest quality ingredients',
+        'made_with_love_title' => 'Made with Love',
+        'made_with_love_description' => 'Each dish is prepared with the love of our family recipes'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;
