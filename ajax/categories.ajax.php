@@ -31,9 +31,9 @@ try {
             WHERE c.is_active = 1
             GROUP BY c.id
             ORDER BY c.sort_order ASC, c.name_en ASC
-            LIMIT ?";
+            LIMIT " . (int)$limit;
     
-    $params = [$limit];
+    $params = [];
     
     // Ejecutar consulta
     $stmt = executeQuery($sql, $params);

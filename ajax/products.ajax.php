@@ -52,9 +52,7 @@ try {
     
     // Ordenamiento y límites
     $sql .= " ORDER BY p.sort_order ASC, p.name_en ASC";
-    $sql .= " LIMIT ? OFFSET ?";
-    $params[] = $limit;
-    $params[] = $offset;
+    $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
     
     // Ejecutar consulta
     $stmt = executeQuery($sql, $params);
