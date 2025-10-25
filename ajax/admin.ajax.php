@@ -59,6 +59,9 @@ try {
         case 'update_order_status':
             updateOrderStatus();
             break;
+        case 'mark_order_paid':
+            markOrderAsPaid();
+            break;
         case 'delete_element':
             deleteElement();
             break;
@@ -476,6 +479,64 @@ function updateOrderStatus() {
         ]);
     } else {
         throw new Exception('Error al actualizar el estado del pedido');
+    }
+}
+
+/**
+ * Mark order as paid
+ */
+function markOrderAsPaid() {
+    $order_id = (int)($_POST['order_id'] ?? 0);
+    $payment_method = trim($_POST['payment_method'] ?? '');
+    $payment_amount = floatval($_POST['payment_amount'] ?? 0);
+    $payment_notes = trim($_POST['payment_notes'] ?? '');
+    
+    // Validar datos
+    if ($order_id <= 0) {
+        throw new Exception('Invalid order ID');
+    }
+    
+    $valid_payment_methods = ['cash', 'card', 'online'];
+    if (!in_array($payment_method, $valid_payment_methods)) {
+        throw new Exception('Invalid payment method');
+    }
+    
+    if ($payment_amount <= 0) {
+        throw new Exception('Invalid payment amount');
+    }
+    
+    // Verificar que el pedido existe
+    $order = fetchOne("SELECT id, payment_status, total FROM orders WHERE id = ?", [$order_id]);
+    if (!$order) {
+        throw new Exception('Order not found');
+    }
+    
+    if ($order['payment_status'] === 'paid') {
+        throw new Exception('Order is already marked as paid');
+    }
+    
+    // Actualizar estado de pago y método de pago
+    $sql = "UPDATE orders SET payment_status = 'paid', payment_method = ?, updated_at = NOW()";
+    $params = [$payment_method];
+    
+    // Si hay notas de pago, las guardamos en el campo notes (o podrías crear una tabla separada)
+    if (!empty($payment_notes)) {
+        $sql .= ", notes = CONCAT(COALESCE(notes, ''), '\nPayment Notes: ', ?)";
+        $params[] = $payment_notes;
+    }
+    
+    $sql .= " WHERE id = ?";
+    $params[] = $order_id;
+    
+    if (executeQuery($sql, $params)) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Order marked as paid successfully',
+            'payment_method' => $payment_method,
+            'payment_amount' => $payment_amount
+        ]);
+    } else {
+        throw new Exception('Error updating payment status');
     }
 }
 ?>

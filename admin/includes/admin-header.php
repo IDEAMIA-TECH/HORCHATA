@@ -18,6 +18,9 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <!-- Meta tags -->
     <meta name="description" content="Panel administrativo de Horchata Mexican Food">
     <meta name="robots" content="noindex, nofollow">
