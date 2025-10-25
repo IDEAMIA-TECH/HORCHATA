@@ -6,9 +6,10 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Configurar página
-$page_title = 'Reseñas';
+$page_title = __('reviews');
 $page_scripts = ['assets/js/reviews-public.js'];
 $page_styles = ['assets/css/reviews-public.css'];
 
@@ -22,11 +23,10 @@ include 'includes/header.php';
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
                 <h1 class="reviews-hero-title mb-4">
-                    <i class="fas fa-star me-3"></i>Lo que Dicen Nuestros Clientes
+                    <i class="fas fa-star me-3"></i><?php echo __('what_customers_say_reviews'); ?>
                 </h1>
                 <p class="reviews-hero-description lead">
-                    Descubre las experiencias auténticas de nuestros clientes y únete a la comunidad 
-                    de amantes de la comida mexicana tradicional.
+                    <?php echo __('discover_authentic_experiences'); ?>
                 </p>
             </div>
         </div>
@@ -40,12 +40,12 @@ include 'includes/header.php';
         <ul class="nav nav-tabs reviews-tabs mb-4" id="reviewsTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="site-reviews-tab" data-bs-toggle="tab" data-bs-target="#site-reviews" type="button" role="tab">
-                    <i class="fas fa-utensils me-2"></i>Reseñas del Sitio
+                    <i class="fas fa-utensils me-2"></i><?php echo __('site_reviews'); ?>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="yelp-reviews-tab" data-bs-toggle="tab" data-bs-target="#yelp-reviews" type="button" role="tab">
-                    <i class="fab fa-yelp me-2"></i>Reseñas de Yelp
+                    <i class="fab fa-yelp me-2"></i><?php echo __('yelp_reviews'); ?>
                 </button>
             </li>
         </ul>
@@ -59,9 +59,9 @@ include 'includes/header.php';
                     <div class="col-12 text-center">
                         <div class="loading-spinner">
                             <div class="spinner-border text-primary-custom" role="status">
-                                <span class="visually-hidden">Cargando reseñas...</span>
+                                <span class="visually-hidden"><?php echo __('loading_reviews'); ?></span>
                             </div>
-                            <p class="mt-3 text-muted">Recopilando las mejores experiencias</p>
+                            <p class="mt-3 text-muted"><?php echo __('collecting_best_experiences'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -74,10 +74,10 @@ include 'includes/header.php';
                     <div class="yelp-widget-container">
                         <div class="yelp-widget-header">
                             <h3 class="yelp-widget-title">
-                                <i class="fab fa-yelp me-2"></i>Reseñas en Yelp
+                                <i class="fab fa-yelp me-2"></i><?php echo __('yelp_reviews_title'); ?>
                             </h3>
                             <p class="yelp-widget-description">
-                                Ve todas nuestras reseñas y calificaciones en Yelp
+                                <?php echo __('see_all_yelp_reviews'); ?>
                             </p>
                         </div>
                         
@@ -85,16 +85,16 @@ include 'includes/header.php';
                         <div class="yelp-widget-placeholder">
                             <div class="yelp-placeholder-content">
                                 <i class="fab fa-yelp fa-3x text-warning mb-3"></i>
-                                <h4>Widget de Yelp</h4>
+                                <h4><?php echo __('yelp_widget'); ?></h4>
                                 <p class="text-muted">
-                                    Aquí se mostrará el widget oficial de Yelp con las reseñas más recientes.
+                                    <?php echo __('yelp_widget_description'); ?>
                                 </p>
                                 <div class="yelp-actions">
                                     <a href="https://www.yelp.com/biz/horchata-mexican-food-culver-city" target="_blank" class="btn btn-warning">
-                                        <i class="fab fa-yelp me-2"></i>Ver en Yelp
+                                        <i class="fab fa-yelp me-2"></i><?php echo __('view_on_yelp'); ?>
                                     </a>
                                     <button class="btn btn-outline-primary" onclick="loadYelpWidget()">
-                                        <i class="fas fa-sync me-2"></i>Cargar Widget
+                                        <i class="fas fa-sync me-2"></i><?php echo __('load_widget'); ?>
                                     </button>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ include 'includes/header.php';
                         <i class="fas fa-star fa-2x text-warning"></i>
                     </div>
                     <h3 class="stat-number">4.8</h3>
-                    <p class="stat-label">Calificación Promedio</p>
+                    <p class="stat-label"><?php echo __('average_rating'); ?></p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
@@ -125,7 +125,7 @@ include 'includes/header.php';
                         <i class="fas fa-comments fa-2x text-primary"></i>
                     </div>
                     <h3 class="stat-number" id="totalReviews">0</h3>
-                    <p class="stat-label">Reseñas Totales</p>
+                    <p class="stat-label"><?php echo __('total_reviews'); ?></p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
@@ -134,7 +134,7 @@ include 'includes/header.php';
                         <i class="fas fa-thumbs-up fa-2x text-success"></i>
                     </div>
                     <h3 class="stat-number">98%</h3>
-                    <p class="stat-label">Clientes Satisfechos</p>
+                    <p class="stat-label"><?php echo __('satisfied_customers'); ?></p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
@@ -143,7 +143,7 @@ include 'includes/header.php';
                         <i class="fas fa-heart fa-2x text-danger"></i>
                     </div>
                     <h3 class="stat-number">1000+</h3>
-                    <p class="stat-label">Clientes Felices</p>
+                    <p class="stat-label"><?php echo __('happy_customers'); ?></p>
                 </div>
             </div>
         </div>
@@ -155,17 +155,16 @@ include 'includes/header.php';
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
-                <h2 class="cta-title mb-4">¿Tienes una Experiencia que Compartir?</h2>
+                <h2 class="cta-title mb-4"><?php echo __('share_experience'); ?></h2>
                 <p class="cta-description mb-4">
-                    Si has visitado nuestro restaurante, nos encantaría conocer tu opinión. 
-                    Tu feedback nos ayuda a mejorar y servir mejor a nuestra comunidad.
+                    <?php echo __('share_experience_description'); ?>
                 </p>
                 <div class="cta-buttons">
                     <a href="https://www.yelp.com/biz/horchata-mexican-food-culver-city" target="_blank" class="btn btn-warning btn-lg me-3">
-                        <i class="fab fa-yelp me-2"></i>Reseñar en Yelp
+                        <i class="fab fa-yelp me-2"></i><?php echo __('review_on_yelp'); ?>
                     </a>
-                    <a href="#contact" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-envelope me-2"></i>Contactarnos
+                    <a href="contact.php" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-envelope me-2"></i><?php echo __('contact_us'); ?>
                     </a>
                 </div>
             </div>

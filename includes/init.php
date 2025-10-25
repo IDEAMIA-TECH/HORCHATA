@@ -139,7 +139,28 @@ function __($key, $default = '') {
         'your_cart' => 'Tu Carrito',
         'cart_empty' => 'Tu carrito está vacío',
         'total' => 'Total',
-        'proceed_payment' => 'Proceder al Pago'
+        'proceed_payment' => 'Proceder al Pago',
+        // Reviews Public Page
+        'what_customers_say_reviews' => 'Lo que Dicen Nuestros Clientes',
+        'discover_authentic_experiences' => 'Descubre las experiencias auténticas de nuestros clientes y únete a la comunidad de amantes de la comida mexicana tradicional.',
+        'site_reviews' => 'Reseñas del Sitio',
+        'yelp_reviews' => 'Reseñas de Yelp',
+        'loading_reviews' => 'Cargando reseñas...',
+        'collecting_best_experiences' => 'Recopilando las mejores experiencias',
+        'yelp_reviews_title' => 'Reseñas en Yelp',
+        'see_all_yelp_reviews' => 'Ve todas nuestras reseñas y calificaciones en Yelp',
+        'yelp_widget' => 'Widget de Yelp',
+        'yelp_widget_description' => 'Aquí se mostrará el widget oficial de Yelp con las reseñas más recientes.',
+        'view_on_yelp' => 'Ver en Yelp',
+        'load_widget' => 'Cargar Widget',
+        'average_rating' => 'Calificación Promedio',
+        'total_reviews' => 'Reseñas Totales',
+        'satisfied_customers' => 'Clientes Satisfechos',
+        'happy_customers' => 'Clientes Felices',
+        'share_experience' => '¿Tienes una Experiencia que Compartir?',
+        'share_experience_description' => 'Si has visitado nuestro restaurante, nos encantaría conocer tu opinión. Tu feedback nos ayuda a mejorar y servir mejor a nuestra comunidad.',
+        'review_on_yelp' => 'Reseñar en Yelp',
+        'contact_us' => 'Contactarnos'
     ];
     
     // Textos en inglés
@@ -248,7 +269,28 @@ function __($key, $default = '') {
         'your_cart' => 'Your Cart',
         'cart_empty' => 'Your cart is empty',
         'total' => 'Total',
-        'proceed_payment' => 'Proceed to Payment'
+        'proceed_payment' => 'Proceed to Payment',
+        // Reviews Public Page
+        'what_customers_say_reviews' => 'What Our Customers Say',
+        'discover_authentic_experiences' => 'Discover the authentic experiences of our customers and join the community of lovers of traditional Mexican food.',
+        'site_reviews' => 'Site Reviews',
+        'yelp_reviews' => 'Yelp Reviews',
+        'loading_reviews' => 'Loading reviews...',
+        'collecting_best_experiences' => 'Collecting the best experiences',
+        'yelp_reviews_title' => 'Yelp Reviews',
+        'see_all_yelp_reviews' => 'See all our reviews and ratings on Yelp',
+        'yelp_widget' => 'Yelp Widget',
+        'yelp_widget_description' => 'The official Yelp widget with the most recent reviews will be displayed here.',
+        'view_on_yelp' => 'View on Yelp',
+        'load_widget' => 'Load Widget',
+        'average_rating' => 'Average Rating',
+        'total_reviews' => 'Total Reviews',
+        'satisfied_customers' => 'Satisfied Customers',
+        'happy_customers' => 'Happy Customers',
+        'share_experience' => 'Have an Experience to Share?',
+        'share_experience_description' => 'If you have visited our restaurant, we would love to know your opinion. Your feedback helps us improve and better serve our community.',
+        'review_on_yelp' => 'Review on Yelp',
+        'contact_us' => 'Contact Us'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

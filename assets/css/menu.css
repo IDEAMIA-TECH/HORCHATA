@@ -48,7 +48,11 @@
    MENU HERO SECTION
    ============================================= */
 .menu-hero-section {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.4) 100%), 
+                url('../images/hero/heromenu.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: #ffffff;
     padding: 4rem 0;
     position: relative;
