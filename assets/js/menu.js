@@ -70,10 +70,17 @@ function loadCategoryFilters() {
  * Mostrar filtros de categoría
  */
 function displayCategoryFilters(categories) {
+    console.log('🔍 Menu: displayCategoryFilters llamada con:', categories);
+    
     const container = $('#categoryFilters');
     let html = '';
     
-    categories.forEach(category => {
+    categories.forEach((category, index) => {
+        console.log(`🔍 Menu: Procesando categoría ${index}:`, category);
+        console.log(`🔍 Menu: category.id = ${category.id}`);
+        console.log(`🔍 Menu: category.name = ${category.name}`);
+        console.log(`🔍 Menu: category.name_es = ${category.name_es}`);
+        
         html += `
             <button class="btn btn-outline-primary category-filter" data-category="${category.id}">
                 <i class="fas fa-utensils me-2"></i>${category.name}
@@ -81,7 +88,9 @@ function displayCategoryFilters(categories) {
         `;
     });
     
+    console.log('🔍 Menu: HTML generado:', html);
     container.html(html);
+    console.log('✅ Menu: Filtros de categoría mostrados');
 }
 
 /**
