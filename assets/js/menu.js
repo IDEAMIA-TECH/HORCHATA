@@ -4,37 +4,64 @@
  */
 
 $(document).ready(function() {
+    console.log('🍽️ Menu: Iniciando...');
+    
+    // Verificar que jQuery esté disponible
+    if (typeof $ === 'undefined') {
+        console.error('❌ Menu: jQuery no está disponible');
+        return;
+    }
+    
+    console.log('✅ Menu: jQuery disponible');
+    
     // Cargar categorías para filtros
+    console.log('🔍 Menu: Cargando categorías...');
     loadCategoryFilters();
     
     // Cargar menú completo
+    console.log('🔍 Menu: Cargando menú...');
     loadMenuContent();
     
     // Configurar búsqueda
+    console.log('🔍 Menu: Configurando búsqueda...');
     setupSearch();
     
     // Configurar filtros de categoría
+    console.log('🔍 Menu: Configurando filtros...');
     setupCategoryFilters();
     
     // Configurar carrito
+    console.log('🔍 Menu: Configurando carrito...');
     setupCart();
     
     // Configurar animaciones
+    console.log('🔍 Menu: Configurando animaciones...');
     setupAnimations();
+    
+    console.log('✅ Menu: Inicialización completa');
 });
 
 /**
  * Cargar filtros de categoría
  */
 function loadCategoryFilters() {
+    console.log('🔍 Menu: Cargando filtros de categoría...');
     $.ajax({
         url: 'ajax/categories.ajax.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Menu: Respuesta de categorías:', response);
             if (response.success) {
                 displayCategoryFilters(response.data);
+            } else {
+                console.error('❌ Menu: Error en categorías:', response.message);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('❌ Menu: Error AJAX categorías:', error);
+            console.error('❌ Menu: Status:', status);
+            console.error('❌ Menu: Response:', xhr.responseText);
         }
     });
 }
@@ -149,6 +176,7 @@ function setupCategoryFilters() {
  * Cargar contenido del menú
  */
 function loadMenuContent(categoryId = null, searchTerm = '') {
+    console.log('🔍 Menu: Cargando contenido del menú...', { categoryId, searchTerm });
     showLoading();
     
     $.ajax({
@@ -161,17 +189,24 @@ function loadMenuContent(categoryId = null, searchTerm = '') {
         },
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Menu: Respuesta de productos:', response);
             if (response.success) {
                 if (response.data.length > 0) {
+                    console.log('🍽️ Menu: Mostrando', response.data.length, 'productos');
                     displayMenuContent(response.data);
                 } else {
+                    console.log('📭 Menu: No hay productos, mostrando estado vacío');
                     showEmptyState();
                 }
             } else {
+                console.error('❌ Menu: Error en productos:', response.message);
                 showError('Error al cargar el menú');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('❌ Menu: Error AJAX productos:', error);
+            console.error('❌ Menu: Status:', status);
+            console.error('❌ Menu: Response:', xhr.responseText);
             showError('Error de conexión');
         },
         complete: function() {
