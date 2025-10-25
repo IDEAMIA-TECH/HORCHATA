@@ -160,7 +160,40 @@ function __($key, $default = '') {
         'share_experience' => '¿Tienes una Experiencia que Compartir?',
         'share_experience_description' => 'Si has visitado nuestro restaurante, nos encantaría conocer tu opinión. Tu feedback nos ayuda a mejorar y servir mejor a nuestra comunidad.',
         'review_on_yelp' => 'Reseñar en Yelp',
-        'contact_us' => 'Contactarnos'
+        'contact_us' => 'Contactarnos',
+        // Terms and Conditions Page
+        'terms_conditions_title' => 'Términos y Condiciones',
+        'terms_intro' => 'El sitio web de Horchata Mexican Food es únicamente para fines informativos y no realiza ventas en línea. Todos los derechos de propiedad intelectual están protegidos, y no nos hacemos responsables por errores en la información publicada.',
+        'website_use' => 'Uso del Sitio Web',
+        'website_use_description' => 'Este sitio es únicamente para fines informativos. No aceptamos pedidos en línea ni realizamos ventas a través de esta plataforma.',
+        'intellectual_property' => 'Propiedad Intelectual',
+        'intellectual_property_description' => 'Todo el contenido de este sitio, incluyendo texto, imágenes y logos, es propiedad de Horchata Mexican Food.',
+        'disclaimer' => 'Exención de Responsabilidad',
+        'disclaimer_description' => 'Horchata Mexican Food no se hace responsable por errores en la información del sitio o por daños derivados de su uso.',
+        'contact_information' => 'Información de Contacto',
+        // Accessibility Page
+        'accessibility_title' => 'Accesibilidad WCAG',
+        'accessibility_intro' => 'Horchata Mexican Food se compromete a hacer su sitio web accesible para todas las personas, incluyendo aquellas con discapacidades.',
+        'our_commitment' => 'Nuestro Compromiso',
+        'our_commitment_description' => 'Creemos que la accesibilidad web es fundamental para crear una experiencia inclusiva para todos nuestros visitantes. Nos esforzamos por cumplir con las pautas de accesibilidad web (WCAG) para garantizar que nuestro sitio sea utilizable por personas con diversas capacidades.',
+        'measures_implemented' => 'Medidas Implementadas',
+        'adequate_color_contrast' => 'Contraste de Colores Adecuado',
+        'adequate_color_contrast_description' => 'Utilizamos combinaciones de colores que cumplen con los estándares de contraste WCAG AA para garantizar la legibilidad.',
+        'alt_text_images' => 'Texto Alternativo para Imágenes',
+        'alt_text_images_description' => 'Todas las imágenes incluyen descripciones alternativas (alt text) para usuarios de lectores de pantalla.',
+        'screen_reader_navigation' => 'Navegación Compatible con Lectores de Pantalla',
+        'screen_reader_navigation_description' => 'Nuestro sitio está estructurado para ser completamente navegable usando tecnologías de asistencia.',
+        'responsive_design' => 'Diseño Responsivo',
+        'responsive_design_description' => 'El sitio se adapta a diferentes tamaños de pantalla y dispositivos para una experiencia óptima.',
+        'additional_features' => 'Características Adicionales',
+        'semantic_html5' => 'Estructura semántica HTML5 para mejor navegación',
+        'descriptive_links' => 'Enlaces descriptivos y claros',
+        'accessible_forms' => 'Formularios accesibles con etiquetas apropiadas',
+        'keyboard_navigation' => 'Navegación por teclado completa',
+        'scalable_text' => 'Texto escalable sin pérdida de funcionalidad',
+        'hierarchical_content' => 'Contenido organizado jerárquicamente',
+        'report_accessibility_issues' => 'Reportar Problemas de Accesibilidad',
+        'report_accessibility_description' => 'Si experimentas dificultades para acceder a cualquier parte de nuestro sitio web, o si tienes sugerencias para mejorar la accesibilidad, por favor contáctanos:'
     ];
     
     // Textos en inglés
@@ -290,7 +323,40 @@ function __($key, $default = '') {
         'share_experience' => 'Have an Experience to Share?',
         'share_experience_description' => 'If you have visited our restaurant, we would love to know your opinion. Your feedback helps us improve and better serve our community.',
         'review_on_yelp' => 'Review on Yelp',
-        'contact_us' => 'Contact Us'
+        'contact_us' => 'Contact Us',
+        // Terms and Conditions Page
+        'terms_conditions_title' => 'Terms and Conditions',
+        'terms_intro' => 'The Horchata Mexican Food website is for informational purposes only and does not conduct online sales. All intellectual property rights are protected, and we are not responsible for any errors in the information published.',
+        'website_use' => 'Use of the Website',
+        'website_use_description' => 'This site is for informational purposes only. We do not accept online orders or conduct sales through this platform.',
+        'intellectual_property' => 'Intellectual Property',
+        'intellectual_property_description' => 'All content on this site, including text, images, and logos, is the property of Horchata Mexican Food.',
+        'disclaimer' => 'Disclaimer of Liability',
+        'disclaimer_description' => 'Horchata Mexican Food is not responsible for errors in the information on the site or for damages arising from its use.',
+        'contact_information' => 'Contact Information',
+        // Accessibility Page
+        'accessibility_title' => 'WCAG Accessibility',
+        'accessibility_intro' => 'Horchata Mexican Food is committed to making its website accessible to all people, including those with disabilities.',
+        'our_commitment' => 'Our Commitment',
+        'our_commitment_description' => 'We believe that web accessibility is fundamental to creating an inclusive experience for all our visitors. We strive to comply with web accessibility guidelines (WCAG) to ensure our site is usable by people with diverse abilities.',
+        'measures_implemented' => 'Measures Implemented',
+        'adequate_color_contrast' => 'Adequate Color Contrasts',
+        'adequate_color_contrast_description' => 'We use color combinations that meet WCAG AA contrast standards to ensure readability.',
+        'alt_text_images' => 'Text Alternatives for Images',
+        'alt_text_images_description' => 'All images include alternative descriptions (alt text) for screen reader users.',
+        'screen_reader_navigation' => 'Screen Reader-Friendly Navigation',
+        'screen_reader_navigation_description' => 'Our site is structured to be completely navigable using assistive technologies.',
+        'responsive_design' => 'Responsive Design',
+        'responsive_design_description' => 'The site adapts to different screen sizes and devices for an optimal experience.',
+        'additional_features' => 'Additional Features',
+        'semantic_html5' => 'Semantic HTML5 structure for better navigation',
+        'descriptive_links' => 'Descriptive and clear links',
+        'accessible_forms' => 'Accessible forms with appropriate labels',
+        'keyboard_navigation' => 'Complete keyboard navigation',
+        'scalable_text' => 'Scalable text without loss of functionality',
+        'hierarchical_content' => 'Hierarchically organized content',
+        'report_accessibility_issues' => 'Report Accessibility Issues',
+        'report_accessibility_description' => 'If you experience difficulties accessing any part of our website, or if you have suggestions to improve accessibility, please contact us:'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

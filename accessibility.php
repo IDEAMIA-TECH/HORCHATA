@@ -3,8 +3,11 @@
  * Horchata Mexican Food - Accesibilidad WCAG
  */
 
+// Incluir configuración
+require_once 'includes/init.php';
+
 // Configurar página
-$page_title = 'Accesibilidad';
+$page_title = __('accessibility');
 $page_styles = ['assets/css/accessibility.css'];
 
 // Incluir header
@@ -18,13 +21,12 @@ include 'includes/header.php';
             <div class="col-lg-8">
                 <div class="accessibility-content">
                     <h1 class="accessibility-title mb-4">
-                        <i class="fas fa-universal-access me-3"></i>Accesibilidad WCAG
+                        <i class="fas fa-universal-access me-3"></i><?php echo __('accessibility_title'); ?>
                     </h1>
                     
                     <div class="accessibility-intro mb-5">
                         <p class="lead">
-                            Horchata Mexican Food se compromete a hacer su sitio web accesible para todas las personas, 
-                            incluyendo aquellas con discapacidades.
+                            <?php echo __('accessibility_intro'); ?>
                         </p>
                     </div>
                     
@@ -32,14 +34,11 @@ include 'includes/header.php';
                         <!-- WCAG Commitment -->
                         <div class="accessibility-section-item mb-5">
                             <h2 class="section-title">
-                                <i class="fas fa-heart me-2"></i>Nuestro Compromiso
+                                <i class="fas fa-heart me-2"></i><?php echo __('our_commitment'); ?>
                             </h2>
                             <div class="section-content">
                                 <p>
-                                    Creemos que la accesibilidad web es fundamental para crear una experiencia 
-                                    inclusiva para todos nuestros visitantes. Nos esforzamos por cumplir con 
-                                    las pautas de accesibilidad web (WCAG) para garantizar que nuestro sitio 
-                                    sea utilizable por personas con diversas capacidades.
+                                    <?php echo __('our_commitment_description'); ?>
                                 </p>
                             </div>
                         </div>
@@ -47,7 +46,7 @@ include 'includes/header.php';
                         <!-- Measures Implemented -->
                         <div class="accessibility-section-item mb-5">
                             <h2 class="section-title">
-                                <i class="fas fa-tools me-2"></i>Medidas Implementadas
+                                <i class="fas fa-tools me-2"></i><?php echo __('measures_implemented'); ?>
                             </h2>
                             <div class="section-content">
                                 <div class="measures-grid">
@@ -56,8 +55,8 @@ include 'includes/header.php';
                                             <i class="fas fa-palette"></i>
                                         </div>
                                         <div class="measure-content">
-                                            <h4>Contraste de Colores Adecuado</h4>
-                                            <p>Utilizamos combinaciones de colores que cumplen con los estándares de contraste WCAG AA para garantizar la legibilidad.</p>
+                                            <h4><?php echo __('adequate_color_contrast'); ?></h4>
+                                            <p><?php echo __('adequate_color_contrast_description'); ?></p>
                                         </div>
                                     </div>
                                     
@@ -66,8 +65,8 @@ include 'includes/header.php';
                                             <i class="fas fa-image"></i>
                                         </div>
                                         <div class="measure-content">
-                                            <h4>Texto Alternativo para Imágenes</h4>
-                                            <p>Todas las imágenes incluyen descripciones alternativas (alt text) para usuarios de lectores de pantalla.</p>
+                                            <h4><?php echo __('alt_text_images'); ?></h4>
+                                            <p><?php echo __('alt_text_images_description'); ?></p>
                                         </div>
                                     </div>
                                     
@@ -76,8 +75,8 @@ include 'includes/header.php';
                                             <i class="fas fa-keyboard"></i>
                                         </div>
                                         <div class="measure-content">
-                                            <h4>Navegación Compatible con Lectores de Pantalla</h4>
-                                            <p>Nuestro sitio está estructurado para ser completamente navegable usando tecnologías de asistencia.</p>
+                                            <h4><?php echo __('screen_reader_navigation'); ?></h4>
+                                            <p><?php echo __('screen_reader_navigation_description'); ?></p>
                                         </div>
                                     </div>
                                     
@@ -86,8 +85,8 @@ include 'includes/header.php';
                                             <i class="fas fa-mobile-alt"></i>
                                         </div>
                                         <div class="measure-content">
-                                            <h4>Diseño Responsivo</h4>
-                                            <p>El sitio se adapta a diferentes tamaños de pantalla y dispositivos para una experiencia óptima.</p>
+                                            <h4><?php echo __('responsive_design'); ?></h4>
+                                            <p><?php echo __('responsive_design_description'); ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -97,16 +96,16 @@ include 'includes/header.php';
                         <!-- Additional Features -->
                         <div class="accessibility-section-item mb-5">
                             <h2 class="section-title">
-                                <i class="fas fa-star me-2"></i>Características Adicionales
+                                <i class="fas fa-star me-2"></i><?php echo __('additional_features'); ?>
                             </h2>
                             <div class="section-content">
                                 <ul class="features-list">
-                                    <li><i class="fas fa-check-circle me-2"></i>Estructura semántica HTML5 para mejor navegación</li>
-                                    <li><i class="fas fa-check-circle me-2"></i>Enlaces descriptivos y claros</li>
-                                    <li><i class="fas fa-check-circle me-2"></i>Formularios accesibles con etiquetas apropiadas</li>
-                                    <li><i class="fas fa-check-circle me-2"></i>Navegación por teclado completa</li>
-                                    <li><i class="fas fa-check-circle me-2"></i>Texto escalable sin pérdida de funcionalidad</li>
-                                    <li><i class="fas fa-check-circle me-2"></i>Contenido organizado jerárquicamente</li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('semantic_html5'); ?></li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('descriptive_links'); ?></li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('accessible_forms'); ?></li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('keyboard_navigation'); ?></li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('scalable_text'); ?></li>
+                                    <li><i class="fas fa-check-circle me-2"></i><?php echo __('hierarchical_content'); ?></li>
                                 </ul>
                             </div>
                         </div>
@@ -114,12 +113,11 @@ include 'includes/header.php';
                         <!-- Contact for Accessibility Issues -->
                         <div class="accessibility-section-item mb-5">
                             <h2 class="section-title">
-                                <i class="fas fa-envelope me-2"></i>Reportar Problemas de Accesibilidad
+                                <i class="fas fa-envelope me-2"></i><?php echo __('report_accessibility_issues'); ?>
                             </h2>
                             <div class="section-content">
                                 <p>
-                                    Si experimentas dificultades para acceder a cualquier parte de nuestro sitio web, 
-                                    o si tienes sugerencias para mejorar la accesibilidad, por favor contáctanos:
+                                    <?php echo __('report_accessibility_description'); ?>
                                 </p>
                                 <div class="contact-methods">
                                     <div class="contact-method">

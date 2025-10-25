@@ -3,8 +3,11 @@
  * Horchata Mexican Food - Términos y Condiciones
  */
 
+// Incluir configuración
+require_once 'includes/init.php';
+
 // Configurar página
-$page_title = 'Términos y Condiciones';
+$page_title = __('terms_conditions_title');
 $page_styles = ['assets/css/terms.css'];
 
 // Incluir header
@@ -18,14 +21,12 @@ include 'includes/header.php';
             <div class="col-lg-8">
                 <div class="terms-content">
                     <h1 class="terms-title mb-4">
-                        <i class="fas fa-file-contract me-3"></i>Términos y Condiciones
+                        <i class="fas fa-file-contract me-3"></i><?php echo __('terms_conditions_title'); ?>
                     </h1>
                     
                     <div class="terms-intro mb-5">
                         <p class="lead">
-                            El sitio web de Horchata Mexican Food es únicamente para fines informativos 
-                            y no realiza ventas en línea. Todos los derechos de propiedad intelectual 
-                            están protegidos, y no nos hacemos responsables por errores en la información publicada.
+                            <?php echo __('terms_intro'); ?>
                         </p>
                     </div>
                     
@@ -34,12 +35,11 @@ include 'includes/header.php';
                         <div class="terms-section-item mb-5">
                             <h2 class="section-title">
                                 <span class="section-number">1</span>
-                                Uso del Sitio Web
+                                <?php echo __('website_use'); ?>
                             </h2>
                             <div class="section-content">
                                 <p>
-                                    Este sitio es únicamente para fines informativos. No aceptamos pedidos en línea 
-                                    ni realizamos ventas a través de esta plataforma.
+                                    <?php echo __('website_use_description'); ?>
                                 </p>
                             </div>
                         </div>
@@ -48,12 +48,11 @@ include 'includes/header.php';
                         <div class="terms-section-item mb-5">
                             <h2 class="section-title">
                                 <span class="section-number">2</span>
-                                Propiedad Intelectual
+                                <?php echo __('intellectual_property'); ?>
                             </h2>
                             <div class="section-content">
                                 <p>
-                                    Todo el contenido de este sitio, incluyendo texto, imágenes y logos, 
-                                    es propiedad de Horchata Mexican Food.
+                                    <?php echo __('intellectual_property_description'); ?>
                                 </p>
                             </div>
                         </div>
@@ -62,12 +61,11 @@ include 'includes/header.php';
                         <div class="terms-section-item mb-5">
                             <h2 class="section-title">
                                 <span class="section-number">3</span>
-                                Exención de Responsabilidad
+                                <?php echo __('disclaimer'); ?>
                             </h2>
                             <div class="section-content">
                                 <p>
-                                    Horchata Mexican Food no se hace responsable por errores en la información 
-                                    del sitio o por daños derivados de su uso.
+                                    <?php echo __('disclaimer_description'); ?>
                                 </p>
                             </div>
                         </div>
@@ -75,7 +73,7 @@ include 'includes/header.php';
                     
                     <div class="terms-footer mt-5">
                         <div class="contact-info">
-                            <h3>Información de Contacto</h3>
+                            <h3><?php echo __('contact_information'); ?></h3>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="contact-item">
