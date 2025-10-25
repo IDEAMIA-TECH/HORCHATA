@@ -1,5 +1,9 @@
+<?php
+// Incluir inicialización del sistema
+require_once 'includes/init.php';
+?>
 <!DOCTYPE html>
-<html lang="<?php echo isset($_SESSION['language']) ? $_SESSION['language'] : 'es'; ?>">
+<html lang="<?php echo getCurrentLanguage(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,22 +53,22 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>" href="index.php">
-                            <i class="fas fa-home me-1"></i>Inicio
+                            <i class="fas fa-home me-1"></i><?php echo __('home'); ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'menu.php' ? 'active' : ''; ?>" href="menu.php">
-                            <i class="fas fa-utensils me-1"></i>Menú
+                            <i class="fas fa-utensils me-1"></i><?php echo __('menu'); ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reviews-public.php' ? 'active' : ''; ?>" href="reviews-public.php">
-                            <i class="fas fa-star me-1"></i>Reseñas
+                            <i class="fas fa-star me-1"></i><?php echo __('reviews'); ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">
-                            <i class="fas fa-phone me-1"></i>Contacto
+                            <i class="fas fa-phone me-1"></i><?php echo __('contact'); ?>
                         </a>
                     </li>
                 </ul>
@@ -75,18 +79,18 @@
                     <div class="dropdown me-3">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-globe me-1"></i>
-                            <?php echo isset($_SESSION['language']) && $_SESSION['language'] == 'en' ? 'EN' : 'ES'; ?>
+                            <?php echo getCurrentLanguage() == 'en' ? 'EN' : 'ES'; ?>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="?lang=es">🇲🇽 Español</a></li>
-                            <li><a class="dropdown-item" href="?lang=en">🇺🇸 English</a></li>
+                            <li><a class="dropdown-item" href="?lang=es">🇲🇽 <?php echo __('spanish'); ?></a></li>
+                            <li><a class="dropdown-item" href="?lang=en">🇺🇸 <?php echo __('english'); ?></a></li>
                         </ul>
                     </div>
                     
                     <!-- Cart Button -->
                     <button class="btn btn-primary position-relative" id="cartBtn" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
                         <i class="fas fa-shopping-cart me-1"></i>
-                        Carrito
+                        <?php echo __('cart'); ?>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
                             0
                         </span>

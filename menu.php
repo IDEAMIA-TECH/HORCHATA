@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Configurar página
 $page_title = 'Menú';

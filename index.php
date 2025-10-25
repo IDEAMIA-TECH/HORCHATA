@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Configurar página
 $page_title = 'Inicio';
@@ -102,7 +103,7 @@ include 'includes/header.php';
                     <i class="fas fa-star me-2"></i>Especialidades
                 </span>
             </div>
-            <h2 class="section-title">Nuestras Especialidades</h2>
+            <h2 class="section-title"><?php echo __('our_specialties'); ?></h2>
             <p class="section-description">
                 Los platillos más populares de nuestro menú, preparados con amor y tradición mexicana
             </p>
@@ -178,7 +179,7 @@ include 'includes/header.php';
                     <i class="fas fa-utensils me-2"></i>Categorías
                 </span>
             </div>
-            <h2 class="section-title">Nuestras Categorías</h2>
+            <h2 class="section-title"><?php echo __('our_categories'); ?></h2>
             <p class="section-description">
                 Explora la variedad de sabores auténticos que tenemos para ofrecerte
             </p>

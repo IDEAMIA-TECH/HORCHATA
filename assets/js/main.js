@@ -288,7 +288,7 @@ function initLanguageSwitcher() {
         window.location.href = url.toString();
     });
     
-    // Aplicar idioma guardado
+    // Aplicar idioma guardado solo si no hay parámetro lang en la URL
     const savedLang = localStorage.getItem('horchata_language');
     if (savedLang && !window.location.search.includes('lang=')) {
         const url = new URL(window.location);
