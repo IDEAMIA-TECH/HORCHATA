@@ -73,29 +73,29 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted">Número de Pedido</h6>
-                                <p class="h5 text-primary"><?php echo htmlspecialchars($order['order_number']); ?></p>
+                                <p class="h5 text-primary order-number"><?php echo htmlspecialchars($order['order_number']); ?></p>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted">Fecha de Pedido</h6>
-                                <p><?php echo date('M d, Y \a \l\a\s g:i A', strtotime($order['created_at'])); ?></p>
+                                <p class="order-date"><?php echo date('M d, Y \a \l\a\s g:i A', strtotime($order['created_at'])); ?></p>
                             </div>
                         </div>
                         
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <h6 class="text-muted">Cliente</h6>
-                                <p><?php echo htmlspecialchars($order['customer_name']); ?></p>
+                                <p class="customer-name"><?php echo htmlspecialchars($order['customer_name']); ?></p>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted">Email</h6>
-                                <p><?php echo htmlspecialchars($order['customer_email']); ?></p>
+                                <p class="customer-email"><?php echo htmlspecialchars($order['customer_email']); ?></p>
                             </div>
                         </div>
                         
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <h6 class="text-muted">Pickup</h6>
-                                <p>
+                                <p class="pickup-date">
                                     <i class="fas fa-calendar me-1"></i>
                                     <?php echo date('M d, Y', strtotime($order['pickup_time'])); ?>
                                     <br>
@@ -105,7 +105,7 @@ include 'includes/header.php';
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted">Estado</h6>
-                                <span class="badge bg-warning fs-6">
+                                <span class="badge bg-warning fs-6 order-status">
                                     <?php echo ucfirst($order['status']); ?>
                                 </span>
                             </div>
@@ -130,11 +130,11 @@ include 'includes/header.php';
                                      style="width: 60px; height: 60px; object-fit: cover;">
                             </div>
                             <div class="item-details flex-grow-1">
-                                <h6 class="mb-1"><?php echo htmlspecialchars($item['product_name']); ?></h6>
-                                <small class="text-muted">Cantidad: <?php echo $item['quantity']; ?></small>
+                                <h6 class="mb-1 item-name"><?php echo htmlspecialchars($item['product_name']); ?></h6>
+                                <small class="text-muted item-quantity">Cantidad: <?php echo $item['quantity']; ?></small>
                             </div>
                             <div class="item-price">
-                                <strong>$<?php echo number_format($item['subtotal'], 2); ?></strong>
+                                <strong class="item-price">$<?php echo number_format($item['subtotal'], 2); ?></strong>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -143,16 +143,16 @@ include 'includes/header.php';
                         <div class="order-totals mt-4">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal:</span>
-                                <span>$<?php echo number_format($order['subtotal'], 2); ?></span>
+                                <span class="subtotal">$<?php echo number_format($order['subtotal'], 2); ?></span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Impuestos:</span>
-                                <span>$<?php echo number_format($order['tax'], 2); ?></span>
+                                <span class="tax">$<?php echo number_format($order['tax'], 2); ?></span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <strong>Total:</strong>
-                                <strong class="text-primary">$<?php echo number_format($order['total'], 2); ?></strong>
+                                <strong class="text-primary total">$<?php echo number_format($order['total'], 2); ?></strong>
                             </div>
                         </div>
                     </div>
@@ -169,7 +169,7 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted">Método de Pago</h6>
-                                <p>
+                                <p class="payment-method">
                                     <?php if ($order['payment_method'] === 'paypal'): ?>
                                         <i class="fab fa-paypal me-2 text-primary"></i>PayPal
                                     <?php else: ?>
@@ -179,7 +179,7 @@ include 'includes/header.php';
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted">Estado del Pago</h6>
-                                <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?>">
+                                <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?> payment-status">
                                     <?php echo ucfirst($order['payment_status']); ?>
                                 </span>
                             </div>
@@ -196,7 +196,13 @@ include 'includes/header.php';
                         </h5>
                     </div>
                     <div class="card-body">
-                        <p><?php echo htmlspecialchars($order['notes']); ?></p>
+                        <p class="special-instructions"><?php echo htmlspecialchars($order['notes']); ?></p>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="card mb-4" style="display: none;">
+                    <div class="card-body">
+                        <p class="special-instructions">Ninguna</p>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -272,82 +278,7 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- JavaScript específico para la página de éxito -->
-<script>
-$(document).ready(function() {
-    // Configurar funcionalidades
-    setupOrderSuccess();
-});
-
-function setupOrderSuccess() {
-    // Limpiar carrito del localStorage
-    localStorage.removeItem('horchata_cart');
-    
-    // Actualizar contador del carrito
-    if (typeof updateCartDisplay === 'function') {
-        updateCartDisplay();
-    }
-    
-    // Configurar botón de imprimir
-    setupPrintFunction();
-}
-
-function printOrder() {
-    // Crear ventana de impresión
-    const printWindow = window.open('', '_blank');
-    const orderContent = document.querySelector('.container').innerHTML;
-    
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Pedido - <?php echo $order['order_number']; ?></title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <style>
-                @media print {
-                    .btn, .card-header { display: none !important; }
-                    .card { border: 1px solid #000 !important; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1 class="text-center mb-4">Horchata Mexican Food</h1>
-                <h2 class="text-center mb-4">Pedido #<?php echo $order['order_number']; ?></h2>
-                ${orderContent}
-            </div>
-        </body>
-        </html>
-    `);
-    
-    printWindow.document.close();
-    printWindow.print();
-}
-
-// Función para compartir en redes sociales
-function shareOrder(platform) {
-    const orderNumber = '<?php echo $order['order_number']; ?>';
-    const shareText = `¡Acabo de hacer un pedido en Horchata Mexican Food! Pedido #${orderNumber}`;
-    const shareUrl = window.location.href;
-    
-    let shareLink = '';
-    
-    switch(platform) {
-        case 'facebook':
-            shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-            break;
-        case 'twitter':
-            shareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-            break;
-        case 'whatsapp':
-            shareLink = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
-            break;
-    }
-    
-    if (shareLink) {
-        window.open(shareLink, '_blank', 'width=600,height=400');
-    }
-}
-</script>
+<!-- JavaScript se carga desde assets/js/order-success.js -->
 
 <!-- Estilos adicionales para la página de éxito -->
 <style>
