@@ -1,58 +1,58 @@
     </main>
     
     <!-- Footer -->
-    <footer class="bg-dark text-light py-5 mt-5">
+    <footer class="footer-triciclo py-5 mt-5">
         <div class="container">
             <div class="row">
                 <!-- Restaurant Info -->
                 <div class="col-lg-4 mb-4">
-                    <h5 class="text-primary mb-3">
+                    <h5 class="footer-title mb-3">
                         <span class="me-2">🍽️</span>Horchata Mexican Food
                     </h5>
-                    <p class="text-muted">
+                    <p class="footer-text">
                         Auténtica comida mexicana preparada con ingredientes frescos y recetas tradicionales. 
                         Disfruta de nuestros sabores únicos con servicio pickup.
                     </p>
                     <div class="d-flex">
-                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="footer-social me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="footer-social"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
                 <!-- Quick Links -->
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="text-primary mb-3">Enlaces Rápidos</h6>
+                    <h6 class="footer-subtitle mb-3">Enlaces Rápidos</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="index.php" class="text-muted text-decoration-none">Inicio</a></li>
-                        <li class="mb-2"><a href="menu.php" class="text-muted text-decoration-none">Menú</a></li>
-                        <li class="mb-2"><a href="reviews.php" class="text-muted text-decoration-none">Reseñas</a></li>
-                        <li class="mb-2"><a href="#contact" class="text-muted text-decoration-none">Contacto</a></li>
+                        <li class="mb-2"><a href="index.php" class="footer-link text-decoration-none">Inicio</a></li>
+                        <li class="mb-2"><a href="menu.php" class="footer-link text-decoration-none">Menú</a></li>
+                        <li class="mb-2"><a href="reviews.php" class="footer-link text-decoration-none">Reseñas</a></li>
+                        <li class="mb-2"><a href="#contact" class="footer-link text-decoration-none">Contacto</a></li>
                     </ul>
                 </div>
                 
                 <!-- Contact Info -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h6 class="text-primary mb-3">Información de Contacto</h6>
+                    <h6 class="footer-subtitle mb-3">Información de Contacto</h6>
                     <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                        <span class="text-muted">123 Main Street, Ciudad, Estado</span>
+                        <i class="fas fa-map-marker-alt footer-icon me-2"></i>
+                        <span class="footer-text">123 Main Street, Ciudad, Estado</span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-phone text-primary me-2"></i>
-                        <span class="text-muted">(555) 123-4567</span>
+                        <i class="fas fa-phone footer-icon me-2"></i>
+                        <span class="footer-text">(555) 123-4567</span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-envelope text-primary me-2"></i>
-                        <span class="text-muted">info@horchatamexicanfood.com</span>
+                        <i class="fas fa-envelope footer-icon me-2"></i>
+                        <span class="footer-text">info@horchatamexicanfood.com</span>
                     </div>
                 </div>
                 
                 <!-- Business Hours -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h6 class="text-primary mb-3">Horarios de Atención</h6>
-                    <div class="text-muted">
+                    <h6 class="footer-subtitle mb-3">Horarios de Atención</h6>
+                    <div class="footer-text">
                         <div class="d-flex justify-content-between mb-1">
                             <span>Lunes - Jueves:</span>
                             <span>9:00 AM - 9:00 PM</span>
@@ -69,18 +69,18 @@
                 </div>
             </div>
             
-            <hr class="my-4">
+            <hr class="footer-divider my-4">
             
             <!-- Bottom Footer -->
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="text-muted mb-0">
+                    <p class="footer-copyright mb-0">
                         &copy; <?php echo date('Y'); ?> Horchata Mexican Food. Todos los derechos reservados.
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-muted text-decoration-none me-3">Política de Privacidad</a>
-                    <a href="#" class="text-muted text-decoration-none">Términos de Servicio</a>
+                    <a href="#" class="footer-link text-decoration-none me-3">Política de Privacidad</a>
+                    <a href="#" class="footer-link text-decoration-none">Términos de Servicio</a>
                 </div>
             </div>
         </div>
