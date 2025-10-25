@@ -4,6 +4,19 @@
  */
 
 /* =============================================
+   OVERRIDE BOOTSTRAP PARA FORZAR HORIZONTAL
+   ============================================= */
+.category-navigation .row {
+    display: block !important;
+}
+
+.category-navigation .col-12 {
+    width: 100% !important;
+    flex: none !important;
+    max-width: none !important;
+}
+
+/* =============================================
    MENU HERO SECTION
    ============================================= */
 .menu-hero-section {
@@ -49,45 +62,56 @@
 }
 
 /* =============================================
-   CATEGORY NAVIGATION
+   CATEGORY NAVIGATION - FORZAR HORIZONTAL
    ============================================= */
 .category-navigation {
-    background: #f8f9fa;
-    padding: 2rem 0;
-    border-bottom: 1px solid #e5e5e5;
+    background: #f8f9fa !important;
+    padding: 2rem 0 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
 }
 
 .category-filters-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 0.5rem;
-    align-items: center;
-    overflow-x: auto;
-    padding: 0 1rem;
-    white-space: nowrap;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+    overflow-x: auto !important;
+    padding: 0 1rem !important;
+    white-space: nowrap !important;
 }
 
-/* Botones de categoría con iconos */
+#categoryFilters {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+}
+
+/* Botones de categoría con iconos - FORZAR HORIZONTAL */
 .category-filter-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 12px;
-    border: none;
-    border-radius: 12px;
-    background: #ffffff;
-    color: #1a1a1a;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    min-width: 80px;
-    max-width: 100px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 15px 12px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    min-width: 80px !important;
+    max-width: 100px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    float: none !important;
+    clear: none !important;
 }
 
 .category-filter-btn:hover {

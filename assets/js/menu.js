@@ -93,11 +93,13 @@ function displayCategoryFilters(categories) {
         const icon = categoryIcons[category.id] || 'fas fa-utensils';
         
         html += `
-            <button class="category-filter-btn" data-category="${category.id}">
-                <div class="category-icon">
+            <button class="category-filter-btn" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 12px; border: none; border-radius: 12px; background: #ffffff; color: #1a1a1a; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
+                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: #d4af37;">
                     <i class="${icon}"></i>
                 </div>
-                <div class="category-name">${category.name}</div>
+                <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #1a1a1a;">
+                    ${category.name}
+                </div>
             </button>
         `;
     });
