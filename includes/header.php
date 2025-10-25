@@ -67,7 +67,7 @@ require_once 'includes/init.php';
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">
+                        <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>" href="contact.php">
                             <i class="fas fa-phone me-1"></i><?php echo __('contact'); ?>
                         </a>
                     </li>
