@@ -22,13 +22,13 @@ include 'includes/header.php';
         <div class="row align-items-center min-vh-50">
             <div class="col-lg-8 mx-auto text-center">
                 <div class="menu-hero-content">
-                    <h1 class="menu-hero-title">
-                        Nuestro <span class="text-primary-custom">Menú</span>
-                    </h1>
-                    <p class="menu-hero-description">
-                        Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, 
-                        preparados con ingredientes frescos y recetas familiares.
-                    </p>
+                            <h1 class="menu-hero-title">
+                                Nuestro <span class="text-primary-custom">Menú</span>
+                            </h1>
+                            <p class="menu-hero-description">
+                                Descubre la auténtica cocina mexicana con nuestros platillos tradicionales, 
+                                preparados con ingredientes frescos y recetas familiares.
+                            </p>
                 </div>
             </div>
         </div>

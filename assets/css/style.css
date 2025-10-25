@@ -41,10 +41,83 @@ h1, h2, h3, h4, h5, h6 {
     transition: all 0.3s ease;
 }
 
+/* Logo Styles */
 .navbar-brand {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
     color: var(--primary-color) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.02);
+    text-decoration: none;
+}
+
+.logo-img {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.logo-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--text-light);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Logo */
+@media (max-width: 768px) {
+    .logo-img {
+        height: 40px !important;
+    }
+    
+    .logo-title {
+        font-size: 1.2rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .logo-img {
+        height: 35px !important;
+        margin-bottom: 5px;
+    }
+    
+    .logo-text {
+        margin-left: 0;
+    }
 }
 
 .nav-link {
@@ -931,6 +1004,51 @@ html, body {
     color: #ffffff;
     position: relative;
     overflow: hidden;
+}
+
+/* Footer Logo */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.footer-logo-img {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.footer-logo-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.footer-logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+}
+
+/* Responsive Footer Logo */
+@media (max-width: 768px) {
+    .footer-logo {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .footer-logo-img {
+        height: 50px !important;
+        margin-bottom: 10px;
+    }
 }
 
 .footer-triciclo::before {

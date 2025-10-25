@@ -21,6 +21,57 @@ body {
     padding: 0;
 }
 
+/* Admin Logo Styles */
+.admin-logo-img {
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.admin-logo-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.admin-logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.admin-logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.admin-logo-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Admin Logo */
+@media (max-width: 768px) {
+    .admin-logo-img {
+        height: 35px !important;
+    }
+    
+    .admin-logo-title {
+        font-size: 1rem;
+    }
+    
+    .admin-logo-subtitle {
+        font-size: 0.6rem;
+    }
+}
+
 /* Sidebar */
 .sidebar {
     position: fixed;

@@ -28,13 +28,13 @@ include 'includes/header.php';
                                 <i class="fas fa-star me-2"></i>Auténtica Cocina Mexicana
                             </span>
                         </div>
-                        <h1 class="hero-title animate-on-scroll">
-                            Sabores que <span class="text-primary-custom">Conquistan</span> el Corazón
-                        </h1>
-                        <p class="hero-description animate-on-scroll">
-                            Descubre la magia de la cocina mexicana tradicional con ingredientes frescos, 
-                            recetas auténticas y el sabor que solo Horchata Mexican Food puede ofrecerte.
-                        </p>
+                                <h1 class="hero-title animate-on-scroll">
+                                    Sabores que <span class="text-primary-custom">Conquistan</span> el Corazón
+                                </h1>
+                                <p class="hero-description animate-on-scroll">
+                                    Descubre la magia de la cocina mexicana tradicional con ingredientes frescos, 
+                                    recetas auténticas y el sabor que solo Horchata Mexican Food puede ofrecerte.
+                                </p>
                         <div class="hero-stats mb-4">
                             <div class="row">
                                 <div class="col-4">

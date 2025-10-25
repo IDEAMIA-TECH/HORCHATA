@@ -25,12 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $error_message = 'Por favor, completa todos los campos';
     } else {
-        // Buscar usuario en la base de datos
+        // Buscar usuario en la base de datos (por username o email)
         $user = fetchOne("
-            SELECT id, username, password, role, first_name, last_name, is_active
+            SELECT id, username, email, password, role, first_name, last_name, is_active
             FROM users 
-            WHERE username = ? AND is_active = 1
-        ", [$username]);
+            WHERE (username = ? OR email = ?) AND is_active = 1
+        ", [$username, $username]);
         
         if ($user && password_verify($password, $user['password'])) {
             // Login exitoso
