@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Obtener datos según la acción
 switch ($action) {
     case 'view':
-        $order = getOrderDetails($view);
-        $order_items = getOrderItems($view);
+        $order = getOrderDetails($order_id);
+        $order_items = getOrderItems($order_id);
         break;
     case 'list':
     default:
