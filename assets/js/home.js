@@ -324,11 +324,45 @@ function displayCategories(categories) {
     categories.forEach((category, index) => {
         console.log(`🏠 Home: Procesando categoría ${index}:`, category);
         
+        // Mapeo de categorías a imágenes reales
+        const categoryImages = {
+            1: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=300&fit=crop&crop=center', // Breakfast
+            2: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Burritos
+            3: 'https://images.unsplash.com/photo-1565299507177-b0ac66773828?w=400&h=300&fit=crop&crop=center', // Specials
+            4: 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&h=300&fit=crop&crop=center', // Seafood
+            5: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop&crop=center', // Special Burritos
+            6: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Combinations
+            7: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center', // Tacos
+            8: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop&crop=center', // Desserts
+            9: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop&crop=center', // Nachos
+            10: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center' // Salads
+        };
+
+        // Iconos específicos para cada categoría
+        const categoryIcons = {
+            1: 'fas fa-sun', // Breakfast
+            2: 'fas fa-bread-slice', // Burritos
+            3: 'fas fa-star', // Specials
+            4: 'fas fa-fish', // Seafood
+            5: 'fas fa-fire', // Special Burritos
+            6: 'fas fa-utensils', // Combinations
+            7: 'fas fa-taco', // Tacos
+            8: 'fas fa-ice-cream', // Desserts
+            9: 'fas fa-cheese', // Nachos
+            10: 'fas fa-leaf' // Salads
+        };
+
+        const categoryImage = categoryImages[category.id] || 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center';
+        const categoryIcon = categoryIcons[category.id] || 'fas fa-utensils';
+
         html += `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="category-card text-center" onclick="window.location.href='menu.php?category=${category.id}'">
+                    <div class="category-image mb-3">
+                        <img src="${categoryImage}" alt="${category.name}" class="img-fluid rounded-3">
+                    </div>
                     <div class="category-icon mb-3">
-                        <i class="fas fa-utensils fa-3x text-primary"></i>
+                        <i class="${categoryIcon} fa-2x text-primary"></i>
                     </div>
                     <h5 class="category-title">${category.name}</h5>
                     <p class="category-description">${category.description || ''}</p>
@@ -566,23 +600,10 @@ function setupAdvancedAnimations() {
 function setupParallax() {
     console.log('🏠 Home: Configurando parallax...');
     
-    $(window).scroll(function() {
-        const scrolled = $(window).scrollTop();
-        const windowHeight = $(window).height();
-        
-        // Solo aplicar parallax cuando el hero está visible
-        if (scrolled < windowHeight) {
-            const parallax = $('.hero-background');
-            const speed = scrolled * 0.3; // Reducir la velocidad del parallax
-            
-            parallax.css('transform', 'translateY(' + speed + 'px)');
-            
-            // Parallax sutil para elementos flotantes
-            $('.floating-card').each(function(index) {
-                const speed = scrolled * (0.05 + index * 0.02);
-                $(this).css('transform', 'translateY(' + speed + 'px)');
-            });
-        }
+    // Deshabilitar parallax para evitar superposición
+    // Solo mantener animaciones flotantes estáticas
+    $('.floating-card').each(function(index) {
+        $(this).css('animation', `float ${3 + index}s ease-in-out infinite`);
     });
 }
 
@@ -710,7 +731,7 @@ function setupScrollBehavior() {
         'overflow-x': 'hidden'
     });
     
-    // Detectar cuando el hero sale de vista
+    // Detectar cuando el hero sale de vista y deshabilitar efectos
     $(window).scroll(function() {
         const scrolled = $(window).scrollTop();
         const windowHeight = $(window).height();
@@ -719,14 +740,15 @@ function setupScrollBehavior() {
         // Cuando el hero sale completamente de vista
         if (scrolled > heroHeight) {
             $('.hero-section').addClass('hero-out-of-view');
+            // Deshabilitar todos los efectos de parallax
+            $('.hero-background').css('transform', 'none');
+            $('.floating-card').css('transform', 'none');
         } else {
             $('.hero-section').removeClass('hero-out-of-view');
         }
         
-        // Optimizar rendimiento del parallax
-        if (scrolled > windowHeight * 2) {
-            $('.hero-background').css('transform', 'none');
-        }
+        // Asegurar que las secciones tengan z-index correcto
+        $('.featured-section, .categories-section, .reviews-section, .about-section').css('z-index', '2');
     });
     
     // Smooth scroll para enlaces internos
