@@ -56,6 +56,9 @@ try {
         case 'update_status':
             updateStatus();
             break;
+        case 'update_order_status':
+            updateOrderStatus();
+            break;
         case 'delete_element':
             deleteElement();
             break;
@@ -419,5 +422,40 @@ function exportToExcel($table) {
     // Aquí implementarías la lógica de exportación
     echo "ID\tNombre\tPrecio\tFecha\n";
     echo "1\tProducto 1\t10.00\t2024-01-01\n";
+}
+
+/**
+ * Actualizar estado del pedido
+ */
+function updateOrderStatus() {
+    $order_id = (int)($_POST['order_id'] ?? 0);
+    $status = trim($_POST['status'] ?? '');
+    
+    // Validar datos
+    if ($order_id <= 0) {
+        throw new Exception('ID de pedido inválido');
+    }
+    
+    $valid_statuses = ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
+    if (!in_array($status, $valid_statuses)) {
+        throw new Exception('Estado de pedido no válido');
+    }
+    
+    // Verificar que el pedido existe
+    $order = fetchOne("SELECT id, status FROM orders WHERE id = ?", [$order_id]);
+    if (!$order) {
+        throw new Exception('Pedido no encontrado');
+    }
+    
+    // Actualizar estado del pedido
+    if (executeQuery("UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?", [$status, $order_id])) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Estado del pedido actualizado exitosamente',
+            'new_status' => $status
+        ]);
+    } else {
+        throw new Exception('Error al actualizar el estado del pedido');
+    }
 }
 ?>
