@@ -519,7 +519,7 @@ footer a:hover {
     display: flex;
     align-items: center;
     overflow: hidden;
-    background-attachment: fixed;
+    background-attachment: scroll;
 }
 
 .hero-background {
@@ -530,6 +530,7 @@ footer a:hover {
     height: 100%;
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
     z-index: -2;
+    will-change: transform;
 }
 
 .hero-background::before {
@@ -818,6 +819,31 @@ footer a:hover {
 .fade-in-on-scroll.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Optimización del hero cuando sale de vista */
+.hero-out-of-view .hero-background {
+    transform: none !important;
+}
+
+.hero-out-of-view .floating-card {
+    transform: none !important;
+}
+
+/* Asegurar que el scroll funcione correctamente */
+html, body {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Optimización de rendimiento */
+.hero-section {
+    contain: layout style paint;
+}
+
+.hero-background {
+    contain: layout style paint;
+    transform: translateZ(0);
 }
 
 /* =============================================

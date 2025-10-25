@@ -35,6 +35,9 @@ function initHomePage() {
     
     // Configurar efectos de entrada
     setupScrollAnimations();
+    
+    // Configurar scroll behavior
+    setupScrollBehavior();
 }
 
 /**
@@ -565,16 +568,21 @@ function setupParallax() {
     
     $(window).scroll(function() {
         const scrolled = $(window).scrollTop();
-        const parallax = $('.hero-background');
-        const speed = scrolled * 0.5;
+        const windowHeight = $(window).height();
         
-        parallax.css('transform', 'translateY(' + speed + 'px)');
-        
-        // Parallax para elementos flotantes
-        $('.floating-card').each(function(index) {
-            const speed = scrolled * (0.1 + index * 0.05);
-            $(this).css('transform', 'translateY(' + speed + 'px)');
-        });
+        // Solo aplicar parallax cuando el hero está visible
+        if (scrolled < windowHeight) {
+            const parallax = $('.hero-background');
+            const speed = scrolled * 0.3; // Reducir la velocidad del parallax
+            
+            parallax.css('transform', 'translateY(' + speed + 'px)');
+            
+            // Parallax sutil para elementos flotantes
+            $('.floating-card').each(function(index) {
+                const speed = scrolled * (0.05 + index * 0.02);
+                $(this).css('transform', 'translateY(' + speed + 'px)');
+            });
+        }
     });
 }
 
@@ -688,6 +696,49 @@ function setupParticleEffects() {
         
         heroSection.append(particle);
     }
+}
+
+/**
+ * Configurar comportamiento de scroll
+ */
+function setupScrollBehavior() {
+    console.log('🏠 Home: Configurando comportamiento de scroll...');
+    
+    // Asegurar que el scroll funcione correctamente
+    $('html, body').css({
+        'scroll-behavior': 'smooth',
+        'overflow-x': 'hidden'
+    });
+    
+    // Detectar cuando el hero sale de vista
+    $(window).scroll(function() {
+        const scrolled = $(window).scrollTop();
+        const windowHeight = $(window).height();
+        const heroHeight = $('.hero-section').outerHeight();
+        
+        // Cuando el hero sale completamente de vista
+        if (scrolled > heroHeight) {
+            $('.hero-section').addClass('hero-out-of-view');
+        } else {
+            $('.hero-section').removeClass('hero-out-of-view');
+        }
+        
+        // Optimizar rendimiento del parallax
+        if (scrolled > windowHeight * 2) {
+            $('.hero-background').css('transform', 'none');
+        }
+    });
+    
+    // Smooth scroll para enlaces internos
+    $('a[href^="#"]').on('click', function(e) {
+        e.preventDefault();
+        const target = $(this.getAttribute('href'));
+        if (target.length) {
+            $('html, body').animate({
+                scrollTop: target.offset().top - 80
+            }, 800, 'easeInOutCubic');
+        }
+    });
 }
 
 // Inicializar cuando el DOM esté listo
