@@ -73,15 +73,15 @@ include 'includes/header.php';
                             <img src="assets/images/hero-dish.jpg" alt="Plato mexicano" class="img-fluid rounded-4 shadow-xl">
                         </div>
                         <div class="hero-floating-cards">
-                            <div class="floating-card card-1">
+                            <div class="floating-card card-1 hover-3d pulse-effect">
                                 <i class="fas fa-fire text-warning"></i>
                                 <span>Picante</span>
                             </div>
-                            <div class="floating-card card-2">
+                            <div class="floating-card card-2 hover-3d pulse-effect">
                                 <i class="fas fa-leaf text-success"></i>
                                 <span>Fresco</span>
                             </div>
-                            <div class="floating-card card-3">
+                            <div class="floating-card card-3 hover-3d pulse-effect">
                                 <i class="fas fa-heart text-danger"></i>
                                 <span>Hecho con Amor</span>
                             </div>

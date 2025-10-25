@@ -24,11 +24,17 @@ function initHomePage() {
     // Configurar testimonios
     setupTestimonials();
     
-    // Configurar animaciones
-    setupAnimations();
+    // Configurar animaciones avanzadas
+    setupAdvancedAnimations();
     
     // Configurar scroll suave
     setupSmoothScroll();
+    
+    // Configurar parallax
+    setupParallax();
+    
+    // Configurar efectos de entrada
+    setupScrollAnimations();
 }
 
 /**
@@ -523,6 +529,167 @@ function showReviewsError(message) {
     `);
 }
 
+/**
+ * Configurar animaciones avanzadas
+ */
+function setupAdvancedAnimations() {
+    console.log('🏠 Home: Configurando animaciones avanzadas...');
+    
+    // Agregar clases de animación a elementos
+    $('.product-card').addClass('hover-lift shine-effect');
+    $('.category-card').addClass('hover-lift shine-effect');
+    $('.review-card').addClass('hover-lift');
+    
+    // Efectos de ripple en botones
+    $('.btn').addClass('ripple-effect');
+    
+    // Animaciones de entrada escalonadas
+    $('.product-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+    
+    $('.category-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+    
+    $('.review-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+}
+
+/**
+ * Configurar efectos de parallax
+ */
+function setupParallax() {
+    console.log('🏠 Home: Configurando parallax...');
+    
+    $(window).scroll(function() {
+        const scrolled = $(window).scrollTop();
+        const parallax = $('.hero-background');
+        const speed = scrolled * 0.5;
+        
+        parallax.css('transform', 'translateY(' + speed + 'px)');
+        
+        // Parallax para elementos flotantes
+        $('.floating-card').each(function(index) {
+            const speed = scrolled * (0.1 + index * 0.05);
+            $(this).css('transform', 'translateY(' + speed + 'px)');
+        });
+    });
+}
+
+/**
+ * Configurar animaciones de scroll
+ */
+function setupScrollAnimations() {
+    console.log('🏠 Home: Configurando animaciones de scroll...');
+    
+    // Intersection Observer para animaciones de entrada
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                
+                // Animación específica según el elemento
+                if (entry.target.classList.contains('product-card')) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                } else if (entry.target.classList.contains('category-card')) {
+                    entry.target.style.animation = 'scaleIn 0.6s ease-out forwards';
+                } else if (entry.target.classList.contains('review-card')) {
+                    entry.target.style.animation = 'slideInFromBottom 0.6s ease-out forwards';
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observar elementos
+    $('.product-card, .category-card, .review-card').each(function() {
+        observer.observe(this);
+    });
+}
+
+/**
+ * Configurar efectos de mouse
+ */
+function setupMouseEffects() {
+    console.log('🏠 Home: Configurando efectos de mouse...');
+    
+    // Efecto de seguimiento del mouse en tarjetas
+    $('.product-card, .category-card, .review-card').on('mousemove', function(e) {
+        const card = $(this);
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        
+        card.css('transform', `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`);
+    });
+    
+    $('.product-card, .category-card, .review-card').on('mouseleave', function() {
+        $(this).css('transform', 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)');
+    });
+}
+
+/**
+ * Configurar animaciones de texto
+ */
+function setupTextAnimations() {
+    console.log('🏠 Home: Configurando animaciones de texto...');
+    
+    // Animación de escritura para títulos
+    $('.hero-title').each(function() {
+        const text = $(this).text();
+        $(this).html('');
+        
+        let i = 0;
+        const typeWriter = setInterval(function() {
+            if (i < text.length) {
+                $(this).html($(this).html() + text.charAt(i));
+                i++;
+            } else {
+                clearInterval(typeWriter);
+            }
+        }.bind(this), 100);
+    });
+}
+
+/**
+ * Configurar efectos de partículas
+ */
+function setupParticleEffects() {
+    console.log('🏠 Home: Configurando efectos de partículas...');
+    
+    // Crear partículas flotantes en el hero
+    const heroSection = $('.hero-section');
+    
+    for (let i = 0; i < 20; i++) {
+        const particle = $('<div class="particle"></div>');
+        particle.css({
+            position: 'absolute',
+            width: Math.random() * 4 + 2 + 'px',
+            height: Math.random() * 4 + 2 + 'px',
+            background: 'rgba(212, 175, 55, 0.3)',
+            borderRadius: '50%',
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+            animation: `float ${Math.random() * 3 + 2}s ease-in-out infinite`,
+            animationDelay: Math.random() * 2 + 's'
+        });
+        
+        heroSection.append(particle);
+    }
+}
+
 // Inicializar cuando el DOM esté listo
 $(document).ready(function() {
     // Verificar que jQuery esté disponible
@@ -532,4 +699,9 @@ $(document).ready(function() {
     }
     
     initHomePage();
+    
+    // Configurar efectos adicionales
+    setupMouseEffects();
+    setupTextAnimations();
+    setupParticleEffects();
 });
