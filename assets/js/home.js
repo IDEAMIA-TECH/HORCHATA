@@ -15,6 +15,12 @@ function initHomePage() {
     // Configurar productos destacados
     setupFeaturedProducts();
     
+    // Configurar categorías
+    setupCategories();
+    
+    // Configurar reseñas
+    setupReviews();
+    
     // Configurar testimonios
     setupTestimonials();
     
@@ -254,6 +260,101 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.alert('close');
     }, 3000);
+}
+
+/**
+ * Configurar categorías
+ */
+function setupCategories() {
+    console.log('🏠 Home: Configurando categorías...');
+    loadCategories();
+}
+
+/**
+ * Cargar categorías
+ */
+function loadCategories() {
+    console.log('🏠 Home: Cargando categorías...');
+    
+    $.ajax({
+        url: 'ajax/categories.ajax.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            console.log('✅ Home: Respuesta de categorías:', response);
+            if (response.success) {
+                displayCategories(response.data);
+            } else {
+                console.error('❌ Home: Error en categorías:', response.message);
+                showCategoriesError('Error al cargar categorías');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('❌ Home: Error AJAX categorías:', error);
+            console.error('❌ Home: Status:', status);
+            console.error('❌ Home: Response:', xhr.responseText);
+            showCategoriesError('Error de conexión al cargar categorías');
+        }
+    });
+}
+
+/**
+ * Mostrar categorías
+ */
+function displayCategories(categories) {
+    console.log('🏠 Home: Mostrando categorías:', categories);
+    
+    const container = $('#categoriesContainer');
+    if (container.length === 0) {
+        console.error('❌ Home: Container #categoriesContainer no encontrado');
+        return;
+    }
+    
+    let html = '';
+    
+    categories.forEach((category, index) => {
+        console.log(`🏠 Home: Procesando categoría ${index}:`, category);
+        
+        html += `
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="category-card text-center" onclick="window.location.href='menu.php?category=${category.id}'">
+                    <div class="category-icon mb-3">
+                        <i class="fas fa-utensils fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="category-title">${category.name}</h5>
+                    <p class="category-description">${category.description || ''}</p>
+                    <div class="category-count">
+                        <span class="badge bg-primary">${category.product_count} productos</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    console.log('🏠 Home: HTML generado para categorías:', html);
+    container.html(html);
+    console.log('✅ Home: Categorías mostradas');
+}
+
+/**
+ * Mostrar error de categorías
+ */
+function showCategoriesError(message) {
+    const container = $('#categoriesContainer');
+    if (container.length === 0) return;
+    
+    container.html(`
+        <div class="col-12 text-center">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <h5>Error al Cargar Categorías</h5>
+                <p>${message}</p>
+                <button class="btn btn-primary" onclick="loadCategories()">
+                    <i class="fas fa-refresh me-2"></i>Reintentar
+                </button>
+            </div>
+        </div>
+    `);
 }
 
 // Inicializar cuando el DOM esté listo
