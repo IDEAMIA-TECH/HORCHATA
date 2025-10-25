@@ -130,7 +130,6 @@ function showCategoriesError() {
  */
 function loadMenuContent(categoryId = null) {
     console.log('🔍 Menu: Cargando contenido del menú...', categoryId);
-    console.log('🔍 Menu: Tipo de categoryId:', typeof categoryId);
     
     // Mostrar loading
     $('#loadingState').show();

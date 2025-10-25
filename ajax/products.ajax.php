@@ -26,6 +26,7 @@ try {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 200;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     
+    
     // Construir consulta
     $sql = "SELECT p.*, c.name_en as category_name 
             FROM products p 
