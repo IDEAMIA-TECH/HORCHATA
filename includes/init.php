@@ -233,7 +233,22 @@ function __($key, $default = '') {
         'fresh_ingredients_title' => 'Fresh Ingredients',
         'fresh_ingredients_description' => 'We use only the freshest and highest quality ingredients',
         'made_with_love_title' => 'Made with Love',
-        'made_with_love_description' => 'Each dish is prepared with the love of our family recipes'
+        'made_with_love_description' => 'Each dish is prepared with the love of our family recipes',
+        // Additional translations
+        'popular_dishes_description' => 'The most popular dishes from our menu, prepared with love and Mexican tradition',
+        'footer_description' => 'Authentic Mexican food prepared with fresh ingredients and traditional recipes. Enjoy our unique flavors with pickup service.',
+        'quick_links' => 'Quick Links',
+        'contact_info' => 'Contact Information',
+        'business_hours' => 'Business Hours',
+        'monday_saturday' => 'Monday - Saturday',
+        'sunday' => 'Sunday',
+        'all_rights_reserved' => 'All rights reserved',
+        'terms_conditions' => 'Terms and Conditions',
+        'accessibility' => 'Accessibility',
+        'your_cart' => 'Your Cart',
+        'cart_empty' => 'Your cart is empty',
+        'total' => 'Total',
+        'proceed_payment' => 'Proceed to Payment'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

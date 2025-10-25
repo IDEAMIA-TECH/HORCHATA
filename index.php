@@ -104,7 +104,7 @@ include 'includes/header.php';
             </div>
             <h2 class="section-title"><?php echo __('our_specialties'); ?></h2>
             <p class="section-description">
-                Los platillos más populares de nuestro menú, preparados con amor y tradición mexicana
+                <?php echo __('popular_dishes_description'); ?>
             </p>
         </div>
         
