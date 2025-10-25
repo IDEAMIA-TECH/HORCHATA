@@ -181,8 +181,12 @@ function clearFieldError(field) {
  * Configurar integración con PayPal
  */
 function setupPayPalIntegration() {
-    // PayPal SDK se carga desde el header
-    if (typeof paypal !== 'undefined') {
+    console.log('💳 Checkout: Configurando PayPal...');
+    
+    // Verificar si PayPal SDK está disponible
+    if (typeof paypal !== 'undefined' && paypal.Buttons) {
+        console.log('✅ Checkout: PayPal SDK disponible');
+        
         paypal.Buttons({
             style: {
                 layout: 'vertical',
@@ -214,6 +218,12 @@ function setupPayPalIntegration() {
                 showNotification('Pago cancelado', 'warning');
             }
         }).render('#paypal-button-container');
+    } else {
+        console.warn('⚠️ Checkout: PayPal SDK no disponible');
+        // Ocultar opción PayPal si no está disponible
+        $('input[value="paypal"]').closest('.form-check').hide();
+        $('input[value="pickup"]').prop('checked', true);
+        showNotification('PayPal no disponible. Usando pago al recoger.', 'warning');
     }
 }
 
@@ -297,6 +307,8 @@ function processPayPalOrder(paypalDetails) {
  * Procesar pedido para pickup
  */
 function processPickupOrder() {
+    console.log('🛒 Checkout: Procesando pedido para pickup...');
+    
     const orderData = {
         customer: getCustomerData(),
         items: getCartItems(),
@@ -307,6 +319,7 @@ function processPickupOrder() {
         }
     };
     
+    console.log('🛒 Checkout: Datos del pedido:', orderData);
     submitOrder(orderData);
 }
 
@@ -329,9 +342,25 @@ function getCustomerData() {
  * Obtener items del carrito
  */
 function getCartItems() {
-    // Obtener del localStorage o sessionStorage
-    const cart = localStorage.getItem('horchata_cart');
-    return cart ? JSON.parse(cart) : [];
+    console.log('🛒 Checkout: Obteniendo items del carrito...');
+    
+    try {
+        // Obtener del localStorage
+        const cart = localStorage.getItem('horchata_cart');
+        const items = cart ? JSON.parse(cart) : [];
+        
+        console.log('🛒 Checkout: Items encontrados:', items);
+        
+        if (!Array.isArray(items)) {
+            console.warn('⚠️ Checkout: Carrito no es un array, retornando array vacío');
+            return [];
+        }
+        
+        return items;
+    } catch (error) {
+        console.error('❌ Checkout: Error al obtener carrito:', error);
+        return [];
+    }
 }
 
 /**
@@ -357,6 +386,8 @@ function getOrderTotal() {
  * Enviar orden al servidor
  */
 function submitOrder(orderData) {
+    console.log('🛒 Checkout: Enviando orden al servidor...', orderData);
+    
     // Mostrar loading
     showLoadingState();
     
@@ -369,6 +400,8 @@ function submitOrder(orderData) {
         },
         dataType: 'json',
         success: function(response) {
+            console.log('🛒 Checkout: Respuesta del servidor:', response);
+            
             if (response.success) {
                 // Limpiar carrito
                 clearCart();
@@ -381,6 +414,10 @@ function submitOrder(orderData) {
             }
         },
         error: function(xhr, status, error) {
+            console.error('❌ Checkout: Error AJAX:', error);
+            console.error('❌ Checkout: Status:', status);
+            console.error('❌ Checkout: Response:', xhr.responseText);
+            
             showNotification('Error de conexión: ' + error, 'error');
             hideLoadingState();
         }

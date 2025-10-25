@@ -39,13 +39,15 @@ if ($subtotal == 0) {
 // Configurar página
 $page_title = 'Checkout';
 $page_scripts = [
-    'https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD',
     'assets/js/checkout.js'
 ];
 
 // Incluir header
 include 'includes/header.php';
 ?>
+
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
 
 <!-- Checkout Section -->
 <section class="py-5">
