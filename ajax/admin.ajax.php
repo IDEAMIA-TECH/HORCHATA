@@ -442,17 +442,37 @@ function updateOrderStatus() {
     }
     
     // Verificar que el pedido existe
-    $order = fetchOne("SELECT id, status FROM orders WHERE id = ?", [$order_id]);
+    $order = fetchOne("SELECT id, status, payment_status FROM orders WHERE id = ?", [$order_id]);
     if (!$order) {
         throw new Exception('Pedido no encontrado');
     }
     
-    // Actualizar estado del pedido
-    if (executeQuery("UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?", [$status, $order_id])) {
+    // Determinar si también actualizar el estado de pago
+    $payment_status = $order['payment_status'];
+    if ($status === 'confirmed' && $payment_status === 'pending') {
+        $payment_status = 'paid';
+    } elseif ($status === 'cancelled' && $payment_status === 'paid') {
+        $payment_status = 'refunded';
+    }
+    
+    // Actualizar estado del pedido y estado de pago si es necesario
+    $sql = "UPDATE orders SET status = ?, updated_at = NOW()";
+    $params = [$status];
+    
+    if ($payment_status !== $order['payment_status']) {
+        $sql .= ", payment_status = ?";
+        $params[] = $payment_status;
+    }
+    
+    $sql .= " WHERE id = ?";
+    $params[] = $order_id;
+    
+    if (executeQuery($sql, $params)) {
         echo json_encode([
             'success' => true,
             'message' => 'Estado del pedido actualizado exitosamente',
-            'new_status' => $status
+            'new_status' => $status,
+            'payment_status' => $payment_status
         ]);
     } else {
         throw new Exception('Error al actualizar el estado del pedido');
