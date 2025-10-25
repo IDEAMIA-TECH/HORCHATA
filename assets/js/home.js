@@ -357,6 +357,172 @@ function showCategoriesError(message) {
     `);
 }
 
+/**
+ * Configurar reseñas
+ */
+function setupReviews() {
+    console.log('🏠 Home: Configurando reseñas...');
+    loadReviews();
+}
+
+/**
+ * Cargar reseñas
+ */
+function loadReviews() {
+    console.log('🏠 Home: Cargando reseñas...');
+    
+    $.ajax({
+        url: 'ajax/reviews.ajax.php',
+        method: 'GET',
+        data: { 
+            limit: 6
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('✅ Home: Respuesta de reseñas:', response);
+            if (response.success) {
+                displayReviews(response.data);
+            } else {
+                console.error('❌ Home: Error en reseñas:', response.message);
+                showReviewsError('Error al cargar reseñas');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('❌ Home: Error AJAX reseñas:', error);
+            console.error('❌ Home: Status:', status);
+            console.error('❌ Home: Response:', xhr.responseText);
+            showReviewsError('Error de conexión al cargar reseñas');
+        }
+    });
+}
+
+/**
+ * Mostrar reseñas
+ */
+function displayReviews(reviews) {
+    console.log('🏠 Home: Mostrando reseñas:', reviews);
+    
+    const container = $('#reviewsContainer');
+    if (container.length === 0) {
+        console.error('❌ Home: Container #reviewsContainer no encontrado');
+        return;
+    }
+    
+    let html = '';
+    
+    if (reviews.length === 0) {
+        html = `
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-star fa-2x mb-3"></i>
+                    <h5>No hay reseñas disponibles</h5>
+                    <p>Las reseñas aparecerán aquí cuando los clientes las dejen.</p>
+                </div>
+            </div>
+        `;
+    } else {
+        reviews.forEach((review, index) => {
+            console.log(`🏠 Home: Procesando reseña ${index}:`, review);
+            
+            // Generar estrellas
+            const stars = generateStars(review.rating);
+            
+            html += `
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-rating">
+                                ${stars}
+                            </div>
+                            <div class="review-date">
+                                ${formatDate(review.created_at)}
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p class="review-text">"${review.comment}"</p>
+                        </div>
+                        <div class="review-footer">
+                            <div class="review-author">
+                                <strong>${review.customer_name}</strong>
+                            </div>
+                            <div class="review-verified">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <small class="text-muted">Verificada</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    console.log('🏠 Home: HTML generado para reseñas:', html);
+    container.html(html);
+    console.log('✅ Home: Reseñas mostradas');
+}
+
+/**
+ * Generar estrellas para la calificación
+ */
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let stars = '';
+    
+    // Estrellas llenas
+    for (let i = 0; i < fullStars; i++) {
+        stars += '<i class="fas fa-star text-warning"></i>';
+    }
+    
+    // Media estrella
+    if (hasHalfStar) {
+        stars += '<i class="fas fa-star-half-alt text-warning"></i>';
+    }
+    
+    // Estrellas vacías
+    for (let i = 0; i < emptyStars; i++) {
+        stars += '<i class="far fa-star text-warning"></i>';
+    }
+    
+    return stars;
+}
+
+/**
+ * Formatear fecha
+ */
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return date.toLocaleDateString('es-ES', options);
+}
+
+/**
+ * Mostrar error de reseñas
+ */
+function showReviewsError(message) {
+    const container = $('#reviewsContainer');
+    if (container.length === 0) return;
+    
+    container.html(`
+        <div class="col-12 text-center">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <h5>Error al Cargar Reseñas</h5>
+                <p>${message}</p>
+                <button class="btn btn-primary" onclick="loadReviews()">
+                    <i class="fas fa-refresh me-2"></i>Reintentar
+                </button>
+            </div>
+        </div>
+    `);
+}
+
 // Inicializar cuando el DOM esté listo
 $(document).ready(function() {
     // Verificar que jQuery esté disponible
