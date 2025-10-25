@@ -299,6 +299,7 @@ function loadCategories() {
     $.ajax({
         url: 'ajax/categories.ajax.php',
         method: 'GET',
+        data: { action: 'get_categories' },
         dataType: 'json',
         success: function(response) {
             console.log('✅ Home: Respuesta de categorías:', response);
@@ -405,6 +406,7 @@ function loadReviews() {
         url: 'ajax/reviews.ajax.php',
         method: 'GET',
         data: { 
+            action: 'get_public_reviews',
             limit: 6
         },
         dataType: 'json',
