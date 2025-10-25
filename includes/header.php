@@ -34,11 +34,8 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="index.php">
-                <img src="assets/images/LOGO.JPG" alt="Auténtica Comida Mexicana" class="logo-img me-2" style="height: 50px; width: auto;">
-                <div class="logo-text">
-                    <div class="logo-subtitle">Auténtica Comida Mexicana</div>
-                </div>
+            <a class="navbar-brand" href="index.php">
+                <img src="assets/images/LOGO.JPG" alt="Logo del Restaurante" class="logo-img" style="height: 50px; width: auto;">
             </a>
             
             <!-- Mobile toggle -->

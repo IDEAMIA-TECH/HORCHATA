@@ -7,10 +7,7 @@
                 <!-- Restaurant Info -->
                 <div class="col-lg-4 mb-4">
                     <div class="footer-logo mb-3">
-                        <img src="assets/images/LOGO.JPG" alt="Auténtica Comida Mexicana" class="footer-logo-img me-3" style="height: 60px; width: auto;">
-                        <div class="footer-logo-text">
-                            <p class="footer-subtitle mb-0">Auténtica Comida Mexicana</p>
-                        </div>
+                        <img src="assets/images/LOGO.JPG" alt="Logo del Restaurante" class="footer-logo-img" style="height: 60px; width: auto;">
                     </div>
                     <p class="footer-text">
                         Auténtica comida mexicana preparada con ingredientes frescos y recetas tradicionales. 
