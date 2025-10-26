@@ -67,11 +67,11 @@ include 'includes/header.php';
                         <div class="card shadow-sm border-0" style="max-width: 300px; margin: 0 auto;">
                             <div class="card-body text-center">
                                 <h6 class="text-muted mb-3">
-                                    <i class="fas fa-qrcode me-2"></i>Código QR para el Restaurante
+                                    <i class="fas fa-qrcode me-2"></i><?php echo __('qr_code_for_restaurant'); ?>
                                 </h6>
                                 <div id="qrcode" class="mb-3"></div>
                                 <p class="small text-muted mb-0">
-                                    Escanea este código para ver el pedido en el sistema
+                                    <?php echo __('scan_qr_to_view_order'); ?>
                                 </p>
                             </div>
                         </div>
@@ -92,18 +92,18 @@ include 'includes/header.php';
                                 <p class="h5 text-primary order-number"><?php echo htmlspecialchars($order['order_number']); ?></p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="text-muted">Fecha de Pedido</h6>
+                                <h6 class="text-muted"><?php echo __('order_date'); ?></h6>
                                 <p class="order-date"><?php echo date('M d, Y \a \l\a\s g:i A', strtotime($order['created_at'])); ?></p>
                             </div>
                         </div>
                         
                         <div class="row mt-3">
                             <div class="col-md-6">
-                                <h6 class="text-muted">Cliente</h6>
+                                <h6 class="text-muted"><?php echo __('customer'); ?></h6>
                                 <p class="customer-name"><?php echo htmlspecialchars($order['customer_name']); ?></p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="text-muted">Email</h6>
+                                <h6 class="text-muted"><?php echo __('email'); ?></h6>
                                 <p class="customer-email"><?php echo htmlspecialchars($order['customer_email']); ?></p>
                             </div>
                         </div>
@@ -120,7 +120,7 @@ include 'includes/header.php';
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="text-muted">Estado</h6>
+                                <h6 class="text-muted"><?php echo __('status'); ?></h6>
                                 <span class="badge bg-warning fs-6 order-status">
                                     <?php echo ucfirst($order['status']); ?>
                                 </span>
@@ -147,7 +147,7 @@ include 'includes/header.php';
                             </div>
                             <div class="item-details flex-grow-1">
                                 <h6 class="mb-1 item-name"><?php echo htmlspecialchars($item['product_name']); ?></h6>
-                                <small class="text-muted item-quantity">Cantidad: <?php echo $item['quantity']; ?></small>
+                                <small class="text-muted item-quantity"><?php echo __('quantity'); ?>: <?php echo $item['quantity']; ?></small>
                             </div>
                             <div class="item-price">
                                 <strong class="item-price">$<?php echo number_format($item['subtotal'], 2); ?></strong>
@@ -158,16 +158,16 @@ include 'includes/header.php';
                         <!-- Order Totals -->
                         <div class="order-totals mt-4">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
+                                <span><?php echo __('subtotal'); ?>:</span>
                                 <span class="subtotal">$<?php echo number_format($order['subtotal'], 2); ?></span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Impuestos:</span>
+                                <span><?php echo __('tax'); ?>:</span>
                                 <span class="tax">$<?php echo number_format($order['tax'], 2); ?></span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between">
-                                <strong>Total:</strong>
+                                <strong><?php echo __('total'); ?>:</strong>
                                 <strong class="text-primary total">$<?php echo number_format($order['total'], 2); ?></strong>
                             </div>
                         </div>

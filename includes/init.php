@@ -255,7 +255,15 @@ function __($key, $default = '') {
         'star' => 'estrella',
         'your_review' => 'Tu Reseña',
         'write_your_review_here' => 'Escribe tu reseña aquí...',
-        'submit_review' => 'Enviar Reseña'
+        'submit_review' => 'Enviar Reseña',
+        // Additional order success translations
+        'qr_code_for_restaurant' => 'Código QR para el Restaurante',
+        'scan_qr_to_view_order' => 'Escanea este código para ver el pedido en el sistema',
+        'customer' => 'Cliente',
+        'status' => 'Estado',
+        'subtotal' => 'Subtotal',
+        'tax' => 'Impuestos',
+        'quantity' => 'Cantidad'
     ];
     
     // Textos en inglés
@@ -480,7 +488,15 @@ function __($key, $default = '') {
         'star' => 'star',
         'your_review' => 'Your Review',
         'write_your_review_here' => 'Write your review here...',
-        'submit_review' => 'Submit Review'
+        'submit_review' => 'Submit Review',
+        // Additional order success translations
+        'qr_code_for_restaurant' => 'QR Code for Restaurant',
+        'scan_qr_to_view_order' => 'Scan this code to view the order in the system',
+        'customer' => 'Customer',
+        'status' => 'Status',
+        'subtotal' => 'Subtotal',
+        'tax' => 'Tax',
+        'quantity' => 'Quantity'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;
