@@ -17,6 +17,120 @@
 }
 
 /* =============================================
+   CATEGORY NAVIGATION CONTAINER
+   ============================================= */
+.category-navigation {
+    background: #f8f9fa;
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.category-filters-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    max-width: 90%;
+    margin: 0 auto;
+    background: #f8f9fa;
+    border-radius: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #d4af37 #f8f9fa;
+}
+
+.category-filters-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.category-filters-container::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.category-filters-container::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 4px;
+}
+
+.category-filters-container::-webkit-scrollbar-thumb:hover {
+    background: #b8941f;
+}
+
+.category-filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.category-filter-btn.active {
+    background: #d4af37;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.category-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.category-filter-btn:hover .category-image img {
+    transform: scale(1.05);
+}
+
+.category-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: normal;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.category-icon {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+/* =============================================
    CATEGORY HEADER STYLES
    ============================================= */
 .category-header {

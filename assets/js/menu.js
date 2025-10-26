@@ -101,11 +101,11 @@ function displayCategoryFilters(categories, activeCategory = null) {
         const activeClass = isActive ? ' active' : '';
         
         html += `
-            <button class="category-filter-btn${activeClass}" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border: none; border-radius: 12px; ${activeStyle} transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 120px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: visible; flex-shrink: 0;">
+            <button class="category-filter-btn${activeClass}" data-category="${category.id}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 10px; border: none; border-radius: 12px; ${activeStyle} transition: all 0.3s ease; cursor: pointer; width: 100px; flex-shrink: 0; box-shadow: ${isActive ? '0 4px 12px rgba(212, 175, 55, 0.4);' : '0 2px 8px rgba(0, 0, 0, 0.1);'};">
                 <div class="category-image" style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <img src="${category.image}" alt="${category.name_es}" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
                 </div>
-                <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.3px; color: ${isActive ? '#ffffff' : '#1a1a1a'}; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">
+                <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.3px; color: ${isActive ? '#ffffff' : '#1a1a1a'}; white-space: normal; word-wrap: break-word; hyphens: auto;">
                     ${category.name_es}
                 </div>
             </button>
