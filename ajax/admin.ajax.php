@@ -83,6 +83,18 @@ try {
         case 'export':
             exportData();
             break;
+        case 'create_user':
+            createUser();
+            break;
+        case 'update_user':
+            updateUser();
+            break;
+        case 'delete_user':
+            deleteUser();
+            break;
+        case 'toggle_user_status':
+            toggleUserStatus();
+            break;
         default:
             throw new Exception('Acción no válida');
     }
@@ -672,6 +684,210 @@ function searchOrder() {
         ]);
     } catch (Exception $e) {
         error_log("Error in searchOrder: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Crear usuario
+ */
+function createUser() {
+    try {
+        global $pdo;
+        
+        error_log("🔄 createUser called");
+        
+        $first_name = trim($_POST['first_name'] ?? '');
+        $last_name = trim($_POST['last_name'] ?? '');
+        $username = trim($_POST['username'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $role = trim($_POST['role'] ?? 'staff');
+        $is_active = isset($_POST['is_active']) ? 1 : 0;
+        
+        error_log("📦 User data: Name: $first_name $last_name, Username: $username, Email: $email, Role: $role");
+        
+        // Validaciones
+        if (empty($first_name) || empty($last_name) || empty($username) || empty($email) || empty($password)) {
+            throw new Exception('All required fields must be filled');
+        }
+        
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Invalid email address');
+        }
+        
+        if (strlen($password) < 6) {
+            throw new Exception('Password must be at least 6 characters');
+        }
+        
+        // Verificar si el usuario o email ya existe
+        $existing = fetchOne("SELECT COUNT(*) as count FROM users WHERE username = ? OR email = ?", [$username, $email]);
+        if ($existing['count'] > 0) {
+            throw new Exception('Username or email already exists');
+        }
+        
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        $sql = "INSERT INTO users (first_name, last_name, username, email, password, role, is_active, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        
+        if (executeQuery($sql, [$first_name, $last_name, $username, $email, $hashed_password, $role, $is_active])) {
+            error_log("✅ User created successfully");
+            echo json_encode([
+                'success' => true,
+                'message' => 'User created successfully'
+            ]);
+        } else {
+            throw new Exception('Error creating user');
+        }
+    } catch (Exception $e) {
+        error_log("❌ Error en createUser: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Actualizar usuario
+ */
+function updateUser() {
+    try {
+        global $pdo;
+        
+        error_log("🔄 updateUser called");
+        
+        $user_id = (int)($_POST['user_id'] ?? 0);
+        $first_name = trim($_POST['first_name'] ?? '');
+        $last_name = trim($_POST['last_name'] ?? '');
+        $username = trim($_POST['username'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $role = trim($_POST['role'] ?? 'staff');
+        $is_active = isset($_POST['is_active']) ? 1 : 0;
+        
+        error_log("📦 User data: ID: $user_id, Name: $first_name $last_name, Username: $username, Email: $email, Role: $role");
+        
+        if ($user_id <= 0) {
+            throw new Exception('Invalid user ID');
+        }
+        
+        // Validaciones
+        if (empty($first_name) || empty($last_name) || empty($username) || empty($email)) {
+            throw new Exception('All required fields must be filled');
+        }
+        
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Invalid email address');
+        }
+        
+        // Verificar si el usuario o email ya existe (excluyendo el usuario actual)
+        $existing = fetchOne("SELECT COUNT(*) as count FROM users WHERE (username = ? OR email = ?) AND id != ?", [$username, $email, $user_id]);
+        if ($existing['count'] > 0) {
+            throw new Exception('Username or email already exists');
+        }
+        
+        // Si se proporciona una nueva contraseña, actualizarla
+        $sql = "UPDATE users SET first_name = ?, last_name = ?, username = ?, email = ?, role = ?, is_active = ?, updated_at = NOW()";
+        $params = [$first_name, $last_name, $username, $email, $role, $is_active];
+        
+        if (!empty($password)) {
+            if (strlen($password) < 6) {
+                throw new Exception('Password must be at least 6 characters');
+            }
+            $sql .= ", password = ?";
+            $params[] = password_hash($password, PASSWORD_DEFAULT);
+        }
+        
+        $sql .= " WHERE id = ?";
+        $params[] = $user_id;
+        
+        if (executeQuery($sql, $params)) {
+            error_log("✅ User updated successfully");
+            echo json_encode([
+                'success' => true,
+                'message' => 'User updated successfully'
+            ]);
+        } else {
+            throw new Exception('Error updating user');
+        }
+    } catch (Exception $e) {
+        error_log("❌ Error en updateUser: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Eliminar usuario
+ */
+function deleteUser() {
+    try {
+        global $pdo;
+        
+        $user_id = (int)($_POST['user_id'] ?? 0);
+        
+        if ($user_id <= 0) {
+            throw new Exception('Invalid user ID');
+        }
+        
+        // Prevenir eliminar la propia cuenta
+        if (isset($_SESSION['admin_id']) && $user_id == $_SESSION['admin_id']) {
+            throw new Exception('Cannot delete your own account');
+        }
+        
+        if (executeQuery("DELETE FROM users WHERE id = ?", [$user_id])) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'User deleted successfully'
+            ]);
+        } else {
+            throw new Exception('Error deleting user');
+        }
+    } catch (Exception $e) {
+        error_log("❌ Error en deleteUser: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Cambiar estado de usuario
+ */
+function toggleUserStatus() {
+    try {
+        global $pdo;
+        
+        $user_id = (int)($_POST['user_id'] ?? 0);
+        $status = $_POST['status'] === 'true' ? 1 : 0;
+        
+        if ($user_id <= 0) {
+            throw new Exception('Invalid user ID');
+        }
+        
+        // Prevenir desactivar la propia cuenta
+        if (isset($_SESSION['admin_id']) && $user_id == $_SESSION['admin_id'] && $status == 0) {
+            throw new Exception('Cannot deactivate your own account');
+        }
+        
+        if (executeQuery("UPDATE users SET is_active = ?, updated_at = NOW() WHERE id = ?", [$status, $user_id])) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'User status updated successfully'
+            ]);
+        } else {
+            throw new Exception('Error updating user status');
+        }
+    } catch (Exception $e) {
+        error_log("❌ Error en toggleUserStatus: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()

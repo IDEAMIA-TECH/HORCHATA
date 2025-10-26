@@ -277,7 +277,7 @@ include 'includes/admin-header.php';
                 </div>
                 <div class="card-body">
                     <form id="userForm" method="POST">
-                        <input type="hidden" name="action" value="<?php echo $action; ?>">
+                        <input type="hidden" name="action" value="<?php echo $action === 'create' ? 'create_user' : 'update_user'; ?>">
                         <?php if ($action === 'edit'): ?>
                         <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                         <?php endif; ?>
@@ -485,6 +485,8 @@ function saveUser() {
     const originalText = submitBtn.html();
     submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
     
+    console.log('🔄 Submitting user form...');
+    
     $.ajax({
         url: '../ajax/admin.ajax.php',
         method: 'POST',
@@ -493,6 +495,7 @@ function saveUser() {
         contentType: false,
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Response:', response);
             if (response.success) {
                 showNotification(response.message, 'success');
                 setTimeout(function() {
@@ -502,8 +505,10 @@ function saveUser() {
                 showNotification('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
-            showNotification('Connection error', 'error');
+        error: function(xhr, status, error) {
+            console.error('❌ Error:', xhr, status, error);
+            console.error('📄 Response Text:', xhr.responseText);
+            showNotification('Connection error: ' + error, 'error');
         },
         complete: function() {
             submitBtn.prop('disabled', false).html(originalText);
