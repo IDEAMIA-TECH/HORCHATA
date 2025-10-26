@@ -29,7 +29,12 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 }
 
 try {
+    error_log("📥 AJAX Request - Method: " . $_SERVER['REQUEST_METHOD']);
+    error_log("📥 AJAX Request - POST data: " . print_r($_POST, true));
+    error_log("📥 AJAX Request - FILES data: " . print_r($_FILES, true));
+    
     $action = $_POST['action'] ?? $_GET['action'] ?? '';
+    error_log("📥 AJAX Action: $action");
     
     switch ($action) {
         case 'get_notifications':
@@ -347,24 +352,49 @@ function uploadImage() {
  * Procesar subida de imagen
  */
 function processImageUpload() {
+    error_log("🖼️ [processImageUpload] Starting image upload...");
+    
+    // Verificar si $_FILES está vacío
+    if (!isset($_FILES['image'])) {
+        error_log("❌ [processImageUpload] No file uploaded (image not set)");
+        throw new Exception('No se subió ninguna imagen');
+    }
+    
+    $file = $_FILES['image'];
+    error_log("📁 [processImageUpload] File info: " . print_r($file, true));
+    
+    // Verificar errores de subida
+    if ($file['error'] !== 0) {
+        error_log("❌ [processImageUpload] Upload error code: " . $file['error']);
+        throw new Exception('Error en la subida del archivo (código: ' . $file['error'] . ')');
+    }
+    
     $upload_dir = '../assets/images/products/';
     
     // Crear directorio si no existe
     if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+        error_log("📁 [processImageUpload] Creating directory: $upload_dir");
+        if (!mkdir($upload_dir, 0755, true)) {
+            error_log("❌ [processImageUpload] Failed to create directory");
+            throw new Exception('No se pudo crear el directorio de subida');
+        }
     }
     
-    $file = $_FILES['image'];
     $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     $max_size = 5 * 1024 * 1024; // 5MB
     
+    error_log("🔍 [processImageUpload] File type: " . $file['type']);
+    error_log("🔍 [processImageUpload] File size: " . $file['size'] . " bytes");
+    
     // Validar tipo de archivo
     if (!in_array($file['type'], $allowed_types)) {
-        throw new Exception('Tipo de archivo no permitido');
+        error_log("❌ [processImageUpload] File type not allowed: " . $file['type']);
+        throw new Exception('Tipo de archivo no permitido. Solo se permiten: JPEG, PNG, GIF, WebP');
     }
     
     // Validar tamaño
     if ($file['size'] > $max_size) {
+        error_log("❌ [processImageUpload] File too large: " . $file['size'] . " bytes");
         throw new Exception('El archivo es demasiado grande (máximo 5MB)');
     }
     
@@ -373,11 +403,25 @@ function processImageUpload() {
     $filename = 'product_' . time() . '_' . uniqid() . '.' . $extension;
     $filepath = $upload_dir . $filename;
     
+    error_log("💾 [processImageUpload] Saving to: $filepath");
+    
+    // Verificar que el directorio es escribible
+    if (!is_writable($upload_dir)) {
+        error_log("❌ [processImageUpload] Directory is not writable: $upload_dir");
+        throw new Exception('El directorio de subida no es escribible');
+    }
+    
     // Mover archivo
     if (move_uploaded_file($file['tmp_name'], $filepath)) {
-        return 'assets/images/products/' . $filename;
+        error_log("✅ [processImageUpload] File uploaded successfully to: $filepath");
+        $relative_path = 'assets/images/products/' . $filename;
+        error_log("✅ [processImageUpload] Returning path: $relative_path");
+        return $relative_path;
     } else {
-        throw new Exception('Error al subir el archivo');
+        error_log("❌ [processImageUpload] Failed to move uploaded file");
+        error_log("❌ [processImageUpload] temp_name: " . $file['tmp_name']);
+        error_log("❌ [processImageUpload] destination: " . $filepath);
+        throw new Exception('Error al guardar el archivo en el servidor');
     }
 }
 

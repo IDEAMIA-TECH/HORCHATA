@@ -369,7 +369,13 @@ function validateProductForm() {
 }
 
 function submitProductForm() {
+    console.log('📤 Submitting product form...');
     const formData = new FormData($('#productForm')[0]);
+    
+    // Log form data for debugging
+    for (let [key, value] of formData.entries()) {
+        console.log('📋 Form data:', key, ':', value);
+    }
     
     $.ajax({
         url: '../ajax/admin.ajax.php',
@@ -379,6 +385,7 @@ function submitProductForm() {
         contentType: false,
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Response:', response);
             if (response.success) {
                 showNotification(response.message, 'success');
                 setTimeout(() => {
@@ -388,8 +395,21 @@ function submitProductForm() {
                 showNotification('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
-            showNotification('Error de conexión', 'error');
+        error: function(xhr, status, error) {
+            console.error('❌ AJAX Error:', status, error);
+            console.error('❌ Response Text:', xhr.responseText);
+            
+            let errorMessage = 'Error de conexión';
+            try {
+                const errorResponse = JSON.parse(xhr.responseText);
+                if (errorResponse.message) {
+                    errorMessage = errorResponse.message;
+                }
+            } catch (e) {
+                errorMessage = 'Error del servidor: ' + xhr.status;
+            }
+            
+            showNotification('Error: ' + errorMessage, 'error');
         }
     });
 }
