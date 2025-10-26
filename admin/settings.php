@@ -124,7 +124,12 @@ function updatePaymentSettings() {
         $settings = [
             'currency' => trim($_POST['currency'] ?? 'USD'),
             'tax_rate' => floatval($_POST['tax_rate'] ?? 0),
-            'delivery_fee' => floatval($_POST['delivery_fee'] ?? 0)
+            'delivery_fee' => floatval($_POST['delivery_fee'] ?? 0),
+            'minimum_order' => floatval($_POST['minimum_order'] ?? 0),
+            'paypal_mode' => trim($_POST['paypal_mode'] ?? 'sandbox'),
+            'paypal_client_id' => trim($_POST['paypal_client_id'] ?? ''),
+            'paypal_secret' => trim($_POST['paypal_secret'] ?? ''),
+            'paypal_enabled' => isset($_POST['paypal_enabled']) ? '1' : '0'
         ];
         
         $payment_methods = $_POST['payment_methods'] ?? [];
@@ -547,6 +552,71 @@ include 'includes/admin-header.php';
                                     <input type="number" class="form-control" id="delivery_fee" name="delivery_fee" 
                                            value="<?php echo $settings['delivery_fee'] ?? '0.00'; ?>" step="0.01" min="0">
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="minimum_order" class="form-label">Minimum Order Amount</label>
+                                    <input type="number" class="form-control" id="minimum_order" name="minimum_order" 
+                                           value="<?php echo $settings['minimum_order'] ?? '0.00'; ?>" step="0.01" min="0" 
+                                           placeholder="0.00">
+                                    <small class="form-text text-muted">Set to 0 for no minimum</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- PayPal Configuration -->
+                        <div class="mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fab fa-paypal me-2"></i>PayPal Configuration
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="paypal_mode" class="form-label">PayPal Mode</label>
+                                <select class="form-select" id="paypal_mode" name="paypal_mode">
+                                    <option value="sandbox" <?php echo ($settings['paypal_mode'] ?? 'sandbox') === 'sandbox' ? 'selected' : ''; ?>>Sandbox (Testing)</option>
+                                    <option value="live" <?php echo ($settings['paypal_mode'] ?? 'sandbox') === 'live' ? 'selected' : ''; ?>>Live (Production)</option>
+                                </select>
+                                <small class="form-text text-muted">Use Sandbox for testing, Live for production</small>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="paypal_client_id" class="form-label">PayPal Client ID</label>
+                                        <input type="text" class="form-control" id="paypal_client_id" name="paypal_client_id" 
+                                               value="<?php echo htmlspecialchars($settings['paypal_client_id'] ?? ''); ?>" 
+                                               placeholder="Enter your PayPal Client ID">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="paypal_secret" class="form-label">PayPal Secret</label>
+                                        <input type="password" class="form-control" id="paypal_secret" name="paypal_secret" 
+                                               value="<?php echo htmlspecialchars($settings['paypal_secret'] ?? ''); ?>" 
+                                               placeholder="Enter your PayPal Secret">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" 
+                                           <?php echo ($settings['paypal_enabled'] ?? '1') === '1' ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="paypal_enabled">
+                                        Enable PayPal Payments
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Note:</strong> Get your Client ID and Secret from the 
+                                <a href="https://developer.paypal.com" target="_blank">PayPal Developer Portal</a>
                             </div>
                         </div>
                         
