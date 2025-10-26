@@ -118,7 +118,7 @@ include 'includes/admin-header.php';
 
             <!-- Products Table -->
             <div class="table-responsive">
-                <table class="table table-bordered data-table" id="productsTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="productsTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Imagen</th>
@@ -405,11 +405,13 @@ function applyFilters() {
     const status = $('#statusFilter').val();
     const search = $('#searchInput').val();
     
-    // Aplicar filtros a DataTable
-    const table = $('#productsTable').DataTable();
-    table.column(2).search(category);
-    table.column(4).search(status);
-    table.search(search).draw();
+    // Aplicar filtros a DataTable (verificar que existe)
+    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#productsTable')) {
+        const table = $('#productsTable').DataTable();
+        table.column(2).search(category);
+        table.column(4).search(status);
+        table.search(search).draw();
+    }
 }
 
 function setupProductsTable() {
