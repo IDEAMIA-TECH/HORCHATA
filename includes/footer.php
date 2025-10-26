@@ -14,10 +14,31 @@
                     </p>
                     <div class="d-flex">
                         <?php
-                        $facebook_url = getSetting('facebook_url', '#');
-                        $instagram_url = getSetting('instagram_url', '#');
-                        $twitter_url = getSetting('twitter_url', '#');
-                        $youtube_url = getSetting('youtube_url', '#');
+                        // Obtener URLs de redes sociales
+                        $facebook_url = '#';
+                        $instagram_url = '#';
+                        $twitter_url = '#';
+                        $youtube_url = '#';
+                        
+                        // Solo intentar obtener settings si $pdo está disponible
+                        if (isset($pdo)) {
+                            try {
+                                $sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('facebook_url', 'instagram_url', 'twitter_url', 'youtube_url')";
+                                $stmt = $pdo->query($sql);
+                                $social_settings = [];
+                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                    $social_settings[$row['setting_key']] = $row['setting_value'];
+                                }
+                                
+                                $facebook_url = !empty($social_settings['facebook_url']) ? $social_settings['facebook_url'] : '#';
+                                $instagram_url = !empty($social_settings['instagram_url']) ? $social_settings['instagram_url'] : '#';
+                                $twitter_url = !empty($social_settings['twitter_url']) ? $social_settings['twitter_url'] : '#';
+                                $youtube_url = !empty($social_settings['youtube_url']) ? $social_settings['youtube_url'] : '#';
+                            } catch (Exception $e) {
+                                // Si hay error, usar valores por defecto
+                                error_log("Error loading social media settings: " . $e->getMessage());
+                            }
+                        }
                         ?>
                         <a href="<?php echo htmlspecialchars($facebook_url); ?>" class="footer-social me-3" <?php echo $facebook_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-facebook-f"></i></a>
                         <a href="<?php echo htmlspecialchars($instagram_url); ?>" class="footer-social me-3" <?php echo $instagram_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-instagram"></i></a>
