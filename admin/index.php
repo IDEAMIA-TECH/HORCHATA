@@ -206,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     border-radius: 10px;
                                     background: rgba(255, 255, 255, 0.1);
                                     padding: 5px;">
-                        <
+                        
                     </div>
                     
                     <!-- Login Form -->
