@@ -13,15 +13,76 @@ if (session_status() === PHP_SESSION_NONE) {
 define('DEFAULT_LANGUAGE', 'es');
 define('SUPPORTED_LANGUAGES', ['en', 'es']);
 
+// Función para detectar país por IP
+function detectCountryByIP($ip = null) {
+    if ($ip === null) {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        
+        // Si está detrás de un proxy, intentar obtener la IP real
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = trim($ips[0]);
+        } elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            $ip = $_SERVER['HTTP_X_REAL_IP'];
+        }
+    }
+    
+    // Si la IP es localhost, devolver un país por defecto
+    if ($ip === '127.0.0.1' || $ip === '::1' || empty($ip)) {
+        return DEFAULT_LANGUAGE === 'es' ? 'MX' : 'US';
+    }
+    
+    try {
+        // Usar ipapi.co para detectar el país
+        $response = @file_get_contents("https://ipapi.co/{$ip}/country_code/");
+        if ($response !== false) {
+            return trim($response);
+        }
+    } catch (Exception $e) {
+        error_log("Error detecting country by IP: " . $e->getMessage());
+    }
+    
+    // Valor por defecto
+    return DEFAULT_LANGUAGE === 'es' ? 'MX' : 'US';
+}
+
+// Función para obtener idioma basado en país
+function getLanguageByCountry($country) {
+    // Países que usan español (prioridad)
+    $spanish_countries = ['MX', 'ES', 'AR', 'CO', 'CL', 'PE', 'VE', 'EC', 'GT', 'CU', 'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PA', 'UY', 'PY', 'GQ'];
+    
+    // Países que usan inglés
+    $english_countries = ['US', 'CA', 'GB', 'IE', 'AU', 'NZ', 'ZA', 'SG', 'MY', 'PH', 'IN'];
+    
+    if (in_array($country, $spanish_countries)) {
+        return 'es';
+    } elseif (in_array($country, $english_countries)) {
+        return 'en';
+    }
+    
+    // Por defecto, usar español
+    return 'es';
+}
+
 // Procesar cambio de idioma
 if (isset($_GET['lang']) && in_array($_GET['lang'], SUPPORTED_LANGUAGES)) {
     $_SESSION['language'] = $_GET['lang'];
+    // Guardar que el usuario cambió manualmente el idioma
+    $_SESSION['language_manual'] = true;
     // No redirigir automáticamente para evitar bucles de refresh
 }
 
 // Establecer idioma por defecto si no está definido
 if (!isset($_SESSION['language'])) {
-    $_SESSION['language'] = DEFAULT_LANGUAGE;
+    // Si no hay cambio manual, detectar país
+    if (!isset($_SESSION['language_manual'])) {
+        $country = detectCountryByIP();
+        $detected_lang = getLanguageByCountry($country);
+        $_SESSION['language'] = $detected_lang;
+        error_log("Auto-detected language: $detected_lang for country: $country");
+    } else {
+        $_SESSION['language'] = DEFAULT_LANGUAGE;
+    }
 }
 
 // Función para obtener el idioma actual
