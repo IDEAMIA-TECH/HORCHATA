@@ -41,6 +41,15 @@ try {
         case 'update_product':
             updateProduct();
             break;
+        case 'save_product':
+            // Determinar si es crear o actualizar
+            $product_id = (int)($_POST['product_id'] ?? 0);
+            if ($product_id > 0) {
+                updateProduct();
+            } else {
+                createProduct();
+            }
+            break;
         case 'delete_product':
             deleteProduct();
             break;
@@ -114,33 +123,46 @@ function getNotifications() {
  * Crear producto
  */
 function createProduct() {
-    $name_en = trim($_POST['name_en'] ?? '');
-    $name_es = trim($_POST['name_es'] ?? '');
-    $category_id = (int)($_POST['category_id'] ?? 0);
-    $price = floatval($_POST['price'] ?? 0);
-    $description_en = trim($_POST['description_en'] ?? '');
-    $description_es = trim($_POST['description_es'] ?? '');
-    $is_available = isset($_POST['is_available']) ? 1 : 0;
-    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
-    
-    // Validaciones
-    if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
-        throw new Exception('Datos requeridos faltantes');
-    }
-    
-    // Procesar imagen
-    $image = processImageUpload();
-    
-    $sql = "INSERT INTO products (category_id, name_en, name_es, description_en, description_es, price, image, is_available, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $params = [$category_id, $name_en, $name_es, $description_en, $description_es, $price, $image, $is_available, $is_featured];
-    
-    if (executeQuery($sql, $params)) {
+    try {
+        global $pdo;
+        
+        $name_en = trim($_POST['name_en'] ?? '');
+        $name_es = trim($_POST['name_es'] ?? '');
+        $category_id = (int)($_POST['category_id'] ?? 0);
+        $price = floatval($_POST['price'] ?? 0);
+        $description_en = trim($_POST['description_en'] ?? '');
+        $description_es = trim($_POST['description_es'] ?? '');
+        $is_available = isset($_POST['is_available']) ? 1 : 0;
+        $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+        
+        // Validaciones
+        if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
+            throw new Exception('Datos requeridos faltantes');
+        }
+        
+        // Procesar imagen si se subió una
+        $image = null;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+            $image = processImageUpload();
+        }
+        
+        $sql = "INSERT INTO products (category_id, name_en, name_es, description_en, description_es, price, image, is_available, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $params = [$category_id, $name_en, $name_es, $description_en, $description_es, $price, $image, $is_available, $is_featured];
+        
+        if (executeQuery($sql, $params)) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Producto creado exitosamente'
+            ]);
+        } else {
+            throw new Exception('Error al crear el producto');
+        }
+    } catch (Exception $e) {
+        error_log("Error en createProduct: " . $e->getMessage());
         echo json_encode([
-            'success' => true,
-            'message' => 'Producto creado exitosamente'
+            'success' => false,
+            'message' => $e->getMessage()
         ]);
-    } else {
-        throw new Exception('Error al crear el producto');
     }
 }
 
@@ -148,49 +170,59 @@ function createProduct() {
  * Actualizar producto
  */
 function updateProduct() {
-    $product_id = (int)($_POST['product_id'] ?? 0);
-    $name_en = trim($_POST['name_en'] ?? '');
-    $name_es = trim($_POST['name_es'] ?? '');
-    $category_id = (int)($_POST['category_id'] ?? 0);
-    $price = floatval($_POST['price'] ?? 0);
-    $description_en = trim($_POST['description_en'] ?? '');
-    $description_es = trim($_POST['description_es'] ?? '');
-    $is_available = isset($_POST['is_available']) ? 1 : 0;
-    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
-    
-    if ($product_id <= 0) {
-        throw new Exception('ID de producto inválido');
-    }
-    
-    // Validaciones
-    if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
-        throw new Exception('Datos requeridos faltantes');
-    }
-    
-    // Procesar imagen si se subió una nueva
-    $image = null;
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $image = processImageUpload();
-    }
-    
-    $sql = "UPDATE products SET category_id = ?, name_en = ?, name_es = ?, description_en = ?, description_es = ?, price = ?, is_available = ?, is_featured = ?";
-    $params = [$category_id, $name_en, $name_es, $description_en, $description_es, $price, $is_available, $is_featured];
-    
-    if ($image) {
-        $sql .= ", image = ?";
-        $params[] = $image;
-    }
-    
-    $sql .= " WHERE id = ?";
-    $params[] = $product_id;
-    
-    if (executeQuery($sql, $params)) {
+    try {
+        global $pdo;
+        
+        $product_id = (int)($_POST['product_id'] ?? 0);
+        $name_en = trim($_POST['name_en'] ?? '');
+        $name_es = trim($_POST['name_es'] ?? '');
+        $category_id = (int)($_POST['category_id'] ?? 0);
+        $price = floatval($_POST['price'] ?? 0);
+        $description_en = trim($_POST['description_en'] ?? '');
+        $description_es = trim($_POST['description_es'] ?? '');
+        $is_available = isset($_POST['is_available']) ? 1 : 0;
+        $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+        
+        if ($product_id <= 0) {
+            throw new Exception('ID de producto inválido');
+        }
+        
+        // Validaciones
+        if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
+            throw new Exception('Datos requeridos faltantes');
+        }
+        
+        // Procesar imagen si se subió una nueva
+        $image = null;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+            $image = processImageUpload();
+        }
+        
+        $sql = "UPDATE products SET category_id = ?, name_en = ?, name_es = ?, description_en = ?, description_es = ?, price = ?, is_available = ?, is_featured = ?";
+        $params = [$category_id, $name_en, $name_es, $description_en, $description_es, $price, $is_available, $is_featured];
+        
+        if ($image) {
+            $sql .= ", image = ?";
+            $params[] = $image;
+        }
+        
+        $sql .= " WHERE id = ?";
+        $params[] = $product_id;
+        
+        if (executeQuery($sql, $params)) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Producto actualizado exitosamente'
+            ]);
+        } else {
+            throw new Exception('Error al actualizar el producto');
+        }
+    } catch (Exception $e) {
+        error_log("Error en updateProduct: " . $e->getMessage());
         echo json_encode([
-            'success' => true,
-            'message' => 'Producto actualizado exitosamente'
+            'success' => false,
+            'message' => $e->getMessage()
         ]);
-    } else {
-        throw new Exception('Error al actualizar el producto');
     }
 }
 
