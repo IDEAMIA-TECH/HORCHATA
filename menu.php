@@ -40,16 +40,16 @@ include 'includes/header.php';
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="category-filters-container" style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; gap: 0.5rem; align-items: center; overflow-x: auto; padding: 0 1rem; white-space: nowrap; max-width: 90%; margin: 0 auto;">
-                    <button class="category-filter-btn active" data-category="all" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 12px; border: none; border-radius: 12px; background: #d4af37; color: #ffffff; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 100px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; flex-shrink: 0;">
+                <div class="category-filters-container" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.5rem; align-items: center; overflow-x: auto; padding: 0 1rem; white-space: nowrap; max-width: 90%; margin: 0 auto;">
+                    <button class="category-filter-btn active" data-category="all" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border: none; border-radius: 12px; background: #d4af37; color: #ffffff; transition: all 0.3s ease; cursor: pointer; min-width: 80px; max-width: 120px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: visible; flex-shrink: 0;">
                         <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: #ffffff;">
                             <i class="fas fa-th"></i>
                         </div>
-                        <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; color: #ffffff;">
+                        <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.3px; color: #ffffff; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">
                             <?php echo __('all_categories'); ?>
                         </div>
                     </button>
-                    <div id="categoryFilters" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.5rem; align-items: center;">
+                    <div id="categoryFilters" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                         <!-- Categorías se cargarán aquí via AJAX -->
                     </div>
                 </div>
