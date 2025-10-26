@@ -53,7 +53,7 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'create' ? 'Nuevo Producto' : ($action === 'edit' ? 'Editar Producto' : 'Gestión de Productos');
-$page_scripts = ['../assets/js/products.js'];
+$page_scripts = []; // JavaScript está inline en este archivo
 
 // Incluir header del admin
 include 'includes/admin-header.php';
