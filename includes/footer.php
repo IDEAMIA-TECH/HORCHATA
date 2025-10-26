@@ -13,10 +13,16 @@
                         <?php echo __('footer_description'); ?>
                     </p>
                     <div class="d-flex">
-                        <a href="#" class="footer-social me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="footer-social me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="footer-social me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="footer-social"><i class="fab fa-youtube"></i></a>
+                        <?php
+                        $facebook_url = getSetting('facebook_url', '#');
+                        $instagram_url = getSetting('instagram_url', '#');
+                        $twitter_url = getSetting('twitter_url', '#');
+                        $youtube_url = getSetting('youtube_url', '#');
+                        ?>
+                        <a href="<?php echo htmlspecialchars($facebook_url); ?>" class="footer-social me-3" <?php echo $facebook_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-facebook-f"></i></a>
+                        <a href="<?php echo htmlspecialchars($instagram_url); ?>" class="footer-social me-3" <?php echo $instagram_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-instagram"></i></a>
+                        <a href="<?php echo htmlspecialchars($twitter_url); ?>" class="footer-social me-3" <?php echo $twitter_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-twitter"></i></a>
+                        <a href="<?php echo htmlspecialchars($youtube_url); ?>" class="footer-social" <?php echo $youtube_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
