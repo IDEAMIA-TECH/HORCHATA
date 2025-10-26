@@ -427,16 +427,26 @@ function previewImage(input) {
 }
 
 function toggleProductStatus(productId, newStatus) {
+    // Convertir boolean a número (true -> 1, false -> 0)
+    const statusValue = newStatus === true || newStatus === 'true' ? 1 : 0;
+    
+    console.log('🔄 Toggle Product Status:', {
+        productId: productId,
+        newStatus: newStatus,
+        statusValue: statusValue
+    });
+    
     $.ajax({
         url: '../ajax/admin.ajax.php',
         method: 'POST',
         data: {
             action: 'toggle_product_status',
             product_id: productId,
-            is_available: newStatus
+            is_available: statusValue
         },
         dataType: 'json',
         success: function(response) {
+            console.log('✅ Response:', response);
             if (response.success) {
                 showNotification(response.message, 'success');
                 location.reload();
@@ -444,7 +454,9 @@ function toggleProductStatus(productId, newStatus) {
                 showNotification('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('❌ Error:', xhr, status, error);
+            console.error('❌ Response Text:', xhr.responseText);
             showNotification('Error de conexión', 'error');
         }
     });

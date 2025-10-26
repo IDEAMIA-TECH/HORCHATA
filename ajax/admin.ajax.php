@@ -176,6 +176,9 @@ function updateProduct() {
     try {
         global $pdo;
         
+        error_log("🔄 updateProduct called");
+        error_log("📦 POST data: " . print_r($_POST, true));
+        
         $product_id = (int)($_POST['product_id'] ?? 0);
         $name_en = trim($_POST['name_en'] ?? '');
         $name_es = trim($_POST['name_es'] ?? '');
@@ -186,19 +189,27 @@ function updateProduct() {
         $is_available = isset($_POST['is_available']) ? 1 : 0;
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
         
+        error_log("🔄 Product ID: $product_id, Name EN: $name_en, Name ES: $name_es, Category: $category_id, Price: $price");
+        
         if ($product_id <= 0) {
             throw new Exception('ID de producto inválido');
         }
         
         // Validaciones
         if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
-            throw new Exception('Datos requeridos faltantes');
+            $errors = [];
+            if (empty($name_en)) $errors[] = "name_en vacío";
+            if (empty($name_es)) $errors[] = "name_es vacío";
+            if ($category_id <= 0) $errors[] = "category_id inválido ($category_id)";
+            if ($price <= 0) $errors[] = "price inválido ($price)";
+            throw new Exception('Datos requeridos faltantes: ' . implode(', ', $errors));
         }
         
         // Procesar imagen si se subió una nueva
         $image = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             $image = processImageUpload();
+            error_log("🖼️ Image uploaded: $image");
         }
         
         $sql = "UPDATE products SET category_id = ?, name_en = ?, name_es = ?, description_en = ?, description_es = ?, price = ?, is_available = ?, is_featured = ?";
@@ -212,16 +223,21 @@ function updateProduct() {
         $sql .= " WHERE id = ?";
         $params[] = $product_id;
         
+        error_log("📝 SQL: $sql");
+        error_log("📦 Params: " . print_r($params, true));
+        
         if (executeQuery($sql, $params)) {
+            error_log("✅ Product updated successfully");
             echo json_encode([
                 'success' => true,
                 'message' => 'Producto actualizado exitosamente'
             ]);
         } else {
+            error_log("❌ Error executing query");
             throw new Exception('Error al actualizar el producto');
         }
     } catch (Exception $e) {
-        error_log("Error en updateProduct: " . $e->getMessage());
+        error_log("❌ Error en updateProduct: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
@@ -268,17 +284,32 @@ function toggleProductStatus() {
     $product_id = (int)($_POST['product_id'] ?? 0);
     $is_available = (int)($_POST['is_available'] ?? 0);
     
+    error_log("🔄 Toggle Product Status - Product ID: $product_id, Is Available: $is_available");
+    
     if ($product_id <= 0) {
         throw new Exception('ID de producto inválido');
     }
     
+    // Convertir el valor de is_available (puede venir como string 'true'/'false')
+    if ($is_available === 'true' || $is_available === true) {
+        $is_available = 1;
+    } elseif ($is_available === 'false' || $is_available === false) {
+        $is_available = 0;
+    }
+    
+    $is_available = (int)$is_available;
+    
+    error_log("🔄 Final value - Is Available: $is_available");
+    
     if (executeQuery("UPDATE products SET is_available = ? WHERE id = ?", [$is_available, $product_id])) {
         $status = $is_available ? 'activado' : 'desactivado';
+        error_log("✅ Product status updated successfully - Status: $status");
         echo json_encode([
             'success' => true,
             'message' => "Producto {$status} exitosamente"
         ]);
     } else {
+        error_log("❌ Error updating product status");
         throw new Exception('Error al actualizar el estado del producto');
     }
 }
