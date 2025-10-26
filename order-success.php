@@ -293,24 +293,6 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- JavaScript para QR Code -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
-<script>
-// Generar QR Code con la URL de la orden en el panel admin
-$(document).ready(function() {
-    const orderUrl = 'https://ideamia-dev.com/HORCHATA/admin/orders.php?action=view&id=<?php echo $order_id; ?>';
-    
-    new QRCode(document.getElementById("qrcode"), {
-        text: orderUrl,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
-});
-</script>
-
 <!-- Estilos adicionales para la página de éxito -->
 <style>
 .success-icon {
@@ -405,3 +387,26 @@ $(document).ready(function() {
 // Incluir footer
 include 'includes/footer.php';
 ?>
+
+<!-- JavaScript para QR Code -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+<script>
+// Generar QR Code con la URL de la orden en el panel admin
+$(document).ready(function() {
+    console.log('Generando QR Code...');
+    
+    const orderUrl = 'https://ideamia-dev.com/HORCHATA/admin/qr-scanner.php?order_id=<?php echo $order_id; ?>';
+    
+    // Generar QR Code
+    new QRCode(document.getElementById("qrcode"), {
+        text: orderUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    console.log('QR Code generado con URL:', orderUrl);
+});
+</script>

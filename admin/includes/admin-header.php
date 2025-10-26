@@ -121,6 +121,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'qr-scanner.php' ? 'active' : ''; ?>" href="qr-scanner.php">
+                        <i class="fas fa-qrcode me-2"></i>QR Scanner
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reviews.php' ? 'active' : ''; ?>" href="reviews.php">
                         <i class="fas fa-star me-2"></i>Reseñas
                         <span class="badge bg-info ms-auto" id="pendingReviewsBadge">0</span>

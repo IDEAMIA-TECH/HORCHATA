@@ -62,6 +62,9 @@ try {
         case 'mark_order_paid':
             markOrderAsPaid();
             break;
+        case 'get_order_details':
+            getOrderDetails();
+            break;
         case 'delete_element':
             deleteElement();
             break;
@@ -537,6 +540,41 @@ function markOrderAsPaid() {
         ]);
     } else {
         throw new Exception('Error updating payment status');
+    }
+}
+
+function getOrderDetails() {
+    global $pdo;
+    $order_id = (int)($_POST['order_id'] ?? 0);
+    
+    if ($order_id <= 0) {
+        throw new Exception('Invalid order ID');
+    }
+    
+    try {
+        // Get order with item count
+        $order = fetchOne("
+            SELECT o.*, COUNT(oi.id) as item_count
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.id = ?
+            GROUP BY o.id
+        ", [$order_id]);
+        
+        if (!$order) {
+            throw new Exception('Order not found');
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'order' => $order
+        ]);
+    } catch (Exception $e) {
+        error_log("Error in getOrderDetails: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
     }
 }
 ?>
