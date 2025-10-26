@@ -256,6 +256,9 @@ function __($key, $default = '') {
         'your_review' => 'Tu Reseña',
         'write_your_review_here' => 'Escribe tu reseña aquí...',
         'submit_review' => 'Enviar Reseña',
+        // Review error messages
+        'error_loading_reviews' => 'Error al cargar reseñas',
+        'error_loading_public_reviews' => 'Error al cargar las reseñas públicas',
         // Additional order success translations
         'qr_code_for_restaurant' => 'Código QR para el Restaurante',
         'scan_qr_to_view_order' => 'Escanea este código para ver el pedido en el sistema',
@@ -489,6 +492,9 @@ function __($key, $default = '') {
         'your_review' => 'Your Review',
         'write_your_review_here' => 'Write your review here...',
         'submit_review' => 'Submit Review',
+        // Review error messages
+        'error_loading_reviews' => 'Error loading reviews',
+        'error_loading_public_reviews' => 'Error loading public reviews',
         // Additional order success translations
         'qr_code_for_restaurant' => 'QR Code for Restaurant',
         'scan_qr_to_view_order' => 'Scan this code to view the order in the system',

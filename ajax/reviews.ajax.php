@@ -260,10 +260,12 @@ function getPublicReviews() {
                 LEFT JOIN orders o ON r.order_id = o.id
                 WHERE r.is_approved = 1
                 ORDER BY r.created_at DESC
-                LIMIT ? OFFSET ?";
+                LIMIT :limit OFFSET :offset";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$limit, $offset]);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
         $reviews = $stmt->fetchAll();
         
         // Obtener estadísticas
