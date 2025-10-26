@@ -18,27 +18,268 @@ require_once '../includes/db_connect.php';
 // Obtener parámetros
 $tab = $_GET['tab'] ?? 'general';
 
+// Funciones auxiliares (definidas antes de uso)
+function getSettings() {
+    global $pdo;
+    
+    try {
+        $sql = "SELECT setting_key, setting_value FROM settings";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $settings = $stmt->fetchAll();
+        
+        $result = [];
+        foreach ($settings as $setting) {
+            $result[$setting['setting_key']] = $setting['setting_value'];
+        }
+        
+        return $result;
+    } catch (Exception $e) {
+        error_log("Error en getSettings: " . $e->getMessage());
+        return [];
+    }
+}
+
+function updateSetting($key, $value) {
+    global $pdo;
+    
+    try {
+        $sql = "INSERT INTO settings (setting_key, setting_value, updated_at) 
+                VALUES (?, ?, NOW()) 
+                ON DUPLICATE KEY UPDATE setting_value = ?, updated_at = NOW()";
+        
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([$key, $value, $value]);
+    } catch (Exception $e) {
+        error_log("Error en updateSetting: " . $e->getMessage());
+        return false;
+    }
+}
+
+function updateGeneralSettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'site_name' => trim($_POST['site_name'] ?? ''),
+            'site_url' => trim($_POST['site_url'] ?? ''),
+            'default_language' => trim($_POST['default_language'] ?? 'es'),
+            'timezone' => trim($_POST['timezone'] ?? 'America/Los_Angeles'),
+            'site_description' => trim($_POST['site_description'] ?? ''),
+            'site_keywords' => trim($_POST['site_keywords'] ?? '')
+        ];
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'General settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updateGeneralSettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating general settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function updateRestaurantSettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'restaurant_name' => trim($_POST['restaurant_name'] ?? ''),
+            'restaurant_phone' => trim($_POST['restaurant_phone'] ?? ''),
+            'restaurant_email' => trim($_POST['restaurant_email'] ?? ''),
+            'restaurant_website' => trim($_POST['restaurant_website'] ?? ''),
+            'restaurant_address' => trim($_POST['restaurant_address'] ?? ''),
+            'business_hours' => trim($_POST['business_hours'] ?? ''),
+            'restaurant_description' => trim($_POST['restaurant_description'] ?? '')
+        ];
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Restaurant settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updateRestaurantSettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating restaurant settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function updatePaymentSettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'currency' => trim($_POST['currency'] ?? 'USD'),
+            'tax_rate' => floatval($_POST['tax_rate'] ?? 0),
+            'delivery_fee' => floatval($_POST['delivery_fee'] ?? 0)
+        ];
+        
+        $payment_methods = $_POST['payment_methods'] ?? [];
+        $settings['payment_methods'] = json_encode($payment_methods);
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Payment settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updatePaymentSettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating payment settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function updateEmailSettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'smtp_host' => trim($_POST['smtp_host'] ?? ''),
+            'smtp_port' => intval($_POST['smtp_port'] ?? 587),
+            'smtp_username' => trim($_POST['smtp_username'] ?? ''),
+            'smtp_password' => trim($_POST['smtp_password'] ?? ''),
+            'smtp_encryption' => trim($_POST['smtp_encryption'] ?? 'tls'),
+            'from_email' => trim($_POST['from_email'] ?? '')
+        ];
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Email settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updateEmailSettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating email settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function updateSecuritySettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'session_timeout' => intval($_POST['session_timeout'] ?? 30),
+            'max_login_attempts' => intval($_POST['max_login_attempts'] ?? 5),
+            'password_min_length' => intval($_POST['password_min_length'] ?? 8),
+            'require_strong_password' => isset($_POST['require_strong_password']) ? '1' : '0',
+            'enable_2fa' => isset($_POST['enable_2fa']) ? '1' : '0'
+        ];
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Security settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updateSecuritySettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating security settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function updateSocialSettings() {
+    global $pdo;
+    
+    try {
+        $settings = [
+            'facebook_url' => trim($_POST['facebook_url'] ?? ''),
+            'instagram_url' => trim($_POST['instagram_url'] ?? ''),
+            'twitter_url' => trim($_POST['twitter_url'] ?? ''),
+            'youtube_url' => trim($_POST['youtube_url'] ?? ''),
+            'tiktok_url' => trim($_POST['tiktok_url'] ?? ''),
+            'yelp_url' => trim($_POST['yelp_url'] ?? '')
+        ];
+        
+        foreach ($settings as $key => $value) {
+            updateSetting($key, $value);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Social media settings updated successfully'
+        ]);
+    } catch (Exception $e) {
+        error_log("Error en updateSocialSettings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error updating social settings: ' . $e->getMessage()
+        ]);
+    }
+}
+
 // Procesar acciones
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    switch ($_POST['action']) {
-        case 'update_general':
-            updateGeneralSettings();
-            break;
-        case 'update_restaurant':
-            updateRestaurantSettings();
-            break;
-        case 'update_payment':
-            updatePaymentSettings();
-            break;
-        case 'update_email':
-            updateEmailSettings();
-            break;
-        case 'update_security':
-            updateSecuritySettings();
-            break;
-        case 'update_social':
-            updateSocialSettings();
-            break;
+    header('Content-Type: application/json');
+    
+    try {
+        switch ($_POST['action']) {
+            case 'update_general':
+                updateGeneralSettings();
+                exit;
+            case 'update_restaurant':
+                updateRestaurantSettings();
+                exit;
+            case 'update_payment':
+                updatePaymentSettings();
+                exit;
+            case 'update_email':
+                updateEmailSettings();
+                exit;
+            case 'update_security':
+                updateSecuritySettings();
+                exit;
+            case 'update_social':
+                updateSocialSettings();
+                exit;
+            case 'auto_save_settings':
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Auto-saved'
+                ]);
+                exit;
+            default:
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid action'
+                ]);
+                exit;
+        }
+    } catch (Exception $e) {
+        error_log("Error processing settings: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Server error: ' . $e->getMessage()
+        ]);
+        exit;
     }
 }
 
@@ -554,7 +795,7 @@ function autoSaveSettings(form) {
     formData.append('action', 'auto_save_settings');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'settings.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -580,7 +821,7 @@ function saveSettings(form) {
     submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'settings.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -593,8 +834,9 @@ function saveSettings(form) {
                 showNotification('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
-            showNotification('Connection error', 'error');
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            showNotification('Connection error: ' + error, 'error');
         },
         complete: function() {
             submitBtn.prop('disabled', false).html(originalText);
@@ -674,166 +916,6 @@ function showNotification(message, type = 'info') {
 </script>
 
 <?php
-// Funciones auxiliares
-function getSettings() {
-    global $pdo;
-    
-    $sql = "SELECT setting_key, setting_value FROM settings";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $settings = $stmt->fetchAll();
-    
-    $result = [];
-    foreach ($settings as $setting) {
-        $result[$setting['setting_key']] = $setting['setting_value'];
-    }
-    
-    return $result;
-}
-
-function updateGeneralSettings() {
-    global $pdo;
-    
-    $settings = [
-        'site_name' => trim($_POST['site_name'] ?? ''),
-        'site_url' => trim($_POST['site_url'] ?? ''),
-        'default_language' => trim($_POST['default_language'] ?? 'es'),
-        'timezone' => trim($_POST['timezone'] ?? 'America/Los_Angeles'),
-        'site_description' => trim($_POST['site_description'] ?? ''),
-        'site_keywords' => trim($_POST['site_keywords'] ?? '')
-    ];
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'General settings updated successfully'
-    ]);
-}
-
-function updateRestaurantSettings() {
-    global $pdo;
-    
-    $settings = [
-        'restaurant_name' => trim($_POST['restaurant_name'] ?? ''),
-        'restaurant_phone' => trim($_POST['restaurant_phone'] ?? ''),
-        'restaurant_email' => trim($_POST['restaurant_email'] ?? ''),
-        'restaurant_website' => trim($_POST['restaurant_website'] ?? ''),
-        'restaurant_address' => trim($_POST['restaurant_address'] ?? ''),
-        'business_hours' => trim($_POST['business_hours'] ?? ''),
-        'restaurant_description' => trim($_POST['restaurant_description'] ?? '')
-    ];
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Restaurant settings updated successfully'
-    ]);
-}
-
-function updatePaymentSettings() {
-    global $pdo;
-    
-    $settings = [
-        'currency' => trim($_POST['currency'] ?? 'USD'),
-        'tax_rate' => floatval($_POST['tax_rate'] ?? 0),
-        'delivery_fee' => floatval($_POST['delivery_fee'] ?? 0)
-    ];
-    
-    $payment_methods = $_POST['payment_methods'] ?? [];
-    $settings['payment_methods'] = json_encode($payment_methods);
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Payment settings updated successfully'
-    ]);
-}
-
-function updateEmailSettings() {
-    global $pdo;
-    
-    $settings = [
-        'smtp_host' => trim($_POST['smtp_host'] ?? ''),
-        'smtp_port' => intval($_POST['smtp_port'] ?? 587),
-        'smtp_username' => trim($_POST['smtp_username'] ?? ''),
-        'smtp_password' => trim($_POST['smtp_password'] ?? ''),
-        'smtp_encryption' => trim($_POST['smtp_encryption'] ?? 'tls'),
-        'from_email' => trim($_POST['from_email'] ?? '')
-    ];
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Email settings updated successfully'
-    ]);
-}
-
-function updateSecuritySettings() {
-    global $pdo;
-    
-    $settings = [
-        'session_timeout' => intval($_POST['session_timeout'] ?? 30),
-        'max_login_attempts' => intval($_POST['max_login_attempts'] ?? 5),
-        'password_min_length' => intval($_POST['password_min_length'] ?? 8),
-        'require_strong_password' => isset($_POST['require_strong_password']) ? '1' : '0',
-        'enable_2fa' => isset($_POST['enable_2fa']) ? '1' : '0'
-    ];
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Security settings updated successfully'
-    ]);
-}
-
-function updateSocialSettings() {
-    global $pdo;
-    
-    $settings = [
-        'facebook_url' => trim($_POST['facebook_url'] ?? ''),
-        'instagram_url' => trim($_POST['instagram_url'] ?? ''),
-        'twitter_url' => trim($_POST['twitter_url'] ?? ''),
-        'youtube_url' => trim($_POST['youtube_url'] ?? ''),
-        'tiktok_url' => trim($_POST['tiktok_url'] ?? ''),
-        'yelp_url' => trim($_POST['yelp_url'] ?? '')
-    ];
-    
-    foreach ($settings as $key => $value) {
-        updateSetting($key, $value);
-    }
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Social media settings updated successfully'
-    ]);
-}
-
-function updateSetting($key, $value) {
-    global $pdo;
-    
-    $sql = "INSERT INTO settings (setting_key, setting_value, updated_at) 
-            VALUES (?, ?, NOW()) 
-            ON DUPLICATE KEY UPDATE setting_value = ?, updated_at = NOW()";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$key, $value, $value]);
-}
-
 // Incluir footer del admin
 include 'includes/admin-footer.php';
 ?>
