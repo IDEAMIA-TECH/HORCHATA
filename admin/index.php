@@ -200,13 +200,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Header -->
                     <div class="login-header">
                         <img src="../assets/images/LOGO.JPG" alt="Horchata Mexican Food" 
-                             style="max-width: 200px; margin-bottom: 1rem; 
-                                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
-                                                0 5px 15px rgba(212, 175, 55, 0.3); 
-                                    border-radius: 10px;
-                                    background: rgba(255, 255, 255, 0.1);
-                                    padding: 5px;">
-                        
+                             style="max-width: 200px; 
+                                    margin-bottom: 1rem; 
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 
+                                                0 5px 20px rgba(212, 175, 55, 0.5),
+                                                0 0 30px rgba(212, 175, 55, 0.3); 
+                                    border-radius: 15px;
+                                    background: #ffffff;
+                                    padding: 10px;
+                                    border: 3px solid rgba(212, 175, 55, 0.3);">
                     </div>
                     
                     <!-- Login Form -->
