@@ -135,7 +135,15 @@ include 'includes/admin-header.php';
                         <?php foreach ($products as $product): ?>
                         <tr>
                             <td>
-                                <img src="<?php echo $product['image'] ?: '../assets/images/placeholder.jpg'; ?>" 
+                                <?php 
+                                // Ajustar ruta de imagen según el formato almacenado
+                                $image_path = $product['image'] ?: '../assets/images/placeholder.jpg';
+                                if (strpos($image_path, '../') !== 0) {
+                                    // Si no empieza con ../, agregarlo
+                                    $image_path = '../' . $image_path;
+                                }
+                                ?>
+                                <img src="<?php echo $image_path; ?>" 
                                      alt="<?php echo htmlspecialchars($product['name_en']); ?>" 
                                      class="rounded" 
                                      style="width: 50px; height: 50px; object-fit: cover;">
@@ -283,8 +291,16 @@ include 'includes/admin-header.php';
                             </div>
                             <div class="card-body text-center">
                                 <div class="mb-3">
+                                    <?php 
+                                    // Ajustar ruta de imagen según el formato almacenado
+                                    $image_path = $product['image'] ?? '../assets/images/placeholder.jpg';
+                                    if (strpos($image_path, '../') !== 0) {
+                                        // Si no empieza con ../, agregarlo
+                                        $image_path = '../' . $image_path;
+                                    }
+                                    ?>
                                     <img id="imagePreview" 
-                                         src="<?php echo $product['image'] ?? '../assets/images/placeholder.jpg'; ?>" 
+                                         src="<?php echo $image_path; ?>" 
                                          alt="Vista previa" 
                                          class="img-fluid rounded" 
                                          style="max-height: 200px;">

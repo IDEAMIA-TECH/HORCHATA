@@ -417,7 +417,8 @@ function processImageUpload() {
     // Mover archivo
     if (move_uploaded_file($file['tmp_name'], $filepath)) {
         error_log("✅ [processImageUpload] File uploaded successfully to: $filepath");
-        $relative_path = 'assets/images/products/' . $filename;
+        // Ruta relativa desde la raíz del sitio (sin ../assets, solo assets)
+        $relative_path = '../assets/images/products/' . $filename;
         error_log("✅ [processImageUpload] Returning path: $relative_path");
         return $relative_path;
     } else {
