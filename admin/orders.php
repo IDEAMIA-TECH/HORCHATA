@@ -325,6 +325,7 @@ include 'includes/admin-header.php';
                                     <th>Product</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
+                                    <th>Customizations</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -336,21 +337,57 @@ include 'includes/admin-header.php';
                                     </td>
                                     <td>$<?php echo number_format($item['product_price'], 2); ?></td>
                                     <td><?php echo $item['quantity']; ?></td>
+                                    <td>
+                                        <?php if (!empty($item['customizations'])): 
+                                            $customizations = json_decode($item['customizations'], true);
+                                        ?>
+                                            <div class="customizations-info">
+                                                <?php if (!empty($customizations['specialInstructions'])): ?>
+                                                    <div class="mb-2">
+                                                        <i class="fas fa-info-circle text-primary me-1"></i>
+                                                        <strong>Instructions:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($customizations['extras']) && is_array($customizations['extras'])): ?>
+                                                    <div class="mb-2">
+                                                        <i class="fas fa-plus-circle text-success me-1"></i>
+                                                        <strong>Extras:</strong>
+                                                        <ul class="mb-0">
+                                                            <?php foreach ($customizations['extras'] as $extra): ?>
+                                                                <li><?php echo htmlspecialchars($extra['name']); ?> (+ $<?php echo number_format($extra['price'], 2); ?>)</li>
+                                                            <?php endforeach; ?>
+                                                        </ul>
+                                                    </div>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($customizations['spiceLevel'])): ?>
+                                                    <div class="mb-2">
+                                                        <i class="fas fa-fire text-danger me-1"></i>
+                                                        <strong>Spice Level:</strong> 
+                                                        <span class="badge bg-warning"><?php echo htmlspecialchars(ucfirst($customizations['spiceLevel'])); ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">None</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><strong>$<?php echo number_format($item['subtotal'], 2); ?></strong></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="3">Subtotal:</th>
+                                    <th colspan="4">Subtotal:</th>
                                     <th>$<?php echo number_format($order['subtotal'], 2); ?></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="3">Tax:</th>
+                                    <th colspan="4">Tax:</th>
                                     <th>$<?php echo number_format($order['tax'], 2); ?></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="3">Total:</th>
+                                    <th colspan="4">Total:</th>
                                     <th class="text-primary">$<?php echo number_format($order['total'], 2); ?></th>
                                 </tr>
                             </tfoot>

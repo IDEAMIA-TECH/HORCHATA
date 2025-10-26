@@ -107,10 +107,16 @@ function createOrder() {
         // Insertar items de la orden
         foreach ($order_data['items'] as $item) {
             $item_sql = "INSERT INTO order_items (
-                order_id, product_id, product_name, product_price, quantity, subtotal
-            ) VALUES (?, ?, ?, ?, ?, ?)";
+                order_id, product_id, product_name, product_price, quantity, subtotal, customizations
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)";
             
             $item_subtotal = $item['price'] * $item['quantity'];
+            
+            // Convertir personalizaciones a JSON si existen
+            $customizations = null;
+            if (isset($item['customizations']) && !empty($item['customizations'])) {
+                $customizations = json_encode($item['customizations']);
+            }
             
             $item_params = [
                 $order_id,
@@ -118,7 +124,8 @@ function createOrder() {
                 $item['name'],
                 $item['price'],
                 $item['quantity'],
-                $item_subtotal
+                $item_subtotal,
+                $customizations
             ];
             
             executeQuery($item_sql, $item_params);
