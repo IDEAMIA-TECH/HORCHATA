@@ -138,7 +138,11 @@ function createOrder() {
         }
         
         // Generar token para reseña
-        $review_token = generateReviewToken($order_id);
+        $review_token = bin2hex(random_bytes(32));
+        
+        // Actualizar la orden con el review_token
+        $update_token_sql = "UPDATE orders SET review_token = ? WHERE id = ?";
+        executeQuery($update_token_sql, [$review_token, $order_id]);
         
         // Confirmar transacción
         $pdo->commit();
