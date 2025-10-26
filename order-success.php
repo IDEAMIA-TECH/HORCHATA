@@ -60,6 +60,21 @@ include 'includes/header.php';
                     <p class="lead text-muted">
                         Gracias por tu pedido. Te hemos enviado un correo de confirmación con todos los detalles.
                     </p>
+                    
+                    <!-- QR Code for Restaurant -->
+                    <div class="qr-code-section mt-4">
+                        <div class="card shadow-sm border-0" style="max-width: 300px; margin: 0 auto;">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-qrcode me-2"></i>Código QR para el Restaurante
+                                </h6>
+                                <div id="qrcode" class="mb-3"></div>
+                                <p class="small text-muted mb-0">
+                                    Escanea este código para ver el pedido en el sistema
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Order Details Card -->
@@ -278,7 +293,23 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- JavaScript se carga desde assets/js/order-success.js -->
+<!-- JavaScript para QR Code -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+<script>
+// Generar QR Code con la URL de la orden en el panel admin
+$(document).ready(function() {
+    const orderUrl = 'https://ideamia-dev.com/HORCHATA/admin/orders.php?action=view&id=<?php echo $order_id; ?>';
+    
+    new QRCode(document.getElementById("qrcode"), {
+        text: orderUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+});
+</script>
 
 <!-- Estilos adicionales para la página de éxito -->
 <style>
@@ -335,10 +366,37 @@ include 'includes/header.php';
     margin-top: 20px;
 }
 
+#qrcode {
+    display: inline-block;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.qr-code-section {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 768px) {
     .btn-lg {
         font-size: 1rem;
         padding: 12px 20px;
+    }
+    
+    #qrcode {
+        transform: scale(0.85);
     }
 }
 </style>
