@@ -55,7 +55,7 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'edit' ? 'Edit User' : ($action === 'create' ? 'Create User' : 'Users Management');
-$page_scripts = ['assets/js/users.js'];
+$page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
 include 'includes/admin-header.php';

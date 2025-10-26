@@ -51,7 +51,7 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'edit' ? 'Edit Category' : ($action === 'create' ? 'Create Category' : 'Categories Management');
-$page_scripts = ['assets/js/categories.js'];
+$page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
 include 'includes/admin-header.php';

@@ -25,7 +25,7 @@ $report_data = getReportData($report_type, $date_from, $date_to);
 
 // Configurar página
 $page_title = 'Reports & Analytics';
-$page_scripts = ['assets/js/reports.js'];
+$page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
 include 'includes/admin-header.php';

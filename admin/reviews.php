@@ -48,7 +48,7 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'view' ? 'Review Details' : 'Reviews Management';
-$page_scripts = ['assets/js/reviews.js'];
+$page_scripts = []; // No necesita script adicional
 
 // Incluir header del admin
 include 'includes/admin-header.php';

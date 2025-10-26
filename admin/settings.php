@@ -47,7 +47,7 @@ $settings = getSettings();
 
 // Configurar página
 $page_title = 'Settings';
-$page_scripts = ['assets/js/settings.js'];
+$page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
 include 'includes/admin-header.php';
