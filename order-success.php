@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Obtener ID de la orden
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
@@ -39,7 +40,7 @@ $order_items = fetchAll("
 ", [$order_id]);
 
 // Configurar página
-$page_title = 'Pedido Confirmado';
+$page_title = __('order_confirmed');
 $page_scripts = ['assets/js/order-success.js'];
 
 // Incluir header
@@ -56,9 +57,9 @@ include 'includes/header.php';
                     <div class="success-icon mb-4">
                         <i class="fas fa-check-circle fa-5x text-success"></i>
                     </div>
-                    <h1 class="text-success mb-3">¡Pedido Confirmado!</h1>
+                    <h1 class="text-success mb-3"><?php echo __('order_confirmed'); ?>!</h1>
                     <p class="lead text-muted">
-                        Gracias por tu pedido. Te hemos enviado un correo de confirmación con todos los detalles.
+                        <?php echo __('order_confirmed_message'); ?>
                     </p>
                     
                     <!-- QR Code for Restaurant -->
@@ -81,13 +82,13 @@ include 'includes/header.php';
                 <div class="card mb-4">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-receipt me-2"></i>Detalles del Pedido
+                            <i class="fas fa-receipt me-2"></i><?php echo __('order_details'); ?>
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="text-muted">Número de Pedido</h6>
+                                <h6 class="text-muted"><?php echo __('order_number'); ?></h6>
                                 <p class="h5 text-primary order-number"><?php echo htmlspecialchars($order['order_number']); ?></p>
                             </div>
                             <div class="col-md-6">
@@ -247,17 +248,16 @@ include 'includes/header.php';
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-star me-2"></i>Deja una Reseña
+                            <i class="fas fa-star me-2"></i><?php echo __('leave_review'); ?>
                         </h5>
                     </div>
                     <div class="card-body">
                         <p class="text-muted mb-3">
-                            ¡Nos encantaría saber qué te pareció tu experiencia! 
-                            Deja una reseña y ayuda a otros clientes.
+                            <?php echo __('leave_review_message'); ?>
                         </p>
-                        <a href="reviews.php?token=<?php echo $order['review_token'] ?? ''; ?>" 
-                           class="btn btn-warning">
-                            <i class="fas fa-star me-2"></i>Escribir Reseña
+                        <a href="reviews-public.php?token=<?php echo $order['review_token'] ?? ''; ?>" 
+                           class="btn btn-warning" target="_blank">
+                            <i class="fas fa-star me-2"></i><?php echo __('write_review'); ?>
                         </a>
                     </div>
                 </div>

@@ -53,13 +53,6 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'view' ? 'Order Details' : 'Order Management';
-if ($action === 'view') {
-    $page_title = 'Order Details #' . ($order['order_number'] ?? $order_id);
-} elseif ($action === 'print') {
-    $page_title = 'Print Order - ' . ($order['order_number'] ?? $order_id);
-} else {
-    $page_title = 'Order Management';
-}
 $page_scripts = ['assets/js/orders.js'];
 
 // Incluir header del admin
@@ -290,25 +283,6 @@ include 'includes/admin-header.php';
     </div>
 
     <?php elseif ($action === 'view'): ?>
-    <!-- Action Buttons Header -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="btn-group" role="group">
-                <a href="orders.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Orders
-                </a>
-                <a href="orders.php?action=print&id=<?php echo $order_id; ?>" target="_blank" class="btn btn-outline-primary">
-                    <i class="fas fa-print me-1"></i>Print Order
-                </a>
-                <?php if (!empty($order['review_token'])): ?>
-                <a href="../reviews.php?token=<?php echo $order['review_token']; ?>" target="_blank" class="btn btn-outline-success">
-                    <i class="fas fa-star me-1"></i>View Review
-                </a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-    
     <!-- Order Details -->
     <div class="row">
         <!-- Order Info -->

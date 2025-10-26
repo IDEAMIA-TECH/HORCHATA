@@ -226,7 +226,16 @@ function __($key, $default = '') {
         'mild' => 'Suave',
         'hot' => 'Picante',
         'extra_hot' => 'Extra Picante',
-        'cancel' => 'Cancelar'
+        'cancel' => 'Cancelar',
+        // Order Success Page
+        'order_confirmed' => 'Pedido Confirmado',
+        'order_confirmed_message' => 'Gracias por tu pedido. Te hemos enviado un correo de confirmación con todos los detalles.',
+        'order_details' => 'Detalles del Pedido',
+        'order_number' => 'Número de Pedido',
+        'order_date' => 'Fecha de Pedido',
+        'leave_review' => 'Deja una Reseña',
+        'leave_review_message' => '¡Nos encantaría saber qué te pareció tu experiencia! Deja una reseña y ayuda a otros clientes.',
+        'write_review' => 'Escribir Reseña'
     ];
     
     // Textos en inglés
@@ -422,7 +431,16 @@ function __($key, $default = '') {
         'mild' => 'Mild',
         'hot' => 'Hot',
         'extra_hot' => 'Extra Hot',
-        'cancel' => 'Cancel'
+        'cancel' => 'Cancel',
+        // Order Success Page
+        'order_confirmed' => 'Order Confirmed',
+        'order_confirmed_message' => 'Thank you for your order. We have sent you a confirmation email with all the details.',
+        'order_details' => 'Order Details',
+        'order_number' => 'Order Number',
+        'order_date' => 'Order Date',
+        'leave_review' => 'Leave a Review',
+        'leave_review_message' => 'We would love to hear about your experience! Leave a review and help other customers.',
+        'write_review' => 'Write Review'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;
