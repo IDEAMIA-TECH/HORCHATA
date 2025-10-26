@@ -38,6 +38,12 @@ switch ($action) {
         $order = getOrderDetails($order_id);
         $order_items = getOrderItems($order_id);
         break;
+    case 'print':
+        $order = getOrderDetails($order_id);
+        $order_items = getOrderItems($order_id);
+        // Override page title for print view
+        $page_title = 'Print Order - ' . $order['order_number'];
+        break;
     case 'list':
     default:
         $orders = getAllOrders();
@@ -466,6 +472,131 @@ include 'includes/admin-header.php';
             </div>
         </div>
     </div>
+    <?php elseif ($action === 'print'): ?>
+    <!-- Print View -->
+    <div class="print-container">
+        <div class="print-header text-center mb-4">
+            <img src="../assets/images/LOGO.JPG" alt="Restaurant Logo" class="logo-img mb-3" style="height: 80px;">
+            <h2>Horchata Mexican Food</h2>
+            <p class="text-muted">10814 Jefferson Blvd, Culver City, CA</p>
+            <p class="text-muted">Phone: +1 (310) 204-2659</p>
+            <hr>
+        </div>
+        
+        <div class="order-info mb-4">
+            <div class="row">
+                <div class="col-6">
+                    <h5>Order Information</h5>
+                    <p><strong>Order Number:</strong> <?php echo htmlspecialchars($order['order_number']); ?></p>
+                    <p><strong>Date:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
+                    <p><strong>Status:</strong> <span class="badge bg-<?php echo getStatusColor($order['status']); ?>"><?php echo ucfirst($order['status']); ?></span></p>
+                </div>
+                <div class="col-6">
+                    <h5>Customer Information</h5>
+                    <p><strong>Name:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
+                    <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['customer_phone']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($order['customer_email']); ?></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="order-items mb-4">
+            <h5>Order Items</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($order_items as $item): ?>
+                    <tr>
+                        <td>
+                            <strong><?php echo htmlspecialchars($item['product_name']); ?></strong>
+                            <?php if (!empty($item['customizations'])): 
+                                $customizations = json_decode($item['customizations'], true);
+                            ?>
+                                <div class="customizations-info mt-2">
+                                    <?php if (!empty($customizations['specialInstructions'])): ?>
+                                        <div><small><strong>Instructions:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?></small></div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($customizations['extras']) && is_array($customizations['extras'])): ?>
+                                        <div><small><strong>Extras:</strong> 
+                                            <?php 
+                                                $extrasList = [];
+                                                foreach ($customizations['extras'] as $extra) {
+                                                    $extrasList[] = $extra['name'];
+                                                }
+                                                echo htmlspecialchars(implode(', ', $extrasList));
+                                            ?>
+                                        </small></div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($customizations['spiceLevel'])): ?>
+                                        <div><small><strong>Spice Level:</strong> <?php echo htmlspecialchars(ucfirst($customizations['spiceLevel'])); ?></small></div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo $item['quantity']; ?></td>
+                        <td>$<?php echo number_format($item['product_price'], 2); ?></td>
+                        <td>$<?php echo number_format($item['subtotal'], 2); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                        <td><strong>$<?php echo number_format($order['total'], 2); ?></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <?php if (!empty($order['notes'])): ?>
+        <div class="order-notes mb-4">
+            <h5>Special Instructions</h5>
+            <p><?php echo htmlspecialchars($order['notes']); ?></p>
+        </div>
+        <?php endif; ?>
+        
+        <div class="print-footer text-center mt-5">
+            <p class="text-muted"><small>Thank you for your order!</small></p>
+        </div>
+    </div>
+    
+    <style>
+    @media print {
+        .sidebar, .navbar, .btn, .no-print {
+            display: none !important;
+        }
+        .print-container {
+            margin: 0;
+            padding: 20px;
+        }
+        body {
+            background: white;
+        }
+    }
+    .print-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .logo-img {
+        max-width: 200px;
+        height: auto;
+    }
+    </style>
+    
+    <script>
+    window.onload = function() {
+        window.print();
+    };
+    </script>
+    
     <?php endif; ?>
 </div>
 
