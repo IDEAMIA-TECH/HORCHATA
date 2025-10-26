@@ -227,6 +227,8 @@ include 'includes/header.php';
 </section>
 <?php endif; ?>
 
+<?php include 'includes/footer.php'; ?>
+
 <?php if (!empty($review_token)): ?>
 <script>
 $(document).ready(function() {
@@ -257,5 +259,3 @@ $(document).ready(function() {
 });
 </script>
 <?php endif; ?>
-
-<?php include 'includes/footer.php'; ?>

@@ -56,81 +56,74 @@ try {
  * Enviar reseña
  */
 function submitReview() {
-    $review_data = $_POST['review_data'] ?? '';
+    // Obtener datos del formulario
+    $token = $_POST['token'] ?? '';
+    $rating = (int)($_POST['rating'] ?? 0);
+    $review_text = trim($_POST['review_text'] ?? '');
     
-    if (empty($review_data)) {
-        throw new Exception('No hay datos de reseña');
+    if (empty($token)) {
+        throw new Exception('Token requerido');
     }
     
-    // Decodificar datos de la reseña
-    $data = json_decode($review_data, true);
-    
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Error al decodificar datos de la reseña');
+    if ($rating < 1 || $rating > 5) {
+        throw new Exception('Calificación inválida');
     }
     
-    // Validar datos requeridos
-    if (empty($data['order_id']) || empty($data['rating']) || empty($data['token'])) {
-        throw new Exception('Datos de reseña incompletos');
+    if (empty($review_text)) {
+        throw new Exception('Texto de reseña requerido');
     }
     
     // Verificar que la orden existe y el token es válido
     $order = fetchOne("
         SELECT id, review_token, status 
         FROM orders 
-        WHERE id = ? AND review_token = ? AND status = 'completed'
-    ", [$data['order_id'], $data['token']]);
+        WHERE review_token = ?
+    ", [$token]);
     
     if (!$order) {
-        throw new Exception('Orden no encontrada o token inválido');
+        throw new Exception('Token inválido o expirado');
     }
     
     // Verificar si ya existe una reseña para esta orden
     $existing_review = fetchOne("
         SELECT id FROM reviews 
-        WHERE order_id = ? AND is_approved = 1
-    ", [$data['order_id']]);
+        WHERE order_id = ?
+    ", [$order['id']]);
     
     if ($existing_review) {
         throw new Exception('Ya existe una reseña para esta orden');
     }
     
     // Insertar reseña
-    $review_id = insertOne("
-        INSERT INTO reviews (
-            order_id, 
-            rating, 
-            food_quality, 
-            preparation_time, 
-            presentation, 
-            service, 
-            comments, 
-            recommend, 
-            is_approved, 
-            created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())
-    ", [
-        $data['order_id'],
-        $data['rating'],
-        $data['food_quality'] ?? 0,
-        $data['preparation_time'] ?? 0,
-        $data['presentation'] ?? 0,
-        $data['service'] ?? 0,
-        $data['comments'] ?? '',
-        $data['recommend'] ?? 0
-    ]);
+    $sql = "INSERT INTO reviews (
+        order_id, 
+        rating, 
+        food_quality, 
+        preparation_time, 
+        presentation, 
+        service, 
+        comments, 
+        recommend, 
+        is_approved, 
+        created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
+    
+    $params = [
+        $order['id'],
+        $rating,
+        0, // food_quality
+        0, // preparation_time
+        0, // presentation
+        0, // service
+        $review_text,
+        1 // recommend
+    ];
+    
+    $review_id = insertAndGetId($sql, $params);
     
     if (!$review_id) {
         throw new Exception('Error al guardar la reseña');
     }
-    
-    // Actualizar estadísticas de la orden
-    updateOne("
-        UPDATE orders 
-        SET has_review = 1, 
-            review_rating = ? 
-        WHERE id = ?
-    ", [$data['rating'], $data['order_id']]);
     
     echo json_encode([
         'success' => true,
