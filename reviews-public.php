@@ -227,6 +227,15 @@ include 'includes/header.php';
 </section>
 <?php endif; ?>
 
+<!-- Translations for JavaScript -->
+<script>
+window.translations = {
+    error_loading_reviews: <?php echo json_encode(__('error_loading_reviews')); ?>,
+    error_loading_public_reviews: <?php echo json_encode(__('error_loading_public_reviews')); ?>,
+    try_again: <?php echo json_encode(__('try_again')); ?>
+};
+</script>
+
 <?php include 'includes/footer.php'; ?>
 
 <?php if (!empty($review_token)): ?>

@@ -259,6 +259,7 @@ function __($key, $default = '') {
         // Review error messages
         'error_loading_reviews' => 'Error al cargar reseñas',
         'error_loading_public_reviews' => 'Error al cargar las reseñas públicas',
+        'try_again' => 'Intentar de nuevo',
         // Additional order success translations
         'qr_code_for_restaurant' => 'Código QR para el Restaurante',
         'scan_qr_to_view_order' => 'Escanea este código para ver el pedido en el sistema',
@@ -495,6 +496,7 @@ function __($key, $default = '') {
         // Review error messages
         'error_loading_reviews' => 'Error loading reviews',
         'error_loading_public_reviews' => 'Error loading public reviews',
+        'try_again' => 'Try again',
         // Additional order success translations
         'qr_code_for_restaurant' => 'QR Code for Restaurant',
         'scan_qr_to_view_order' => 'Scan this code to view the order in the system',

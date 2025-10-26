@@ -58,7 +58,7 @@ function loadSiteReviews() {
         },
         error: function(xhr, status, error) {
             console.error('❌ Reviews Public: Error al cargar reseñas:', error);
-            showSiteReviewsError('Error al cargar las reseñas');
+            showSiteReviewsError(window.translations?.error_loading_public_reviews || 'Error al cargar las reseñas');
         }
     });
 }
@@ -140,10 +140,10 @@ function showSiteReviewsError(message) {
         <div class="col-12 text-center">
             <div class="error-state">
                 <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                <h4 class="text-warning">Error al cargar reseñas</h4>
+                <h4 class="text-warning">${window.translations?.error_loading_reviews || 'Error al cargar reseñas'}</h4>
                 <p class="text-muted">${message}</p>
                 <button class="btn btn-primary" onclick="loadSiteReviews()">
-                    <i class="fas fa-refresh me-2"></i>Intentar de nuevo
+                    <i class="fas fa-refresh me-2"></i>${window.translations?.try_again || 'Intentar de nuevo'}
                 </button>
             </div>
         </div>
