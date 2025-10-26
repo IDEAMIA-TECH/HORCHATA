@@ -133,7 +133,7 @@ include 'includes/header.php';
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-utensils me-2"></i>Items del Pedido
+                            <i class="fas fa-utensils me-2"></i><?php echo __('order_items'); ?>
                         </h5>
                     </div>
                     <div class="card-body">
@@ -178,23 +178,23 @@ include 'includes/header.php';
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-credit-card me-2"></i>Información de Pago
+                            <i class="fas fa-credit-card me-2"></i><?php echo __('payment_information'); ?>
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="text-muted">Método de Pago</h6>
+                                <h6 class="text-muted"><?php echo __('payment_method'); ?></h6>
                                 <p class="payment-method">
                                     <?php if ($order['payment_method'] === 'paypal'): ?>
                                         <i class="fab fa-paypal me-2 text-primary"></i>PayPal
                                     <?php else: ?>
-                                        <i class="fas fa-money-bill-wave me-2 text-success"></i>Pagar al Recoger
+                                        <i class="fas fa-money-bill-wave me-2 text-success"></i><?php echo __('pay_on_pickup'); ?>
                                     <?php endif; ?>
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="text-muted">Estado del Pago</h6>
+                                <h6 class="text-muted"><?php echo __('payment_status'); ?></h6>
                                 <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?> payment-status">
                                     <?php echo ucfirst($order['payment_status']); ?>
                                 </span>
@@ -228,17 +228,17 @@ include 'includes/header.php';
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <a href="index.php" class="btn btn-outline-primary btn-lg w-100">
-                                <i class="fas fa-home me-2"></i>Volver al Inicio
+                                <i class="fas fa-home me-2"></i><?php echo __('back_to_home'); ?>
                             </a>
                         </div>
                         <div class="col-md-4 mb-3">
                             <a href="menu.php" class="btn btn-outline-success btn-lg w-100">
-                                <i class="fas fa-utensils me-2"></i>Ver Menú
+                                <i class="fas fa-utensils me-2"></i><?php echo __('view_menu'); ?>
                             </a>
                         </div>
                         <div class="col-md-4 mb-3">
                             <button class="btn btn-primary btn-lg w-100" onclick="printOrder()">
-                                <i class="fas fa-print me-2"></i>Imprimir Pedido
+                                <i class="fas fa-print me-2"></i><?php echo __('print_order'); ?>
                             </button>
                         </div>
                     </div>
@@ -266,23 +266,23 @@ include 'includes/header.php';
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-phone me-2"></i>Información de Contacto
+                            <i class="fas fa-phone me-2"></i><?php echo __('contact_information'); ?>
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="text-muted">Teléfono</h6>
+                                <h6 class="text-muted"><?php echo __('phone'); ?></h6>
                                 <p><i class="fas fa-phone me-2"></i>(555) 123-4567</p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="text-muted">Email</h6>
+                                <h6 class="text-muted"><?php echo __('email'); ?></h6>
                                 <p><i class="fas fa-envelope me-2"></i>orders@horchatamexicanfood.com</p>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-12">
-                                <h6 class="text-muted">Dirección</h6>
+                                <h6 class="text-muted"><?php echo __('address'); ?></h6>
                                 <p><i class="fas fa-map-marker-alt me-2"></i>123 Main Street, Ciudad, Estado</p>
                             </div>
                         </div>
