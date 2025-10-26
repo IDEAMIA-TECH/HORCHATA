@@ -42,11 +42,21 @@
                             }
                         }
                         ?>
-                        <a href="<?php echo htmlspecialchars($facebook_url); ?>" class="footer-social me-3" <?php echo $facebook_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-facebook-f"></i></a>
-                        <a href="<?php echo htmlspecialchars($instagram_url); ?>" class="footer-social me-3" <?php echo $instagram_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-instagram"></i></a>
-                        <a href="<?php echo htmlspecialchars($twitter_url); ?>" class="footer-social me-3" <?php echo $twitter_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-twitter"></i></a>
-                        <a href="<?php echo htmlspecialchars($youtube_url); ?>" class="footer-social me-3" <?php echo $youtube_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-youtube"></i></a>
-                        <a href="<?php echo htmlspecialchars($yelp_url); ?>" class="footer-social" <?php echo $yelp_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-yelp"></i></a>
+                        <?php if ($facebook_url !== '#'): ?>
+                        <a href="<?php echo htmlspecialchars($facebook_url); ?>" class="footer-social me-3" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                        <?php endif; ?>
+                        <?php if ($instagram_url !== '#'): ?>
+                        <a href="<?php echo htmlspecialchars($instagram_url); ?>" class="footer-social me-3" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                        <?php endif; ?>
+                        <?php if ($twitter_url !== '#'): ?>
+                        <a href="<?php echo htmlspecialchars($twitter_url); ?>" class="footer-social me-3" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                        <?php endif; ?>
+                        <?php if ($youtube_url !== '#'): ?>
+                        <a href="<?php echo htmlspecialchars($youtube_url); ?>" class="footer-social me-3" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                        <?php endif; ?>
+                        <?php if ($yelp_url !== '#'): ?>
+                        <a href="<?php echo htmlspecialchars($yelp_url); ?>" class="footer-social" target="_blank" rel="noopener noreferrer"><i class="fab fa-yelp"></i></a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
