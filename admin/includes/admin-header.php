@@ -42,6 +42,10 @@
             <!-- Navigation Menu -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <?php
+                    // Obtener rol del usuario
+                    $user_role = $_SESSION['admin_role'] ?? 'staff';
+                    ?>
                     <li class="nav-item">
                         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>" href="dashboard.php">
                             <i class="fas fa-tachometer-alt me-1"></i>Dashboard
@@ -62,11 +66,13 @@
                             <i class="fas fa-star me-1"></i>Reseñas
                         </a>
                     </li>
+                    <?php if ($user_role === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>" href="reports.php">
                             <i class="fas fa-chart-bar me-1"></i>Reportes
                         </a>
                     </li>
+                    <?php endif; ?>
                 </ul>
                 
                 <!-- User Menu -->
@@ -131,6 +137,7 @@
                         <span class="badge bg-info ms-auto" id="pendingReviewsBadge">0</span>
                     </a>
                 </li>
+                <?php if ($user_role === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>" href="reports.php">
                         <i class="fas fa-chart-bar me-2"></i>Reportes
@@ -151,6 +158,7 @@
                         <i class="fas fa-cog me-2"></i>Configuración
                     </a>
                 </li>
+                <?php endif; ?>
             </ul>
         </nav>
     </div>

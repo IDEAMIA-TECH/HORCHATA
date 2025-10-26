@@ -12,6 +12,12 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit;
 }
 
+// Verificar que el usuario es administrador
+if (($_SESSION['admin_role'] ?? 'staff') !== 'admin') {
+    header('Location: dashboard.php');
+    exit;
+}
+
 // Incluir configuración
 require_once '../includes/db_connect.php';
 
