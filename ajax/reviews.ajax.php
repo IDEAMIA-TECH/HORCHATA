@@ -94,32 +94,33 @@ function submitReview() {
         throw new Exception('Ya existe una reseña para esta orden');
     }
     
+    // Obtener nombre del cliente desde la orden
+    $order_details = fetchOne("SELECT customer_name FROM orders WHERE id = ?", [$order['id']]);
+    $customer_name = $order_details['customer_name'] ?? 'Anonymous';
+    
     // Insertar reseña
     $sql = "INSERT INTO reviews (
         order_id, 
+        customer_name,
         rating, 
-        food_quality, 
-        preparation_time, 
-        presentation, 
-        service, 
-        comments, 
-        recommend, 
+        comment,
         is_approved, 
+        is_verified,
         created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())";
+    ) VALUES (?, ?, ?, ?, 1, 1, NOW())";
     
     $params = [
         $order['id'],
+        $customer_name,
         $rating,
-        0, // food_quality
-        0, // preparation_time
-        0, // presentation
-        0, // service
-        $review_text,
-        1 // recommend
+        $review_text
     ];
     
-    $review_id = insertAndGetId($sql, $params);
+    // Insertar reseña directamente
+    global $pdo;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $review_id = $pdo->lastInsertId();
     
     if (!$review_id) {
         throw new Exception('Error al guardar la reseña');
