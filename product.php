@@ -48,7 +48,7 @@ include 'includes/header.php';
 ?>
 
 <!-- Breadcrumb Navigation -->
-<nav aria-label="breadcrumb" class="py-3 bg-light">
+<nav aria-label="breadcrumb" class="py-3 bg-light" style="margin-top: 76px;">
     <div class="container">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="index.php"><?php echo __('home'); ?></a></li>
@@ -196,7 +196,8 @@ include 'includes/header.php';
                                     data-product-id="<?php echo $product['id']; ?>"
                                     data-product-name="<?php echo htmlspecialchars($product['name_' . getCurrentLanguage()]); ?>"
                                     data-product-price="<?php echo $product['price']; ?>"
-                                    data-product-image="<?php echo $product['image']; ?>">
+                                    data-product-image="<?php echo $product['image']; ?>"
+                                    data-bs-toggle="modal" data-bs-target="#customizeModal">
                                 <i class="fas fa-shopping-cart me-2"></i><?php echo __('add_to_cart'); ?>
                             </button>
                             <button class="btn btn-outline-primary btn-lg flex-md-fill" id="wishlistBtn">
@@ -205,52 +206,68 @@ include 'includes/header.php';
                         </div>
                     </div>
                     
-                    <!-- Additional Info -->
-                    <div class="product-additional-info mt-4">
-                        <div class="accordion" id="productAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="ingredientsHeader">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ingredients">
-                                        <i class="fas fa-list me-2"></i><?php echo __('ingredients'); ?>
-                                    </button>
-                                </h2>
-                                <div id="ingredients" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
-                                    <div class="accordion-body">
-                                        <?php if (!empty($product['ingredients'])): ?>
-                                            <?php echo nl2br(htmlspecialchars($product['ingredients'])); ?>
-                                        <?php else: ?>
-                                            <p><?php echo __('ingredients_description'); ?></p>
-                                            <ul class="list-unstyled">
-                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_1'); ?></li>
-                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_2'); ?></li>
-                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_3'); ?></li>
-                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_4'); ?></li>
-                                            </ul>
-                                        <?php endif; ?>
+                    <!-- Customize Modal -->
+                    <div class="modal fade" id="customizeModal" tabindex="-1" aria-labelledby="customizeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="customizeModalLabel">
+                                        <i class="fas fa-cog me-2"></i><?php echo __('customize_order'); ?>
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold"><?php echo __('special_instructions'); ?></label>
+                                        <textarea class="form-control" id="specialInstructions" rows="3" 
+                                                  placeholder="<?php echo __('special_instructions_placeholder'); ?>"></textarea>
+                                        <small class="text-muted"><?php echo __('special_instructions_help'); ?></small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold"><?php echo __('extras'); ?></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extraCheese" value="extra-cheese">
+                                            <label class="form-check-label" for="extraCheese">
+                                                <?php echo __('extra_cheese'); ?> (+ $2.00)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extraGuacamole" value="extra-guacamole">
+                                            <label class="form-check-label" for="extraGuacamole">
+                                                <?php echo __('extra_guacamole'); ?> (+ $3.00)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extraSourCream" value="extra-sour-cream">
+                                            <label class="form-check-label" for="extraSourCream">
+                                                <?php echo __('extra_sour_cream'); ?> (+ $2.00)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold"><?php echo __('spice_level'); ?></label>
+                                        <select class="form-select" id="spiceLevel">
+                                            <option value="mild"><?php echo __('mild'); ?></option>
+                                            <option value="medium" selected><?php echo __('medium'); ?></option>
+                                            <option value="hot"><?php echo __('hot'); ?></option>
+                                            <option value="extra-hot"><?php echo __('extra_hot'); ?></option>
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="nutritionHeader">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nutrition">
-                                        <i class="fas fa-chart-pie me-2"></i><?php echo __('nutritional_information'); ?>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <?php echo __('cancel'); ?>
                                     </button>
-                                </h2>
-                                <div id="nutrition" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
-                                    <div class="accordion-body">
-                                        <?php if (!empty($product['nutritional_info'])): ?>
-                                            <div class="row">
-                                                <?php echo nl2br(htmlspecialchars($product['nutritional_info'])); ?>
-                                            </div>
-                                        <?php else: ?>
-                                            <p><?php echo __('nutritional_info_default'); ?></p>
-                                        <?php endif; ?>
-                                    </div>
+                                    <button type="button" class="btn btn-primary" id="confirmAddToCart">
+                                        <i class="fas fa-check me-1"></i><?php echo __('add_to_cart'); ?>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -301,8 +318,6 @@ $(document).ready(function() {
     // Configurar botón de favoritos
     setupWishlist();
     
-    // Configurar galería de imágenes
-    setupImageGallery();
 });
 
 function setupQuantitySelector() {
@@ -325,25 +340,96 @@ function setupQuantitySelector() {
     });
 }
 
+let currentProduct = null;
+
 function setupAddToCart() {
-    $('.add-to-cart-btn').on('click', function() {
-        const productId = $(this).data('product-id');
-        const productName = $(this).data('product-name');
-        const productPrice = parseFloat($(this).data('product-price'));
-        const productImage = $(this).data('product-image');
+    $('.add-to-cart-btn').on('click', function(e) {
+        e.preventDefault();
+        
+        // Guardar información del producto para el modal
+        currentProduct = {
+            id: $(this).data('product-id'),
+            name: $(this).data('product-name'),
+            price: parseFloat($(this).data('product-price')),
+            image: $(this).data('product-image')
+        };
+    });
+    
+    // Confirmar agregar al carrito con personalización
+    $('#confirmAddToCart').on('click', function() {
+        if (!currentProduct) return;
+        
         const quantity = parseInt($('#productQuantity').val());
         
-        // Agregar producto al carrito con la cantidad especificada
+        // Obtener personalizaciones
+        const specialInstructions = $('#specialInstructions').val();
+        const extras = [];
+        if ($('#extraCheese').is(':checked')) extras.push({ name: 'Extra Cheese', price: 2.00 });
+        if ($('#extraGuacamole').is(':checked')) extras.push({ name: 'Extra Guacamole', price: 3.00 });
+        if ($('#extraSourCream').is(':checked')) extras.push({ name: 'Extra Sour Cream', price: 2.00 });
+        const spiceLevel = $('#spiceLevel').val();
+        
+        // Calcular precio adicional
+        let extrasPrice = 0;
+        extras.forEach(extra => extrasPrice += extra.price);
+        
+        // Agregar producto al carrito con personalización
         for (let i = 0; i < quantity; i++) {
-            addToCart(productId, productName, productPrice, productImage);
+            const productData = {
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price + extrasPrice,
+                image: currentProduct.image,
+                customizations: {
+                    specialInstructions: specialInstructions,
+                    extras: extras,
+                    spiceLevel: spiceLevel
+                }
+            };
+            
+            addToCartWithCustomization(productData);
         }
         
-        // Mostrar feedback visual
-        showCartFeedback($(this));
+        // Cerrar modal
+        $('#customizeModal').modal('hide');
         
         // Mostrar notificación
-        showNotification(`${quantity} ${productName} agregado(s) al carrito`, 'success');
+        showNotification(`${quantity} ${currentProduct.name} agregado(s) al carrito`, 'success');
+        
+        // Resetear modal
+        $('#specialInstructions').val('');
+        $('#extraCheese, #extraGuacamole, #extraSourCream').prop('checked', false);
+        $('#spiceLevel').val('medium');
     });
+}
+
+function addToCartWithCustomization(productData) {
+    let cart = getCartItems();
+    
+    // Generar un ID único que incluya las personalizaciones
+    const customId = productData.id + '_' + JSON.stringify(productData.customizations);
+    
+    const existingItem = cart.find(item => 
+        item.id === productData.id && 
+        JSON.stringify(item.customizations) === JSON.stringify(productData.customizations)
+    );
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: productData.id,
+            customId: customId,
+            name: productData.name,
+            price: productData.price,
+            image: productData.image,
+            quantity: 1,
+            customizations: productData.customizations
+        });
+    }
+    
+    saveCartToStorage(cart);
+    updateCartDisplay();
 }
 
 function setupWishlist() {
@@ -357,11 +443,6 @@ function setupWishlist() {
             showNotification('Removido de favoritos', 'info');
         }
     });
-}
-
-function setupImageGallery() {
-    // Si hay múltiples imágenes, configurar galería
-    // Por ahora, solo mostrar la imagen principal
 }
 
 // Funciones del carrito (ya definidas en main.js)

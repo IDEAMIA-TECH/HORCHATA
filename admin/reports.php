@@ -15,6 +15,66 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 // Incluir configuración
 require_once '../includes/db_connect.php';
 
+// Funciones auxiliares (definidas antes de uso)
+function getDashboardData($date_from, $date_to) {
+    global $pdo;
+    
+    try {
+        // Métricas principales
+        $stats = [
+            'total_orders' => fetchOne("SELECT COUNT(*) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0,
+            'total_revenue' => fetchOne("SELECT SUM(total) as total FROM orders WHERE payment_status = 'paid' AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['total'] ?? 0,
+            'total_customers' => fetchOne("SELECT COUNT(DISTINCT customer_email) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0,
+            'pending_orders' => fetchOne("SELECT COUNT(*) as count FROM orders WHERE status IN ('pending', 'confirmed', 'preparing', 'ready') AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0
+        ];
+        
+        return $stats;
+    } catch (Exception $e) {
+        error_log("Error en getDashboardData: " . $e->getMessage());
+        return [
+            'total_orders' => 0,
+            'total_revenue' => 0,
+            'total_customers' => 0,
+            'pending_orders' => 0
+        ];
+    }
+}
+
+function getStatusColor($status) {
+    switch ($status) {
+        case 'completed': return 'success';
+        case 'confirmed': return 'info';
+        case 'preparing': return 'warning';
+        case 'ready': return 'primary';
+        case 'cancelled': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function getReportData($type, $date_from, $date_to) {
+    global $pdo;
+    
+    try {
+        switch ($type) {
+            case 'dashboard':
+                return getDashboardData($date_from, $date_to);
+            case 'sales':
+                return fetchAll("SELECT * FROM orders WHERE DATE(created_at) BETWEEN ? AND ? ORDER BY created_at DESC", [$date_from, $date_to]);
+            case 'orders':
+                return fetchAll("SELECT * FROM orders WHERE DATE(created_at) BETWEEN ? AND ? ORDER BY created_at DESC", [$date_from, $date_to]);
+            case 'products':
+                return fetchAll("SELECT p.*, COUNT(oi.product_id) as order_count FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id LEFT JOIN orders o ON oi.order_id = o.id WHERE DATE(o.created_at) BETWEEN ? AND ? GROUP BY p.id ORDER BY order_count DESC", [$date_from, $date_to]);
+            case 'customers':
+                return fetchAll("SELECT customer_name, customer_email, COUNT(*) as order_count, SUM(total) as total_spent FROM orders WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY customer_email ORDER BY order_count DESC", [$date_from, $date_to]);
+            default:
+                return [];
+        }
+    } catch (Exception $e) {
+        error_log("Error en getReportData: " . $e->getMessage());
+        return [];
+    }
+}
+
 // Obtener parámetros
 $report_type = $_GET['type'] ?? 'dashboard';
 $date_from = $_GET['date_from'] ?? date('Y-m-01');
@@ -437,164 +497,6 @@ function exportReport() {
 </script>
 
 <?php
-// Funciones auxiliares
-function getReportData($type, $date_from, $date_to) {
-    global $pdo;
-    
-    switch ($type) {
-        case 'dashboard':
-            return getDashboardData($date_from, $date_to);
-        case 'sales':
-            return getSalesData($date_from, $date_to);
-        case 'orders':
-            return getOrdersData($date_from, $date_to);
-        case 'products':
-            return getProductsData();
-        case 'customers':
-            return getCustomersData($date_from, $date_to);
-        default:
-            return getDashboardData($date_from, $date_to);
-    }
-}
-
-function getDashboardData($date_from, $date_to) {
-    global $pdo;
-    
-    // Total revenue
-    $sql = "SELECT SUM(total) as total_revenue FROM orders 
-            WHERE created_at BETWEEN ? AND ? AND status != 'cancelled'";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    $revenue = $stmt->fetch()['total_revenue'] ?? 0;
-    
-    // Total orders
-    $sql = "SELECT COUNT(*) as total_orders FROM orders 
-            WHERE created_at BETWEEN ? AND ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    $orders = $stmt->fetch()['total_orders'] ?? 0;
-    
-    // Average order value
-    $avg_order_value = $orders > 0 ? $revenue / $orders : 0;
-    
-    // Total products
-    $sql = "SELECT COUNT(*) as total_products FROM products WHERE is_active = 1";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $products = $stmt->fetch()['total_products'] ?? 0;
-    
-    // Chart data (last 7 days)
-    $chart_labels = [];
-    $chart_data = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = date('Y-m-d', strtotime("-$i days"));
-        $chart_labels[] = date('M d', strtotime($date));
-        
-        $sql = "SELECT SUM(total) as daily_revenue FROM orders 
-                WHERE DATE(created_at) = ? AND status != 'cancelled'";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$date]);
-        $daily_revenue = $stmt->fetch()['daily_revenue'] ?? 0;
-        $chart_data[] = $daily_revenue;
-    }
-    
-    // Order status distribution
-    $sql = "SELECT status, COUNT(*) as count FROM orders 
-            WHERE created_at BETWEEN ? AND ? 
-            GROUP BY status";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    $status_data = $stmt->fetchAll();
-    
-    $status_labels = [];
-    $status_counts = [];
-    foreach ($status_data as $status) {
-        $status_labels[] = ucfirst($status['status']);
-        $status_counts[] = $status['count'];
-    }
-    
-    return [
-        'total_revenue' => $revenue,
-        'total_orders' => $orders,
-        'avg_order_value' => $avg_order_value,
-        'total_products' => $products,
-        'chart_labels' => $chart_labels,
-        'chart_data' => $chart_data,
-        'status_labels' => $status_labels,
-        'status_data' => $status_counts
-    ];
-}
-
-function getSalesData($date_from, $date_to) {
-    global $pdo;
-    
-    $sql = "SELECT DATE(created_at) as date, 
-                   COUNT(*) as orders,
-                   SUM(total) as revenue,
-                   AVG(total) as avg_order_value
-            FROM orders 
-            WHERE created_at BETWEEN ? AND ? AND status != 'cancelled'
-            GROUP BY DATE(created_at)
-            ORDER BY date DESC";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    return ['daily_sales' => $stmt->fetchAll()];
-}
-
-function getOrdersData($date_from, $date_to) {
-    global $pdo;
-    
-    $sql = "SELECT * FROM orders 
-            WHERE created_at BETWEEN ? AND ?
-            ORDER BY created_at DESC";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    return ['orders' => $stmt->fetchAll()];
-}
-
-function getProductsData() {
-    global $pdo;
-    
-    $sql = "SELECT p.*, c.name as category_name 
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            ORDER BY p.name";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    return ['products' => $stmt->fetchAll()];
-}
-
-function getCustomersData($date_from, $date_to) {
-    global $pdo;
-    
-    $sql = "SELECT customer_name, customer_email,
-                   COUNT(*) as order_count,
-                   SUM(total) as total_spent,
-                   MAX(created_at) as last_order
-            FROM orders 
-            WHERE created_at BETWEEN ? AND ?
-            GROUP BY customer_name, customer_email
-            ORDER BY total_spent DESC";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$date_from, $date_to]);
-    return ['customers' => $stmt->fetchAll()];
-}
-
-function getStatusColor($status) {
-    switch ($status) {
-        case 'completed': return 'success';
-        case 'confirmed': return 'info';
-        case 'preparing': return 'warning';
-        case 'ready': return 'primary';
-        case 'cancelled': return 'danger';
-        default: return 'secondary';
-    }
-}
-
 // Incluir footer del admin
 include 'includes/admin-footer.php';
 ?>

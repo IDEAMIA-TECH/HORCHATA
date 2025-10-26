@@ -212,7 +212,21 @@ function __($key, $default = '') {
         'favorites' => 'Favoritos',
         'related_products' => 'Productos Relacionados',
         'related_products_description' => 'Otros platillos de la misma categoría que podrían interesarte',
-        'view' => 'Ver'
+        'view' => 'Ver',
+        // Customize Modal
+        'customize_order' => 'Personalizar Pedido',
+        'special_instructions' => 'Instrucciones Especiales',
+        'special_instructions_placeholder' => 'Ej: Sin cebolla, sin tomate, sin cilantro...',
+        'special_instructions_help' => 'Agrega cualquier instrucción especial para tu pedido',
+        'extras' => 'Extras',
+        'extra_cheese' => 'Queso Extra',
+        'extra_guacamole' => 'Guacamole Extra',
+        'extra_sour_cream' => 'Crema Agria Extra',
+        'spice_level' => 'Nivel de Picante',
+        'mild' => 'Suave',
+        'hot' => 'Picante',
+        'extra_hot' => 'Extra Picante',
+        'cancel' => 'Cancelar'
     ];
     
     // Textos en inglés
@@ -394,7 +408,21 @@ function __($key, $default = '') {
         'favorites' => 'Favorites',
         'related_products' => 'Related Products',
         'related_products_description' => 'Other dishes from the same category that might interest you',
-        'view' => 'View'
+        'view' => 'View',
+        // Customize Modal
+        'customize_order' => 'Customize Order',
+        'special_instructions' => 'Special Instructions',
+        'special_instructions_placeholder' => 'E.g., No onion, no tomatoes, no cilantro...',
+        'special_instructions_help' => 'Add any special instructions for your order',
+        'extras' => 'Extras',
+        'extra_cheese' => 'Extra Cheese',
+        'extra_guacamole' => 'Extra Guacamole',
+        'extra_sour_cream' => 'Extra Sour Cream',
+        'spice_level' => 'Spice Level',
+        'mild' => 'Mild',
+        'hot' => 'Hot',
+        'extra_hot' => 'Extra Hot',
+        'cancel' => 'Cancel'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;
