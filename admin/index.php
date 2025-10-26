@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         body {
             font-family: 'Open Sans', sans-serif;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(255, 107, 53, 0.1));
+            background: #000000;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -199,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="login-container">
                     <!-- Header -->
                     <div class="login-header">
+                        <img src="../assets/images/LOGO.JPG" alt="Horchata Mexican Food" style="max-width: 200px; margin-bottom: 1rem;">
                         <h1>
                             <i class="fas fa-shield-alt me-2"></i>
                             Panel Administrativo
