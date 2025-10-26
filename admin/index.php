@@ -199,12 +199,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="login-container">
                     <!-- Header -->
                     <div class="login-header">
-                        <img src="../assets/images/LOGO.JPG" alt="Horchata Mexican Food" style="max-width: 200px; margin-bottom: 1rem;">
-                        <h1>
-                            <i class="fas fa-shield-alt me-2"></i>
-                            Panel Administrativo
-                        </h1>
-                        <p>Horchata Mexican Food</p>
+                        <img src="../assets/images/LOGO.JPG" alt="Horchata Mexican Food" 
+                             style="max-width: 200px; margin-bottom: 1rem; 
+                                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                                                0 5px 15px rgba(212, 175, 55, 0.3); 
+                                    border-radius: 10px;
+                                    background: rgba(255, 255, 255, 0.1);
+                                    padding: 5px;">
+                        <
                     </div>
                     
                     <!-- Login Form -->
