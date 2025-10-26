@@ -21,21 +21,52 @@ function getDashboardData($date_from, $date_to) {
     
     try {
         // Métricas principales
-        $stats = [
-            'total_orders' => fetchOne("SELECT COUNT(*) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0,
-            'total_revenue' => fetchOne("SELECT SUM(total) as total FROM orders WHERE payment_status = 'paid' AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['total'] ?? 0,
-            'total_customers' => fetchOne("SELECT COUNT(DISTINCT customer_email) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0,
-            'pending_orders' => fetchOne("SELECT COUNT(*) as count FROM orders WHERE status IN ('pending', 'confirmed', 'preparing', 'ready') AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0
-        ];
+        $total_revenue = fetchOne("SELECT SUM(total) as total FROM orders WHERE payment_status = 'paid' AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['total'] ?? 0;
+        $total_orders = fetchOne("SELECT COUNT(*) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0;
+        $total_customers = fetchOne("SELECT COUNT(DISTINCT customer_email) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0;
+        $pending_orders = fetchOne("SELECT COUNT(*) as count FROM orders WHERE status IN ('pending', 'confirmed', 'preparing', 'ready') AND DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to])['count'] ?? 0;
         
-        return $stats;
+        // Calcular promedio de orden
+        $avg_order_value = $total_orders > 0 ? ($total_revenue / $total_orders) : 0;
+        
+        // Contar productos totales
+        $total_products = fetchOne("SELECT COUNT(*) as count FROM products")['count'] ?? 0;
+        
+        // Datos para gráficas
+        $revenue_data = fetchAll("SELECT DATE(created_at) as date, SUM(total) as revenue FROM orders WHERE payment_status = 'paid' AND DATE(created_at) BETWEEN ? AND ? GROUP BY DATE(created_at) ORDER BY date ASC", [$date_from, $date_to]);
+        $chart_labels = array_map(function($row) { return date('M d', strtotime($row['date'])); }, $revenue_data);
+        $chart_data = array_map(function($row) { return $row['revenue']; }, $revenue_data);
+        
+        // Distribución de estados
+        $status_distribution = fetchAll("SELECT status, COUNT(*) as count FROM orders WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY status", [$date_from, $date_to]);
+        $status_labels = array_map(function($row) { return ucfirst($row['status']); }, $status_distribution);
+        $status_data = array_map(function($row) { return $row['count']; }, $status_distribution);
+        
+        return [
+            'total_orders' => $total_orders,
+            'total_revenue' => $total_revenue,
+            'total_customers' => $total_customers,
+            'pending_orders' => $pending_orders,
+            'avg_order_value' => $avg_order_value,
+            'total_products' => $total_products,
+            'chart_labels' => $chart_labels,
+            'chart_data' => $chart_data,
+            'status_labels' => $status_labels,
+            'status_data' => $status_data
+        ];
     } catch (Exception $e) {
         error_log("Error en getDashboardData: " . $e->getMessage());
         return [
             'total_orders' => 0,
             'total_revenue' => 0,
             'total_customers' => 0,
-            'pending_orders' => 0
+            'pending_orders' => 0,
+            'avg_order_value' => 0,
+            'total_products' => 0,
+            'chart_labels' => [],
+            'chart_data' => [],
+            'status_labels' => [],
+            'status_data' => []
         ];
     }
 }
