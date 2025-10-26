@@ -413,7 +413,14 @@ function applyFilters() {
 }
 
 function setupProductsTable() {
-    // DataTable ya se inicializa automáticamente
+    // Verificar si DataTable ya está inicializado
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#productsTable')) {
+        $('#productsTable').DataTable({
+            order: [[0, 'desc']],
+            pageLength: 25,
+            responsive: true
+        });
+    }
 }
 
 function previewImage(input) {
