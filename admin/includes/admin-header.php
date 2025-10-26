@@ -79,15 +79,17 @@
                 <div class="dropdown">
                     <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="fas fa-user me-1"></i>
-                        <?php echo htmlspecialchars($_SESSION['admin_name']); ?>
+                        <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="profile.php">
                             <i class="fas fa-user-cog me-2"></i>Perfil
                         </a></li>
+                        <?php if ($user_role === 'admin'): ?>
                         <li><a class="dropdown-item" href="settings.php">
                             <i class="fas fa-cog me-2"></i>Configuración
                         </a></li>
+                        <?php endif; ?>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../index.php" target="_blank">
                             <i class="fas fa-external-link-alt me-2"></i>Ver Sitio
