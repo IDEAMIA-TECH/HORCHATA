@@ -416,6 +416,17 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.product-actions .add-to-cart-btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+.product-actions .view-details-btn {
+    flex: 1;
+    min-width: 140px;
 }
 
 .add-to-cart-btn {

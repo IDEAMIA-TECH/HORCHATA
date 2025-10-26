@@ -210,9 +210,12 @@ function displayMenuContent(products, categoryId = null) {
                         <p class="product-description">${product.description || ''}</p>
                         <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                         <div class="product-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                            <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
                                 <i class="fas fa-plus me-2"></i>Agregar al Carrito
                             </button>
+                            <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
+                                <i class="fas fa-eye me-2"></i>Ver Detalles
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -260,9 +263,12 @@ function displayMenuContent(products, categoryId = null) {
                             <p class="product-description">${product.description || ''}</p>
                             <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                             <div class="product-actions">
-                                <button class="add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                                <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
                                     <i class="fas fa-plus me-2"></i>Agregar al Carrito
                                 </button>
+                                <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
+                                    <i class="fas fa-eye me-2"></i>Ver Detalles
+                                </a>
                             </div>
                         </div>
                     </div>
