@@ -197,7 +197,7 @@ function scanQR() {
     
     const video = document.getElementById('scanner-video');
     const canvas = document.getElementById('scanner-canvas');
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
     
     // Draw video frame to canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
