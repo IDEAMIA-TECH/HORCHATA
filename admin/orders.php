@@ -53,6 +53,13 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'view' ? 'Order Details' : 'Order Management';
+if ($action === 'view') {
+    $page_title = 'Order Details #' . ($order['order_number'] ?? $order_id);
+} elseif ($action === 'print') {
+    $page_title = 'Print Order - ' . ($order['order_number'] ?? $order_id);
+} else {
+    $page_title = 'Order Management';
+}
 $page_scripts = ['assets/js/orders.js'];
 
 // Incluir header del admin
@@ -283,6 +290,25 @@ include 'includes/admin-header.php';
     </div>
 
     <?php elseif ($action === 'view'): ?>
+    <!-- Action Buttons Header -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a href="orders.php" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Orders
+                </a>
+                <a href="orders.php?action=print&id=<?php echo $order_id; ?>" target="_blank" class="btn btn-outline-primary">
+                    <i class="fas fa-print me-1"></i>Print Order
+                </a>
+                <?php if (!empty($order['review_token'])): ?>
+                <a href="../reviews.php?token=<?php echo $order['review_token']; ?>" target="_blank" class="btn btn-outline-success">
+                    <i class="fas fa-star me-1"></i>View Review
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    
     <!-- Order Details -->
     <div class="row">
         <!-- Order Info -->
@@ -574,20 +600,78 @@ include 'includes/admin-header.php';
         }
         .print-container {
             margin: 0;
-            padding: 20px;
+            padding: 5px;
+            font-size: 10px !important;
         }
         body {
             background: white;
+            font-size: 10px !important;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            font-size: 14px !important;
+            margin: 0 !important;
+        }
+        h5 {
+            font-size: 11px !important;
+            margin: 5px 0 !important;
+        }
+        p {
+            margin: 2px 0 !important;
+            font-size: 9px !important;
+        }
+        .table {
+            font-size: 9px !important;
+        }
+        .table th, .table td {
+            padding: 2px 4px !important;
+            font-size: 8px !important;
+        }
+        .badge {
+            font-size: 8px !important;
+            padding: 2px 4px !important;
+        }
+        hr {
+            margin: 5px 0 !important;
+        }
+        .mb-4 {
+            margin-bottom: 5px !important;
+        }
+        .mt-5 {
+            margin-top: 10px !important;
+        }
+        .mb-3 {
+            margin-bottom: 3px !important;
+        }
+        .text-muted {
+            font-size: 8px !important;
+        }
+        .customizations-info {
+            font-size: 7px !important;
+        }
+        .customizations-info strong {
+            font-size: 7px !important;
         }
     }
     .print-container {
-        max-width: 800px;
+        max-width: 80mm;
         margin: 0 auto;
-        padding: 20px;
+        padding: 5px;
+        font-size: 10px;
     }
     .logo-img {
-        max-width: 200px;
+        max-width: 120px;
         height: auto;
+    }
+    .print-header {
+        margin-bottom: 5px;
+    }
+    .order-info h5,
+    .order-items h5,
+    .order-notes h5 {
+        font-size: 11px;
+        margin-bottom: 3px;
     }
     </style>
     
