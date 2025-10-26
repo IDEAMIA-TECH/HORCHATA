@@ -19,11 +19,12 @@
                         $instagram_url = '#';
                         $twitter_url = '#';
                         $youtube_url = '#';
+                        $yelp_url = '#';
                         
                         // Solo intentar obtener settings si $pdo está disponible
                         if (isset($pdo)) {
                             try {
-                                $sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('facebook_url', 'instagram_url', 'twitter_url', 'youtube_url')";
+                                $sql = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('facebook_url', 'instagram_url', 'twitter_url', 'youtube_url', 'yelp_url')";
                                 $stmt = $pdo->query($sql);
                                 $social_settings = [];
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -34,6 +35,7 @@
                                 $instagram_url = !empty($social_settings['instagram_url']) ? $social_settings['instagram_url'] : '#';
                                 $twitter_url = !empty($social_settings['twitter_url']) ? $social_settings['twitter_url'] : '#';
                                 $youtube_url = !empty($social_settings['youtube_url']) ? $social_settings['youtube_url'] : '#';
+                                $yelp_url = !empty($social_settings['yelp_url']) ? $social_settings['yelp_url'] : '#';
                             } catch (Exception $e) {
                                 // Si hay error, usar valores por defecto
                                 error_log("Error loading social media settings: " . $e->getMessage());
@@ -43,7 +45,8 @@
                         <a href="<?php echo htmlspecialchars($facebook_url); ?>" class="footer-social me-3" <?php echo $facebook_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-facebook-f"></i></a>
                         <a href="<?php echo htmlspecialchars($instagram_url); ?>" class="footer-social me-3" <?php echo $instagram_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-instagram"></i></a>
                         <a href="<?php echo htmlspecialchars($twitter_url); ?>" class="footer-social me-3" <?php echo $twitter_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-twitter"></i></a>
-                        <a href="<?php echo htmlspecialchars($youtube_url); ?>" class="footer-social" <?php echo $youtube_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-youtube"></i></a>
+                        <a href="<?php echo htmlspecialchars($youtube_url); ?>" class="footer-social me-3" <?php echo $youtube_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-youtube"></i></a>
+                        <a href="<?php echo htmlspecialchars($yelp_url); ?>" class="footer-social" <?php echo $yelp_url !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>><i class="fab fa-yelp"></i></a>
                     </div>
                 </div>
                 
