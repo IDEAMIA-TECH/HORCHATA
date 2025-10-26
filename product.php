@@ -306,9 +306,117 @@ include 'includes/header.php';
 </section>
 <?php endif; ?>
 
-<!-- JavaScript específico para la página de producto -->
+<!-- Estilos adicionales para la página de producto -->
+<style>
+.product-image-container {
+    position: sticky;
+    top: 100px;
+}
+
+.main-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.main-image img:hover {
+    transform: scale(1.02);
+}
+
+.product-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    line-height: 1.2;
+}
+
+.product-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.quantity-selector {
+    border: 2px solid var(--border-color);
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.quantity-btn {
+    border: none;
+    background: transparent;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.quantity-input {
+    border: none;
+    width: 60px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.quantity-input:focus {
+    box-shadow: none;
+    border: none;
+}
+
+.feature-item {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.product-additional-info .accordion-button {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.product-additional-info .accordion-button:not(.collapsed) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.related-products .product-card {
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .product-title {
+        font-size: 2rem;
+    }
+    
+    .product-price {
+        font-size: 1.5rem;
+    }
+    
+    .main-image img {
+        height: 300px;
+    }
+}
+</style>
+
+<?php
+// Incluir footer
+include 'includes/footer.php';
+?>
+
+<!-- JavaScript específico para la página de producto (después de footer para que jQuery esté cargado) -->
 <script>
 $(document).ready(function() {
+    console.log('jQuery loaded, initializing product page');
+    
     // Configurar selector de cantidad
     setupQuantitySelector();
     
@@ -513,109 +621,3 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 </script>
-
-<!-- Estilos adicionales para la página de producto -->
-<style>
-.product-image-container {
-    position: sticky;
-    top: 100px;
-}
-
-.main-image img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 15px;
-    transition: transform 0.3s ease;
-}
-
-.main-image img:hover {
-    transform: scale(1.02);
-}
-
-.product-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--dark-color);
-    line-height: 1.2;
-}
-
-.product-price {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.quantity-selector {
-    border: 2px solid var(--border-color);
-    border-radius: 25px;
-    overflow: hidden;
-}
-
-.quantity-btn {
-    border: none;
-    background: transparent;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.quantity-btn:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.quantity-input {
-    border: none;
-    width: 60px;
-    text-align: center;
-    font-weight: 600;
-}
-
-.quantity-input:focus {
-    box-shadow: none;
-    border: none;
-}
-
-.feature-item {
-    font-size: 0.9rem;
-    color: var(--text-light);
-}
-
-.product-additional-info .accordion-button {
-    font-weight: 600;
-    color: var(--dark-color);
-}
-
-.product-additional-info .accordion-button:not(.collapsed) {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.related-products .product-card {
-    height: 100%;
-}
-
-@media (max-width: 768px) {
-    .product-title {
-        font-size: 2rem;
-    }
-    
-    .product-price {
-        font-size: 1.5rem;
-    }
-    
-    .main-image img {
-        height: 300px;
-    }
-}
-</style>
-
-<?php
-// Incluir footer
-include 'includes/footer.php';
-?>
