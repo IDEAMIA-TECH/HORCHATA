@@ -198,7 +198,7 @@ include 'includes/admin-header.php';
         </div>
         <div class="card-body">
             <form id="productForm" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="<?php echo $action; ?>">
+                <input type="hidden" name="action" value="save_product">
                 <?php if ($action === 'edit'): ?>
                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                 <?php endif; ?>

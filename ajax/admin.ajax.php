@@ -30,8 +30,11 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 try {
     error_log("📥 AJAX Request - Method: " . $_SERVER['REQUEST_METHOD']);
-    error_log("📥 AJAX Request - POST data: " . print_r($_POST, true));
-    error_log("📥 AJAX Request - FILES data: " . print_r($_FILES, true));
+    error_log("📥 AJAX Request - POST keys: " . implode(', ', array_keys($_POST)));
+    error_log("📥 AJAX Request - FILES keys: " . implode(', ', array_keys($_FILES)));
+    if (!empty($_FILES)) {
+        error_log("📥 AJAX Request - FILES data: " . print_r($_FILES, true));
+    }
     
     $action = $_POST['action'] ?? $_GET['action'] ?? '';
     error_log("📥 AJAX Action: $action");
