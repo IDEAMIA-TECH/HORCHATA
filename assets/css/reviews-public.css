@@ -274,6 +274,7 @@
     font-weight: 700;
     position: relative;
     z-index: 2;
+    color: #ffd700 !important; /* Gold color */
 }
 
 .cta-description {

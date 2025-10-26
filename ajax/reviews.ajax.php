@@ -252,6 +252,8 @@ function getPublicReviews() {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 12;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     
+    error_log("🔥 getPublicReviews called with limit=$limit, offset=$offset");
+    
     try {
         // Obtener reseñas aprobadas
         $sql = "SELECT r.id, r.order_id, r.rating, r.comment, r.created_at, r.customer_name, 
@@ -262,11 +264,21 @@ function getPublicReviews() {
                 ORDER BY r.created_at DESC
                 LIMIT :limit OFFSET :offset";
         
+        error_log("🔥 SQL: " . $sql);
+        
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
+        
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("❌ SQL Error: " . print_r($errorInfo, true));
+            throw new Exception('Database error: ' . $errorInfo[2]);
+        }
+        
         $reviews = $stmt->fetchAll();
+        
+        error_log("🔥 Fetched " . count($reviews) . " reviews");
         
         // Obtener estadísticas
         $stats_sql = "SELECT 
@@ -291,7 +303,7 @@ function getPublicReviews() {
             ];
         }
         
-        echo json_encode([
+        $response = [
             'success' => true,
             'data' => $formatted_reviews,
             'stats' => [
@@ -303,7 +315,10 @@ function getPublicReviews() {
                 'offset' => $offset,
                 'has_more' => count($formatted_reviews) === $limit
             ]
-        ]);
+        ];
+        
+        error_log("🔥 Response prepared: " . json_encode($response));
+        echo json_encode($response);
         
     } catch (Exception $e) {
         error_log("Error en getPublicReviews: " . $e->getMessage());
