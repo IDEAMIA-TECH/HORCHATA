@@ -247,7 +247,15 @@ function __($key, $default = '') {
         'print_order' => 'Imprimir Pedido',
         'leave_review' => 'Deja una Reseña',
         'leave_review_message' => '¡Nos encantaría saber qué te pareció tu experiencia! Deja una reseña y ayuda a otros clientes.',
-        'write_review' => 'Escribir Reseña'
+        'write_review' => 'Escribir Reseña',
+        // Review Form
+        'rating' => 'Calificación',
+        'select_rating' => 'Selecciona una calificación',
+        'stars' => 'estrellas',
+        'star' => 'estrella',
+        'your_review' => 'Tu Reseña',
+        'write_your_review_here' => 'Escribe tu reseña aquí...',
+        'submit_review' => 'Enviar Reseña'
     ];
     
     // Textos en inglés
@@ -464,7 +472,15 @@ function __($key, $default = '') {
         'print_order' => 'Print Order',
         'leave_review' => 'Leave a Review',
         'leave_review_message' => 'We would love to hear about your experience! Leave a review and help other customers.',
-        'write_review' => 'Write Review'
+        'write_review' => 'Write Review',
+        // Review Form
+        'rating' => 'Rating',
+        'select_rating' => 'Select a rating',
+        'stars' => 'stars',
+        'star' => 'star',
+        'your_review' => 'Your Review',
+        'write_your_review_here' => 'Write your review here...',
+        'submit_review' => 'Submit Review'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

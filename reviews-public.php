@@ -8,6 +8,9 @@
 require_once 'includes/db_connect.php';
 require_once 'includes/init.php';
 
+// Obtener token de review si existe
+$review_token = $_GET['token'] ?? '';
+
 // Configurar página
 $page_title = __('reviews');
 $page_scripts = ['assets/js/reviews-public.js'];
@@ -32,6 +35,56 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+
+<?php if (!empty($review_token)): ?>
+<!-- Leave Review Section -->
+<section class="leave-review-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="text-center mb-4">
+                            <i class="fas fa-star me-2"></i><?php echo __('leave_review'); ?>
+                        </h3>
+                        <p class="text-center text-muted mb-4">
+                            <?php echo __('leave_review_message'); ?>
+                        </p>
+                        
+                        <form id="reviewForm">
+                            <input type="hidden" name="token" value="<?php echo htmlspecialchars($review_token); ?>">
+                            
+                            <div class="mb-3">
+                                <label for="rating" class="form-label"><?php echo __('rating'); ?></label>
+                                <select class="form-select" id="rating" name="rating" required>
+                                    <option value=""><?php echo __('select_rating'); ?></option>
+                                    <option value="5">⭐⭐⭐⭐⭐ (5 <?php echo __('stars'); ?>)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4 <?php echo __('stars'); ?>)</option>
+                                    <option value="3">⭐⭐⭐ (3 <?php echo __('stars'); ?>)</option>
+                                    <option value="2">⭐⭐ (2 <?php echo __('stars'); ?>)</option>
+                                    <option value="1">⭐ (1 <?php echo __('star'); ?>)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="review_text" class="form-label"><?php echo __('your_review'); ?></label>
+                                <textarea class="form-control" id="review_text" name="review_text" rows="5" 
+                                          placeholder="<?php echo __('write_your_review_here'); ?>" required></textarea>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i><?php echo __('submit_review'); ?>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 <!-- Reviews Tabs Section -->
 <section class="reviews-tabs-section py-5">
@@ -171,5 +224,36 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+
+<?php if (!empty($review_token)): ?>
+<script>
+$(document).ready(function() {
+    $('#reviewForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = $(this).serialize();
+        
+        $.ajax({
+            url: 'ajax/reviews.ajax.php',
+            method: 'POST',
+            data: formData + '&action=submit_review',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    alert('¡Gracias por tu reseña!');
+                    window.location.href = 'reviews-public.php';
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('Error al enviar la reseña. Por favor intenta de nuevo.');
+            }
+        });
+    });
+});
+</script>
+<?php endif; ?>
 
 <?php include 'includes/footer.php'; ?>
