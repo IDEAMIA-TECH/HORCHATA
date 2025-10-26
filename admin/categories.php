@@ -298,8 +298,8 @@ include 'includes/admin-header.php';
 <!-- JavaScript específico para categorías -->
 <script>
 $(document).ready(function() {
-    // Configurar DataTable
-    if ($.fn.DataTable) {
+    // Verificar si DataTable ya está inicializado
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#categoriesTable')) {
         $('#categoriesTable').DataTable({
             "pageLength": 25,
             "order": [[0, "desc"]],

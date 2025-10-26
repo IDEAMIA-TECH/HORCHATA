@@ -408,8 +408,8 @@ include 'includes/admin-header.php';
 <!-- JavaScript específico para usuarios -->
 <script>
 $(document).ready(function() {
-    // Configurar DataTable
-    if ($.fn.DataTable) {
+    // Verificar si DataTable ya está inicializado
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#usersTable')) {
         $('#usersTable').DataTable({
             "pageLength": 25,
             "order": [[0, "desc"]],
