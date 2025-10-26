@@ -318,7 +318,67 @@ $(document).ready(function() {
     // Configurar botón de favoritos
     setupWishlist();
     
+    // Delegar evento al botón de confirmar en el modal (para asegurar que funciona)
+    $(document).on('click', '#confirmAddToCart', function() {
+        console.log('Confirm Add to Cart clicked (delegated)');
+        handleConfirmAddToCart();
+    });
 });
+
+function handleConfirmAddToCart() {
+    console.log('Current Product:', currentProduct);
+    
+    if (!currentProduct) {
+        console.log('No current product');
+        return;
+    }
+    
+    const quantity = parseInt($('#productQuantity').val());
+    console.log('Quantity:', quantity);
+    
+    // Obtener personalizaciones
+    const specialInstructions = $('#specialInstructions').val();
+    const extras = [];
+    if ($('#extraCheese').is(':checked')) extras.push({ name: 'Extra Cheese', price: 2.00 });
+    if ($('#extraGuacamole').is(':checked')) extras.push({ name: 'Extra Guacamole', price: 3.00 });
+    if ($('#extraSourCream').is(':checked')) extras.push({ name: 'Extra Sour Cream', price: 2.00 });
+    const spiceLevel = $('#spiceLevel').val();
+    
+    console.log('Customizations:', { specialInstructions, extras, spiceLevel });
+    
+    // Calcular precio adicional
+    let extrasPrice = 0;
+    extras.forEach(extra => extrasPrice += extra.price);
+    
+    // Agregar producto al carrito con personalización
+    for (let i = 0; i < quantity; i++) {
+        const productData = {
+            id: currentProduct.id,
+            name: currentProduct.name,
+            price: currentProduct.price + extrasPrice,
+            image: currentProduct.image,
+            customizations: {
+                specialInstructions: specialInstructions,
+                extras: extras,
+                spiceLevel: spiceLevel
+            }
+        };
+        
+        console.log('Adding to cart:', productData);
+        addToCartWithCustomization(productData);
+    }
+    
+    // Cerrar modal
+    $('#customizeModal').modal('hide');
+    
+    // Mostrar notificación
+    showNotification(`${quantity} ${currentProduct.name} agregado(s) al carrito`, 'success');
+    
+    // Resetear modal
+    $('#specialInstructions').val('');
+    $('#extraCheese, #extraGuacamole, #extraSourCream').prop('checked', false);
+    $('#spiceLevel').val('medium');
+}
 
 function setupQuantitySelector() {
     $('.quantity-btn').on('click', function() {
@@ -344,8 +404,6 @@ let currentProduct = null;
 
 function setupAddToCart() {
     $('.add-to-cart-btn').on('click', function(e) {
-        e.preventDefault();
-        
         // Guardar información del producto para el modal
         currentProduct = {
             id: $(this).data('product-id'),
@@ -353,53 +411,10 @@ function setupAddToCart() {
             price: parseFloat($(this).data('product-price')),
             image: $(this).data('product-image')
         };
-    });
-    
-    // Confirmar agregar al carrito con personalización
-    $('#confirmAddToCart').on('click', function() {
-        if (!currentProduct) return;
         
-        const quantity = parseInt($('#productQuantity').val());
+        console.log('Add to Cart button clicked, currentProduct set:', currentProduct);
         
-        // Obtener personalizaciones
-        const specialInstructions = $('#specialInstructions').val();
-        const extras = [];
-        if ($('#extraCheese').is(':checked')) extras.push({ name: 'Extra Cheese', price: 2.00 });
-        if ($('#extraGuacamole').is(':checked')) extras.push({ name: 'Extra Guacamole', price: 3.00 });
-        if ($('#extraSourCream').is(':checked')) extras.push({ name: 'Extra Sour Cream', price: 2.00 });
-        const spiceLevel = $('#spiceLevel').val();
-        
-        // Calcular precio adicional
-        let extrasPrice = 0;
-        extras.forEach(extra => extrasPrice += extra.price);
-        
-        // Agregar producto al carrito con personalización
-        for (let i = 0; i < quantity; i++) {
-            const productData = {
-                id: currentProduct.id,
-                name: currentProduct.name,
-                price: currentProduct.price + extrasPrice,
-                image: currentProduct.image,
-                customizations: {
-                    specialInstructions: specialInstructions,
-                    extras: extras,
-                    spiceLevel: spiceLevel
-                }
-            };
-            
-            addToCartWithCustomization(productData);
-        }
-        
-        // Cerrar modal
-        $('#customizeModal').modal('hide');
-        
-        // Mostrar notificación
-        showNotification(`${quantity} ${currentProduct.name} agregado(s) al carrito`, 'success');
-        
-        // Resetear modal
-        $('#specialInstructions').val('');
-        $('#extraCheese, #extraGuacamole, #extraSourCream').prop('checked', false);
-        $('#spiceLevel').val('medium');
+        // NO hacer nada más - dejar que Bootstrap maneje el modal
     });
 }
 
