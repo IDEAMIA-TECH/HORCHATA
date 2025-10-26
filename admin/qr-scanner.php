@@ -50,9 +50,13 @@ include 'includes/admin-header.php';
                 </div>
                 <div class="card-body text-center">
                     <!-- Camera Preview -->
-                    <div id="scanner-container" class="mb-3">
-                        <video id="scanner-video" width="100%" height="400" style="border-radius: 10px; background: #000;"></video>
+                    <div id="scanner-container" class="mb-3" style="position: relative; width: 100%; max-width: 500px; margin: 0 auto;">
+                        <video id="scanner-video" autoplay playsinline style="width: 100%; height: auto; border-radius: 10px; background: #000; display: none;"></video>
                         <canvas id="scanner-canvas" style="display: none;"></canvas>
+                        <div id="scanner-placeholder" style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; flex-direction: column;">
+                            <i class="fas fa-camera fa-3x mb-3"></i>
+                            <p>Click "Start Scanner" to begin</p>
+                        </div>
                     </div>
                     
                     <!-- Manual Input -->
@@ -116,16 +120,27 @@ let scannerStream = null;
 function startScanner() {
     const video = document.getElementById('scanner-video');
     const canvas = document.getElementById('scanner-canvas');
-    const context = canvas.getContext('2d');
+    const placeholder = document.getElementById('scanner-placeholder');
+    
+    console.log('Starting scanner...');
     
     // Get camera stream
     navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } // Use back camera on mobile
+        video: { 
+            facingMode: 'environment', // Use back camera on mobile
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        } 
     })
     .then(function(stream) {
+        console.log('Camera access granted');
         scannerActive = true;
         scannerStream = stream;
         video.srcObject = stream;
+        
+        // Show video and hide placeholder
+        video.style.display = 'block';
+        placeholder.style.display = 'none';
         
         // Show/hide buttons
         document.getElementById('startScannerBtn').style.display = 'none';
@@ -140,15 +155,20 @@ function startScanner() {
             canvas.height = video.videoHeight;
             scanQR();
         };
+        
+        video.onplay = function() {
+            console.log('Video is playing');
+        };
     })
     .catch(function(error) {
         console.error('Error accessing camera:', error);
-        document.getElementById('scanner-status-text').textContent = 'Error: Could not access camera. Please check permissions.';
+        document.getElementById('scanner-status-text').textContent = 'Error: Could not access camera. Please check permissions. Error: ' + error.message;
         document.getElementById('scanner-status').querySelector('.alert').className = 'alert alert-danger';
     });
 }
 
 function stopScanner() {
+    console.log('Stopping scanner...');
     scannerActive = false;
     
     if (scannerStream) {
@@ -156,7 +176,11 @@ function stopScanner() {
     }
     
     const video = document.getElementById('scanner-video');
+    const placeholder = document.getElementById('scanner-placeholder');
+    
     video.srcObject = null;
+    video.style.display = 'none';
+    placeholder.style.display = 'flex';
     
     // Show/hide buttons
     document.getElementById('startScannerBtn').style.display = 'inline-block';
