@@ -3,6 +3,32 @@
  * Funcionalidades principales del sitio
  */
 
+/**
+ * Obtener idioma actual
+ */
+function getLanguage() {
+    // Primero verificar el atributo lang del HTML
+    const htmlLang = document.documentElement.lang;
+    if (htmlLang && (htmlLang === 'en' || htmlLang === 'es')) {
+        return htmlLang;
+    }
+    
+    // Si no, verificar localStorage
+    const storedLang = localStorage.getItem('horchata_language');
+    if (storedLang && (storedLang === 'en' || storedLang === 'es')) {
+        return storedLang;
+    }
+    
+    // Si no hay nada, usar el idioma del navegador
+    const browserLang = navigator.language || navigator.userLanguage;
+    if (browserLang.startsWith('en')) {
+        return 'en';
+    }
+    
+    // Por defecto español
+    return 'es';
+}
+
 $(document).ready(function() {
     // Inicializar funcionalidades
     initCart();
