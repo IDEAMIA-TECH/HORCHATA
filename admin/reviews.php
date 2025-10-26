@@ -373,7 +373,7 @@ function refreshReviews() {
 function approveReview(reviewId) {
     if (confirm('Are you sure you want to approve this review?')) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'approve_review',
@@ -398,7 +398,7 @@ function approveReview(reviewId) {
 function rejectReview(reviewId) {
     if (confirm('Are you sure you want to reject this review?')) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'reject_review',
@@ -423,7 +423,7 @@ function rejectReview(reviewId) {
 function deleteReview(reviewId) {
     if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'delete_review',

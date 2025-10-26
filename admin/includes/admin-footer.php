@@ -50,7 +50,7 @@
     
     function loadPendingNotifications() {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'GET',
             data: { action: 'get_notifications' },
             dataType: 'json',

@@ -744,7 +744,7 @@ function setupOrdersTable() {
 function updateOrderStatus(orderId, newStatus) {
     if (confirm(`¿Cambiar el estado del pedido a ${newStatus}?`)) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'update_order_status',
@@ -797,7 +797,7 @@ function markOrderAsPaid() {
     
     if (confirm(`Mark order #${orderId} as paid with ${paymentMethod} for $${paymentAmount}?`)) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'mark_order_paid',

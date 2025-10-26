@@ -923,7 +923,7 @@ function saveAllSettings() {
         const formData = new FormData(form[0]);
         
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: formData,
             processData: false,

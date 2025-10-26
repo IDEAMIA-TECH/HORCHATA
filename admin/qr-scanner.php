@@ -277,7 +277,7 @@ function loadOrder(searchValue) {
     
     // Load order via AJAX
     $.ajax({
-        url: 'ajax/admin.ajax.php',
+        url: '../ajax/admin.ajax.php',
         method: 'POST',
         data: {
             action: 'search_order',

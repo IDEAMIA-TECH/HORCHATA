@@ -372,7 +372,7 @@ function submitProductForm() {
     const formData = new FormData($('#productForm')[0]);
     
     $.ajax({
-        url: 'ajax/admin.ajax.php',
+        url: '../ajax/admin.ajax.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -437,7 +437,7 @@ function toggleProductStatus(productId, newStatus) {
     });
     
     $.ajax({
-        url: 'ajax/admin.ajax.php',
+        url: '../ajax/admin.ajax.php',
         method: 'POST',
         data: {
             action: 'toggle_product_status',
@@ -465,7 +465,7 @@ function toggleProductStatus(productId, newStatus) {
 function deleteProduct(productId, productName) {
     if (confirm(`¿Estás seguro de que quieres eliminar "${productName}"? Esta acción no se puede deshacer.`)) {
         $.ajax({
-            url: 'ajax/admin.ajax.php',
+            url: '../ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'delete_product',
