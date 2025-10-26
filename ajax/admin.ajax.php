@@ -74,6 +74,9 @@ try {
         case 'get_order_details':
             getOrderDetails();
             break;
+        case 'search_order':
+            searchOrder();
+            break;
         case 'delete_element':
             deleteElement();
             break;
@@ -603,6 +606,41 @@ function getOrderDetails() {
         ]);
     } catch (Exception $e) {
         error_log("Error in getOrderDetails: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+function searchOrder() {
+    global $pdo;
+    $search_value = trim($_POST['search_value'] ?? '');
+    
+    if (empty($search_value)) {
+        throw new Exception('Please provide an order number or ID');
+    }
+    
+    try {
+        // Try to find by order_number first, then by ID
+        $order = fetchOne("
+            SELECT o.*, COUNT(oi.id) as item_count
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.order_number = ? OR o.id = ?
+            GROUP BY o.id
+        ", [$search_value, (int)$search_value]);
+        
+        if (!$order) {
+            throw new Exception('Order not found. Please check the order number or ID.');
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'order' => $order
+        ]);
+    } catch (Exception $e) {
+        error_log("Error in searchOrder: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()

@@ -61,14 +61,15 @@ include 'includes/admin-header.php';
                     
                     <!-- Manual Input -->
                     <div class="mb-3">
-                        <label for="order-id-input" class="form-label">Or Enter Order ID Manually</label>
+                        <label for="order-id-input" class="form-label">Search by Order Number or ID</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="order-id-input" 
-                                   placeholder="Enter order ID" min="1">
+                            <input type="text" class="form-control" id="order-id-input" 
+                                   placeholder="Enter order number (e.g., HOR202510264726) or ID">
                             <button class="btn btn-primary" onclick="loadOrderManually()">
-                                <i class="fas fa-search me-1"></i>Load Order
+                                <i class="fas fa-search me-1"></i>Search Order
                             </button>
                         </div>
+                        <small class="text-muted">You can enter the order number (like HOR202510264726) or the numeric order ID</small>
                     </div>
                     
                     <!-- Scanner Controls -->
@@ -210,16 +211,41 @@ function scanQR() {
     if (code) {
         console.log('QR Code detected:', code.data);
         
-        // Parse the URL to get order ID
-        const url = new URL(code.data);
-        const orderId = url.searchParams.get('id');
-        
-        if (orderId) {
-            loadOrder(orderId);
-        } else {
-            console.error('No order ID found in QR code');
-            document.getElementById('scanner-status-text').textContent = 'Invalid QR code. No order ID found.';
-            document.getElementById('scanner-status').querySelector('.alert').className = 'alert alert-warning';
+        try {
+            // Parse the URL to get order ID
+            const url = new URL(code.data);
+            const orderId = url.searchParams.get('order_id') || url.searchParams.get('id');
+            
+            if (orderId) {
+                console.log('Order ID found:', orderId);
+                loadOrder(orderId);
+            } else {
+                // Try to extract ID from URL path if it's a direct URL
+                console.log('No order ID in query params, trying to extract from URL...');
+                const urlPath = url.pathname;
+                console.log('URL path:', urlPath);
+                
+                // If it's already a valid URL to the scanner page, just reload with order_id
+                if (urlPath.includes('qr-scanner')) {
+                    const currentOrderId = url.searchParams.get('order_id');
+                    if (currentOrderId) {
+                        console.log('Loading order from URL:', currentOrderId);
+                        loadOrder(currentOrderId);
+                    } else {
+                        console.error('No order ID found in QR code URL');
+                        document.getElementById('scanner-status-text').textContent = 'Invalid QR code. No order ID found.';
+                        document.getElementById('scanner-status').querySelector('.alert').className = 'alert alert-warning';
+                    }
+                } else {
+                    // Fallback: try to extract the whole string
+                    console.log('Trying to use full URL as search value');
+                    loadOrder(code.data);
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing QR code URL:', error);
+            // Try to load the entire QR code data as a search value
+            loadOrder(code.data);
         }
         
         stopScanner();
@@ -229,13 +255,13 @@ function scanQR() {
     }
 }
 
-function loadOrder(orderId) {
-    if (!orderId) {
-        orderId = document.getElementById('order-id-input').value;
+function loadOrder(searchValue) {
+    if (!searchValue) {
+        searchValue = document.getElementById('order-id-input').value.trim();
     }
     
-    if (!orderId) {
-        alert('Please enter an order ID');
+    if (!searchValue) {
+        alert('Please enter an order number or ID');
         return;
     }
     
@@ -254,8 +280,8 @@ function loadOrder(orderId) {
         url: '../ajax/admin.ajax.php',
         method: 'POST',
         data: {
-            action: 'get_order_details',
-            order_id: orderId
+            action: 'search_order',
+            search_value: searchValue
         },
         dataType: 'json',
         success: function(response) {
@@ -265,16 +291,17 @@ function loadOrder(orderId) {
                 document.getElementById('order-preview').innerHTML = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        ${response.message || 'Error loading order'}
+                        ${response.message || 'Order not found'}
                     </div>
                 `;
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
             document.getElementById('order-preview').innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Could not connect to server
+                    Could not connect to server: ${error}
                 </div>
             `;
         }
