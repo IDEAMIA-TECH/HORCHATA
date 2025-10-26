@@ -254,7 +254,8 @@ function getPublicReviews() {
     
     try {
         // Obtener reseñas aprobadas
-        $sql = "SELECT r.*, o.customer_name, o.customer_email, o.order_number
+        $sql = "SELECT r.id, r.order_id, r.rating, r.comment, r.created_at, r.customer_name, 
+                       COALESCE(o.order_number, 'N/A') as order_number
                 FROM reviews r
                 LEFT JOIN orders o ON r.order_id = o.id
                 WHERE r.is_approved = 1
@@ -268,8 +269,7 @@ function getPublicReviews() {
         // Obtener estadísticas
         $stats_sql = "SELECT 
                         COUNT(*) as total_reviews,
-                        AVG(rating) as avg_rating,
-                        COUNT(CASE WHEN recommend = 1 THEN 1 END) as recommendations
+                        AVG(rating) as avg_rating
                       FROM reviews 
                       WHERE is_approved = 1";
         
@@ -282,14 +282,9 @@ function getPublicReviews() {
             $formatted_reviews[] = [
                 'id' => $review['id'],
                 'rating' => (int)$review['rating'],
-                'food_quality' => (int)$review['food_quality'],
-                'preparation_time' => (int)$review['preparation_time'],
-                'presentation' => (int)$review['presentation'],
-                'service' => (int)$review['service'],
-                'comments' => $review['comments'],
-                'recommend' => (bool)$review['recommend'],
-                'customer_name' => $review['customer_name'] ?: 'Cliente Anónimo',
-                'order_number' => $review['order_number'],
+                'comment' => $review['comment'] ?? '',
+                'customer_name' => $review['customer_name'] ?: 'Anonymous Customer',
+                'order_number' => $review['order_number'] ?? '',
                 'created_at' => $review['created_at']
             ];
         }
@@ -299,8 +294,7 @@ function getPublicReviews() {
             'data' => $formatted_reviews,
             'stats' => [
                 'total_reviews' => (int)$stats['total_reviews'],
-                'avg_rating' => $stats['avg_rating'] ? round($stats['avg_rating'], 2) : 0,
-                'recommendations' => (int)$stats['recommendations']
+                'avg_rating' => $stats['avg_rating'] ? round($stats['avg_rating'], 2) : 0
             ],
             'pagination' => [
                 'limit' => $limit,
