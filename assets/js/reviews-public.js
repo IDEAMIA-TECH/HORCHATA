@@ -28,6 +28,15 @@ function initReviewsPublicPage() {
  * Cargar reseñas del sitio
  */
 function loadSiteReviews() {
+    // Verificar si hay token en la URL (significa que el usuario quiere dejar una reseña)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    
+    if (token) {
+        console.log('🌟 Reviews Public: Hay token en la URL, saltando carga de reseñas');
+        return;
+    }
+    
     console.log('🌟 Reviews Public: Cargando reseñas del sitio...');
     
     $.ajax({

@@ -203,6 +203,7 @@ include 'includes/header.php';
     </div>
 </section>
 
+<?php if (empty($review_token)): ?>
 <!-- Call to Action Section -->
 <section class="cta-section py-5">
     <div class="container">
@@ -224,6 +225,7 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <?php if (!empty($review_token)): ?>
 <script>
