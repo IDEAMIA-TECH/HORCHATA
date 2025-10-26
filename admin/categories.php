@@ -350,7 +350,7 @@ function autoSaveCategory() {
     formData.append('action', 'auto_save_category');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'ajax/admin.ajax.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -376,7 +376,7 @@ function saveCategory() {
     submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'ajax/admin.ajax.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -406,7 +406,7 @@ function toggleCategoryStatus(categoryId, newStatus) {
     
     if (confirm(`Are you sure you want to ${action} this category?`)) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'toggle_category_status',
@@ -432,7 +432,7 @@ function toggleCategoryStatus(categoryId, newStatus) {
 function deleteCategory(categoryId) {
     if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'delete_category',

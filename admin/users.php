@@ -460,7 +460,7 @@ function autoSaveUser() {
     formData.append('action', 'auto_save_user');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'ajax/admin.ajax.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -486,7 +486,7 @@ function saveUser() {
     submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'ajax/admin.ajax.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -516,7 +516,7 @@ function toggleUserStatus(userId, newStatus) {
     
     if (confirm(`Are you sure you want to ${action} this user?`)) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'toggle_user_status',
@@ -542,7 +542,7 @@ function toggleUserStatus(userId, newStatus) {
 function deleteUser(userId) {
     if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'ajax/admin.ajax.php',
             method: 'POST',
             data: {
                 action: 'delete_user',
