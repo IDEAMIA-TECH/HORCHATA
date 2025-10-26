@@ -339,9 +339,11 @@ include 'includes/admin-header.php';
 <!-- JavaScript específico para reseñas -->
 <script>
 $(document).ready(function() {
-    // Verificar si DataTable ya está inicializado
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#reviewsTable')) {
-        $('#reviewsTable').DataTable({
+    // Prevenir múltiples inicializaciones con un flag
+    if (!window.reviewsTableInitialized) {
+        // Verificar si DataTable ya está inicializado
+        if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#reviewsTable')) {
+            $('#reviewsTable').DataTable({
             "pageLength": 25,
             "order": [[0, "desc"]],
             "language": {
@@ -358,7 +360,9 @@ $(document).ready(function() {
                     "previous": "Previous"
                 }
             }
-        });
+            });
+            window.reviewsTableInitialized = true;
+        }
     }
 });
 

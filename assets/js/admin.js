@@ -30,19 +30,26 @@ function initAdminPanel() {
  */
 function setupDataTables() {
     if ($.fn.DataTable) {
-        $('.data-table').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
-            },
-            responsive: true,
-            pageLength: 25,
-            order: [[0, 'desc']],
-            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                 '<"row"<"col-sm-12"tr>>' +
-                 '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            columnDefs: [
-                { orderable: false, targets: -1 }
-            ]
+        $('.data-table').each(function() {
+            const tableId = $(this).attr('id');
+            
+            // Solo inicializar si no está inicializado y tiene un ID específico
+            if (tableId && !$.fn.DataTable.isDataTable('#' + tableId)) {
+                $(this).DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                    },
+                    responsive: true,
+                    pageLength: 25,
+                    order: [[0, 'desc']],
+                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                         '<"row"<"col-sm-12"tr>>' +
+                         '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    columnDefs: [
+                        { orderable: false, targets: -1 }
+                    ]
+                });
+            }
         });
     }
 }

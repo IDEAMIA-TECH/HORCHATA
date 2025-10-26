@@ -408,26 +408,30 @@ include 'includes/admin-header.php';
 <!-- JavaScript específico para usuarios -->
 <script>
 $(document).ready(function() {
-    // Verificar si DataTable ya está inicializado
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#usersTable')) {
-        $('#usersTable').DataTable({
-            "pageLength": 25,
-            "order": [[0, "desc"]],
-            "language": {
-                "lengthMenu": "Show _MENU_ users per page",
-                "zeroRecords": "No users found",
-                "info": "Showing _START_ to _END_ of _TOTAL_ users",
-                "infoEmpty": "No users available",
-                "infoFiltered": "(filtered from _MAX_ total users)",
-                "search": "Search:",
-                "paginate": {
-                    "first": "First",
-                    "last": "Last",
-                    "next": "Next",
-                    "previous": "Previous"
+    // Prevenir múltiples inicializaciones con un flag
+    if (!window.usersTableInitialized) {
+        // Verificar si DataTable ya está inicializado
+        if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#usersTable')) {
+            $('#usersTable').DataTable({
+                "pageLength": 25,
+                "order": [[0, "desc"]],
+                "language": {
+                    "lengthMenu": "Show _MENU_ users per page",
+                    "zeroRecords": "No users found",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ users",
+                    "infoEmpty": "No users available",
+                    "infoFiltered": "(filtered from _MAX_ total users)",
+                    "search": "Search:",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
                 }
-            }
-        });
+            });
+            window.usersTableInitialized = true;
+        }
     }
     
     // Configurar formulario

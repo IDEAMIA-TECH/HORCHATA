@@ -193,7 +193,26 @@ function __($key, $default = '') {
         'scalable_text' => 'Texto escalable sin pérdida de funcionalidad',
         'hierarchical_content' => 'Contenido organizado jerárquicamente',
         'report_accessibility_issues' => 'Reportar Problemas de Accesibilidad',
-        'report_accessibility_description' => 'Si experimentas dificultades para acceder a cualquier parte de nuestro sitio web, o si tienes sugerencias para mejorar la accesibilidad, por favor contáctanos:'
+        'report_accessibility_description' => 'Si experimentas dificultades para acceder a cualquier parte de nuestro sitio web, o si tienes sugerencias para mejorar la accesibilidad, por favor contáctanos:',
+        // Product Detail Page
+        'quantity' => 'Cantidad',
+        'ingredients' => 'Ingredientes',
+        'nutritional_information' => 'Información Nutricional',
+        'preparation_time' => 'Tiempo de preparación',
+        'spicy_level' => 'Nivel de picante',
+        'preparation_time_default' => 'Tiempo de preparación: 15-20 min',
+        'spicy_level_default' => 'Nivel de picante: Medio',
+        'traditional_recipe' => 'Receta tradicional',
+        'ingredients_description' => 'Ingredientes frescos seleccionados cuidadosamente para garantizar la mejor calidad y sabor auténtico.',
+        'fresh_ingredients_list_1' => 'Carne de res premium',
+        'fresh_ingredients_list_2' => 'Cebolla y ajo frescos',
+        'fresh_ingredients_list_3' => 'Especias tradicionales',
+        'fresh_ingredients_list_4' => 'Tortillas de maíz',
+        'nutritional_info_default' => 'La información nutricional detallada no está disponible para este producto.',
+        'favorites' => 'Favoritos',
+        'related_products' => 'Productos Relacionados',
+        'related_products_description' => 'Otros platillos de la misma categoría que podrían interesarte',
+        'view' => 'Ver'
     ];
     
     // Textos en inglés
@@ -356,7 +375,26 @@ function __($key, $default = '') {
         'scalable_text' => 'Scalable text without loss of functionality',
         'hierarchical_content' => 'Hierarchically organized content',
         'report_accessibility_issues' => 'Report Accessibility Issues',
-        'report_accessibility_description' => 'If you experience difficulties accessing any part of our website, or if you have suggestions to improve accessibility, please contact us:'
+        'report_accessibility_description' => 'If you experience difficulties accessing any part of our website, or if you have suggestions to improve accessibility, please contact us:',
+        // Product Detail Page
+        'quantity' => 'Quantity',
+        'ingredients' => 'Ingredients',
+        'nutritional_information' => 'Nutritional Information',
+        'preparation_time' => 'Preparation time',
+        'spicy_level' => 'Spicy level',
+        'preparation_time_default' => 'Preparation time: 15-20 min',
+        'spicy_level_default' => 'Spicy level: Medium',
+        'traditional_recipe' => 'Traditional recipe',
+        'ingredients_description' => 'Fresh ingredients carefully selected to ensure the best quality and authentic flavor.',
+        'fresh_ingredients_list_1' => 'Premium beef',
+        'fresh_ingredients_list_2' => 'Fresh onion and garlic',
+        'fresh_ingredients_list_3' => 'Traditional spices',
+        'fresh_ingredients_list_4' => 'Corn tortillas',
+        'nutritional_info_default' => 'Detailed nutritional information is not available for this product.',
+        'favorites' => 'Favorites',
+        'related_products' => 'Related Products',
+        'related_products_description' => 'Other dishes from the same category that might interest you',
+        'view' => 'View'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

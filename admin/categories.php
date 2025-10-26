@@ -298,9 +298,11 @@ include 'includes/admin-header.php';
 <!-- JavaScript específico para categorías -->
 <script>
 $(document).ready(function() {
-    // Verificar si DataTable ya está inicializado
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#categoriesTable')) {
-        $('#categoriesTable').DataTable({
+    // Prevenir múltiples inicializaciones con un flag
+    if (!window.categoriesTableInitialized) {
+        // Verificar si DataTable ya está inicializado
+        if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#categoriesTable')) {
+            $('#categoriesTable').DataTable({
             "pageLength": 25,
             "order": [[0, "desc"]],
             "language": {
@@ -317,7 +319,9 @@ $(document).ready(function() {
                     "previous": "Previous"
                 }
             }
-        });
+            });
+            window.categoriesTableInitialized = true;
+        }
     }
     
     // Configurar formulario

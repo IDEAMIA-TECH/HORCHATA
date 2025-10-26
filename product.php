@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Obtener ID del producto
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -39,7 +40,7 @@ $related_products = fetchAll("
 ", [$product['category_id'], $product_id]);
 
 // Configurar página
-$page_title = $product['name_en'];
+$page_title = $product['name_' . getCurrentLanguage()];
 $page_scripts = ['assets/js/product.js'];
 
 // Incluir header
@@ -50,10 +51,10 @@ include 'includes/header.php';
 <nav aria-label="breadcrumb" class="py-3 bg-light">
     <div class="container">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="menu.php">Menú</a></li>
-            <li class="breadcrumb-item"><a href="menu.php?category=<?php echo $product['category_id']; ?>"><?php echo $product['category_name']; ?></a></li>
-            <li class="breadcrumb-item active" aria-current="page"><?php echo $product['name_en']; ?></li>
+            <li class="breadcrumb-item"><a href="index.php"><?php echo __('home'); ?></a></li>
+            <li class="breadcrumb-item"><a href="menu.php"><?php echo __('menu'); ?></a></li>
+            <li class="breadcrumb-item"><a href="menu.php?category=<?php echo $product['category_id']; ?>"><?php echo $product['category_name_' . getCurrentLanguage()]; ?></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><?php echo $product['name_' . getCurrentLanguage()]; ?></li>
         </ol>
     </div>
 </nav>
@@ -87,12 +88,12 @@ include 'includes/header.php';
                     <!-- Category Badge -->
                     <div class="mb-3">
                         <span class="badge bg-primary-custom fs-6 px-3 py-2">
-                            <i class="fas fa-utensils me-1"></i><?php echo $product['category_name']; ?>
+                            <i class="fas fa-utensils me-1"></i><?php echo $product['category_name_' . getCurrentLanguage()]; ?>
                         </span>
                     </div>
                     
                     <!-- Product Title -->
-                    <h1 class="product-title mb-3"><?php echo htmlspecialchars($product['name_en']); ?></h1>
+                    <h1 class="product-title mb-3"><?php echo htmlspecialchars($product['name_' . getCurrentLanguage()]); ?></h1>
                     
                     <!-- Price -->
                     <div class="product-price mb-4">
@@ -101,44 +102,80 @@ include 'includes/header.php';
                     
                     <!-- Description -->
                     <div class="product-description mb-4">
-                        <p class="lead"><?php echo htmlspecialchars($product['description_en']); ?></p>
+                        <p class="lead"><?php echo htmlspecialchars($product['description_' . getCurrentLanguage()]); ?></p>
                     </div>
                     
-                    <!-- Product Features -->
+                    <!-- Product Features (opcional - mostrar solo si hay datos específicos) -->
+                    <?php if (!empty($product['preparation_time']) || !empty($product['spicy_level']) || !empty($product['dietary_info'])): ?>
                     <div class="product-features mb-4">
                         <div class="row">
+                            <?php if (!empty($product['preparation_time'])): ?>
                             <div class="col-6">
                                 <div class="feature-item d-flex align-items-center mb-2">
                                     <i class="fas fa-clock text-primary me-2"></i>
-                                    <span>Tiempo de preparación: 15-20 min</span>
+                                    <span><?php echo __('preparation_time'); ?>: <?php echo $product['preparation_time']; ?></span>
                                 </div>
                             </div>
+                            <?php endif; ?>
+                            <?php if (!empty($product['spicy_level'])): ?>
                             <div class="col-6">
                                 <div class="feature-item d-flex align-items-center mb-2">
                                     <i class="fas fa-fire text-primary me-2"></i>
-                                    <span>Nivel de picante: Medio</span>
+                                    <span><?php echo __('spicy_level'); ?>: <?php echo $product['spicy_level']; ?></span>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <div class="col-6">
                                 <div class="feature-item d-flex align-items-center mb-2">
                                     <i class="fas fa-leaf text-primary me-2"></i>
-                                    <span>Ingredientes frescos</span>
+                                    <span><?php echo __('fresh_ingredients'); ?></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="feature-item d-flex align-items-center mb-2">
                                     <i class="fas fa-heart text-primary me-2"></i>
-                                    <span>Receta tradicional</span>
+                                    <span><?php echo __('traditional_recipe'); ?></span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <?php else: ?>
+                    <!-- Default features -->
+                    <div class="product-features mb-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="feature-item d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <span><?php echo __('preparation_time_default'); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-item d-flex align-items-center mb-2">
+                                    <i class="fas fa-fire text-primary me-2"></i>
+                                    <span><?php echo __('spicy_level_default'); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-item d-flex align-items-center mb-2">
+                                    <i class="fas fa-leaf text-primary me-2"></i>
+                                    <span><?php echo __('fresh_ingredients'); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-item d-flex align-items-center mb-2">
+                                    <i class="fas fa-heart text-primary me-2"></i>
+                                    <span><?php echo __('traditional_recipe'); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     
                     <!-- Quantity and Add to Cart -->
                     <div class="add-to-cart-section">
                         <div class="row align-items-center mb-4">
                             <div class="col-auto">
-                                <label class="form-label fw-bold">Cantidad:</label>
+                                <label class="form-label fw-bold"><?php echo __('quantity'); ?>:</label>
                             </div>
                             <div class="col-auto">
                                 <div class="quantity-selector d-flex align-items-center">
@@ -157,13 +194,13 @@ include 'includes/header.php';
                         <div class="d-grid gap-2 d-md-flex">
                             <button class="btn btn-primary btn-lg flex-md-fill add-to-cart-btn" 
                                     data-product-id="<?php echo $product['id']; ?>"
-                                    data-product-name="<?php echo htmlspecialchars($product['name_en']); ?>"
+                                    data-product-name="<?php echo htmlspecialchars($product['name_' . getCurrentLanguage()]); ?>"
                                     data-product-price="<?php echo $product['price']; ?>"
                                     data-product-image="<?php echo $product['image']; ?>">
-                                <i class="fas fa-shopping-cart me-2"></i>Agregar al Carrito
+                                <i class="fas fa-shopping-cart me-2"></i><?php echo __('add_to_cart'); ?>
                             </button>
                             <button class="btn btn-outline-primary btn-lg flex-md-fill" id="wishlistBtn">
-                                <i class="fas fa-heart me-2"></i>Favoritos
+                                <i class="fas fa-heart me-2"></i><?php echo __('favorites'); ?>
                             </button>
                         </div>
                     </div>
@@ -174,18 +211,22 @@ include 'includes/header.php';
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="ingredientsHeader">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ingredients">
-                                        <i class="fas fa-list me-2"></i>Ingredientes
+                                        <i class="fas fa-list me-2"></i><?php echo __('ingredients'); ?>
                                     </button>
                                 </h2>
                                 <div id="ingredients" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
                                     <div class="accordion-body">
-                                        <p>Ingredientes frescos seleccionados cuidadosamente para garantizar la mejor calidad y sabor auténtico.</p>
-                                        <ul class="list-unstyled">
-                                            <li><i class="fas fa-check text-success me-2"></i>Carne de res premium</li>
-                                            <li><i class="fas fa-check text-success me-2"></i>Cebolla y ajo frescos</li>
-                                            <li><i class="fas fa-check text-success me-2"></i>Especias tradicionales</li>
-                                            <li><i class="fas fa-check text-success me-2"></i>Tortillas de maíz</li>
-                                        </ul>
+                                        <?php if (!empty($product['ingredients'])): ?>
+                                            <?php echo nl2br(htmlspecialchars($product['ingredients'])); ?>
+                                        <?php else: ?>
+                                            <p><?php echo __('ingredients_description'); ?></p>
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_1'); ?></li>
+                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_2'); ?></li>
+                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_3'); ?></li>
+                                                <li><i class="fas fa-check text-success me-2"></i><?php echo __('fresh_ingredients_list_4'); ?></li>
+                                            </ul>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -193,25 +234,18 @@ include 'includes/header.php';
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="nutritionHeader">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nutrition">
-                                        <i class="fas fa-chart-pie me-2"></i>Información Nutricional
+                                        <i class="fas fa-chart-pie me-2"></i><?php echo __('nutritional_information'); ?>
                                     </button>
                                 </h2>
                                 <div id="nutrition" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
                                     <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <strong>Calorías:</strong> 450 kcal
+                                        <?php if (!empty($product['nutritional_info'])): ?>
+                                            <div class="row">
+                                                <?php echo nl2br(htmlspecialchars($product['nutritional_info'])); ?>
                                             </div>
-                                            <div class="col-6">
-                                                <strong>Proteínas:</strong> 25g
-                                            </div>
-                                            <div class="col-6">
-                                                <strong>Carbohidratos:</strong> 35g
-                                            </div>
-                                            <div class="col-6">
-                                                <strong>Grasas:</strong> 20g
-                                            </div>
-                                        </div>
+                                        <?php else: ?>
+                                            <p><?php echo __('nutritional_info_default'); ?></p>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -228,8 +262,8 @@ include 'includes/header.php';
 <section class="py-5 bg-light">
     <div class="container">
         <div class="section-header">
-            <h2>Productos Relacionados</h2>
-            <p>Otros platillos de la misma categoría que podrían interesarte</p>
+            <h2><?php echo __('related_products'); ?></h2>
+            <p><?php echo __('related_products_description'); ?></p>
         </div>
         
         <div class="row" id="relatedProducts">
@@ -237,13 +271,13 @@ include 'includes/header.php';
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="product-card">
                     <div class="product-image" style="background-image: url('<?php echo $related['image'] ?: 'assets/images/placeholder.jpg'; ?>')"></div>
-                    <div class="product-info">
-                        <h5 class="product-title"><?php echo htmlspecialchars($related['name_en']); ?></h5>
-                        <p class="product-description"><?php echo htmlspecialchars(substr($related['description_en'], 0, 100)) . '...'; ?></p>
+                        <div class="product-info">
+                        <h5 class="product-title"><?php echo htmlspecialchars($related['name_' . getCurrentLanguage()]); ?></h5>
+                        <p class="product-description"><?php echo htmlspecialchars(substr($related['description_' . getCurrentLanguage()], 0, 100)) . '...'; ?></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="product-price">$<?php echo number_format($related['price'], 2); ?></span>
                             <a href="product.php?id=<?php echo $related['id']; ?>" class="btn btn-primary btn-sm">
-                                <i class="fas fa-eye me-1"></i>Ver
+                                <i class="fas fa-eye me-1"></i><?php echo __('view'); ?>
                             </a>
                         </div>
                     </div>
