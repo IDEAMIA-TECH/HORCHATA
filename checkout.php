@@ -4,12 +4,14 @@
  * Integración con PayPal
  */
 
+// Iniciar sesión primero (necesario para el sistema de idiomas)
+session_start();
+
 // Incluir configuración
 require_once 'includes/db_connect.php';
 require_once 'includes/init.php';
 
 // Verificar que hay productos en el carrito
-session_start();
 $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
 // Si no hay productos, redirigir al menú
@@ -43,8 +45,18 @@ $paypal_client_id = getSetting('paypal_client_id', '');
 $paypal_mode = getSetting('paypal_mode', 'sandbox');
 $currency = getSetting('currency', 'USD');
 
+// Obtener configuraciones de Wire Transfer
+$wire_transfer_enabled = getSetting('wire_transfer_enabled', '0') === '1';
+$wire_transfer_bank_name = getSetting('wire_transfer_bank_name', '');
+$wire_transfer_account_holder = getSetting('wire_transfer_account_holder', '');
+$wire_transfer_account_number = getSetting('wire_transfer_account_number', '');
+$wire_transfer_routing_number = getSetting('wire_transfer_routing_number', '');
+$wire_transfer_direct_deposit_routing_number = getSetting('wire_transfer_direct_deposit_routing_number', '');
+$wire_transfer_swift_code = getSetting('wire_transfer_swift_code', '');
+$wire_transfer_instructions = getSetting('wire_transfer_instructions', '');
+
 // Configurar página
-$page_title = 'Checkout';
+$page_title = __('finish_order');
 $page_scripts = [
     'assets/js/checkout.js'
 ];
@@ -66,35 +78,35 @@ include 'includes/header.php';
             <div class="col-lg-8">
                 <div class="checkout-form">
                     <h2 class="mb-4">
-                        <i class="fas fa-shopping-cart me-2"></i>Finalizar Pedido
+                        <i class="fas fa-shopping-cart me-2"></i><?php echo __('finish_order'); ?>
                     </h2>
                     
                     <!-- Customer Information -->
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-user me-2"></i>Información del Cliente
+                                <i class="fas fa-user me-2"></i><?php echo __('customer_information'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
                             <form id="customerForm">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="firstName" class="form-label">Nombre *</label>
+                                        <label for="firstName" class="form-label"><?php echo __('first_name'); ?> *</label>
                                         <input type="text" class="form-control" id="firstName" name="first_name" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="lastName" class="form-label">Apellido *</label>
+                                        <label for="lastName" class="form-label"><?php echo __('last_name'); ?> *</label>
                                         <input type="text" class="form-control" id="lastName" name="last_name" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Correo Electrónico *</label>
+                                        <label for="email" class="form-label"><?php echo __('email_address'); ?> *</label>
                                         <input type="email" class="form-control" id="email" name="email" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="phone" class="form-label">Teléfono *</label>
+                                        <label for="phone" class="form-label"><?php echo __('phone_number'); ?> *</label>
                                         <input type="tel" class="form-control" id="phone" name="phone" required>
                                     </div>
                                 </div>
@@ -106,19 +118,19 @@ include 'includes/header.php';
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-clock me-2"></i>Información de Pickup
+                                <i class="fas fa-clock me-2"></i><?php echo __('pickup_information'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="pickupDate" class="form-label">Fecha de Pickup *</label>
+                                    <label for="pickupDate" class="form-label"><?php echo __('pickup_date'); ?> *</label>
                                     <input type="date" class="form-control" id="pickupDate" name="pickup_date" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="pickupTime" class="form-label">Hora de Pickup *</label>
+                                    <label for="pickupTime" class="form-label"><?php echo __('pickup_time'); ?> *</label>
                                     <select class="form-select" id="pickupTime" name="pickup_time" required>
-                                        <option value="">Seleccionar hora</option>
+                                        <option value=""><?php echo __('select_time'); ?></option>
                                         <option value="11:00">11:00 AM</option>
                                         <option value="11:30">11:30 AM</option>
                                         <option value="12:00">12:00 PM</option>
@@ -144,8 +156,8 @@ include 'includes/header.php';
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="specialInstructions" class="form-label">Instrucciones Especiales</label>
-                                <textarea class="form-control" id="specialInstructions" name="special_instructions" rows="3" placeholder="Alergias, modificaciones, etc."></textarea>
+                                <label for="specialInstructions" class="form-label"><?php echo __('special_instructions'); ?></label>
+                                <textarea class="form-control" id="specialInstructions" name="special_instructions" rows="3" placeholder="<?php echo __('allergies_modifications'); ?>"></textarea>
                             </div>
                         </div>
                     </div>
@@ -154,7 +166,7 @@ include 'includes/header.php';
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-credit-card me-2"></i>Método de Pago
+                                <i class="fas fa-credit-card me-2"></i><?php echo __('payment_method'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -164,18 +176,108 @@ include 'includes/header.php';
                                     <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal" checked>
                                     <label class="form-check-label" for="paypal">
                                         <i class="fab fa-paypal me-2 text-primary"></i>PayPal
-                                        <small class="text-muted d-block">Paga de forma segura con PayPal</small>
+                                        <small class="text-muted d-block"><?php echo __('pay_safely_paypal'); ?></small>
                                     </label>
                                 </div>
                                 <?php endif; ?>
+                                
+                                <?php 
+                                $wire_transfer_checked = '';
+                                if (!$paypal_enabled || empty($paypal_client_id)) {
+                                    if ($wire_transfer_enabled && !empty($wire_transfer_account_number)) {
+                                        $wire_transfer_checked = 'checked';
+                                    }
+                                }
+                                ?>
+                                <?php if ($wire_transfer_enabled && !empty($wire_transfer_account_number)): ?>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="wire_transfer" value="wire_transfer" <?php echo $wire_transfer_checked; ?>>
+                                    <label class="form-check-label" for="wire_transfer">
+                                        <i class="fas fa-university me-2 text-info"></i><?php echo __('wire_transfer'); ?>
+                                        <small class="text-muted d-block"><?php echo __('wire_transfer_description'); ?></small>
+                                    </label>
+                                </div>
+                                <?php endif; ?>
+                                
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="pickup_payment" value="pickup" <?php echo (!$paypal_enabled || empty($paypal_client_id)) ? 'checked' : ''; ?>>
+                                    <?php 
+                                    $pickup_checked = '';
+                                    if (!$paypal_enabled || empty($paypal_client_id)) {
+                                        if (!$wire_transfer_enabled || empty($wire_transfer_account_number)) {
+                                            $pickup_checked = 'checked';
+                                        }
+                                    }
+                                    ?>
+                                    <input class="form-check-input" type="radio" name="payment_method" id="pickup_payment" value="pickup" <?php echo $pickup_checked; ?>>
                                     <label class="form-check-label" for="pickup_payment">
-                                        <i class="fas fa-money-bill-wave me-2 text-success"></i>Pagar al Recoger
-                                        <small class="text-muted d-block">Efectivo, tarjeta o PayPal al recoger</small>
+                                        <i class="fas fa-money-bill-wave me-2 text-success"></i><?php echo __('pay_on_pickup'); ?>
+                                        <small class="text-muted d-block"><?php echo __('cash_card_paypal_pickup'); ?></small>
                                     </label>
                                 </div>
                             </div>
+                            
+                            <!-- Wire Transfer Information (mostrar cuando se selecciona) -->
+                            <?php if ($wire_transfer_enabled && !empty($wire_transfer_account_number)): ?>
+                            <div id="wireTransferInfo" class="wire-transfer-info mt-4" style="display: none;">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-university me-2"></i><?php echo __('wire_transfer_information'); ?>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('bank_name'); ?>:</strong>
+                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_bank_name); ?></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('account_holder'); ?>:</strong>
+                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_account_holder); ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('account_number'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_account_number); ?></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('routing_number_wire'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_routing_number); ?></p>
+                                            </div>
+                                        </div>
+                                        <?php if (!empty($wire_transfer_direct_deposit_routing_number)): ?>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('routing_number_direct_deposit'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_direct_deposit_routing_number); ?></p>
+                                                <small class="text-muted"><?php echo __('for_direct_deposit'); ?></small>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($wire_transfer_swift_code)): ?>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong><?php echo __('swift_code'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_swift_code); ?></p>
+                                                <small class="text-muted"><?php echo __('for_international_wires'); ?></small>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($wire_transfer_instructions)): ?>
+                                        <div class="mb-3">
+                                            <strong><?php echo __('wire_transfer_instructions'); ?>:</strong>
+                                            <p class="mb-0"><?php echo nl2br(htmlspecialchars($wire_transfer_instructions)); ?></p>
+                                        </div>
+                                        <?php endif; ?>
+                                        <div class="alert alert-warning mb-0">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong><?php echo __('important'); ?>:</strong> <?php echo __('wire_transfer_note'); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -187,7 +289,7 @@ include 'includes/header.php';
                     <div class="card">
                         <div class="card-header">
                             <h5 class="mb-0">
-                                <i class="fas fa-receipt me-2"></i>Resumen del Pedido
+                                <i class="fas fa-receipt me-2"></i><?php echo __('order_summary'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -198,7 +300,7 @@ include 'includes/header.php';
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div class="item-info">
                                             <h6 class="mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                            <small class="text-muted">Cantidad: <?php echo $item['quantity']; ?></small>
+                                            <small class="text-muted"><?php echo __('quantity'); ?>: <?php echo $item['quantity']; ?></small>
                                         </div>
                                         <div class="item-price">
                                             <strong>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></strong>
@@ -231,16 +333,16 @@ include 'includes/header.php';
                             <!-- Order Totals -->
                             <div class="order-totals">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal:</span>
+                                    <span><?php echo __('subtotal'); ?>:</span>
                                     <span>$<?php echo number_format($subtotal, 2); ?></span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Impuestos (8.25%):</span>
+                                    <span><?php echo __('tax_percentage'); ?>:</span>
                                     <span>$<?php echo number_format($tax, 2); ?></span>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <strong>Total:</strong>
+                                    <strong><?php echo __('total'); ?>:</strong>
                                     <strong class="text-primary">$<?php echo number_format($total, 2); ?></strong>
                                 </div>
                             </div>
@@ -252,14 +354,14 @@ include 'includes/header.php';
                             
                             <!-- Place Order Button -->
                             <button class="btn btn-primary btn-lg w-100" id="placeOrderBtn">
-                                <i class="fas fa-check me-2"></i>Confirmar Pedido
+                                <i class="fas fa-check me-2"></i><?php echo __('confirm_order'); ?>
                             </button>
                             
                             <!-- Security Notice -->
                             <div class="security-notice mt-3">
                                 <small class="text-muted">
                                     <i class="fas fa-lock me-1"></i>
-                                    Tu información está protegida con encriptación SSL
+                                    <?php echo __('ssl_protected'); ?>
                                 </small>
                             </div>
                         </div>
@@ -277,6 +379,16 @@ const paypalEnabled = <?php echo $paypal_enabled && !empty($paypal_client_id) ? 
 const paypalMode = '<?php echo htmlspecialchars($paypal_mode); ?>';
 const currency = '<?php echo htmlspecialchars($currency); ?>';
 
+// Traducciones para JavaScript
+const translations = {
+    complete_all_fields: '<?php echo __('complete_all_fields'); ?>',
+    paypal_error: '<?php echo __('error'); ?>: ',
+    processing: '<?php echo __('processing'); ?>',
+    confirm_order: '<?php echo __('confirm_order'); ?>',
+    error_processing_order: '<?php echo __('error_processing_order'); ?>',
+    connection_error: '<?php echo __('connection_error'); ?>'
+};
+
 $(document).ready(function() {
     // Configurar fecha mínima (hoy)
     const today = new Date().toISOString().split('T')[0];
@@ -292,6 +404,23 @@ $(document).ready(function() {
     
     // Configurar método de pago
     setupPaymentMethod();
+    
+    // Configurar botón de confirmar pedido
+    $('#placeOrderBtn').on('click', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            const paymentMethod = $('input[name="payment_method"]:checked').val();
+            
+            if (paymentMethod === 'paypal' && paypalEnabled) {
+                // No hacer nada, PayPal maneja su propio flujo
+                return;
+            } else {
+                // Procesar pedido (wire_transfer o pickup)
+                processOrderWithoutPayPal();
+            }
+        }
+    });
 });
 
 function setupPayPal() {
@@ -315,7 +444,7 @@ function setupPayPal() {
                 });
             },
             onError: function(err) {
-                showNotification('Error con PayPal: ' + err.message, 'error');
+                showNotification(translations.paypal_error + err.message, 'error');
             }
         }).render('#paypal-button-container');
     }
@@ -333,6 +462,10 @@ function setupCheckoutForm() {
                 // Mostrar botón de PayPal
                 $('#paypal-button-container').show();
                 $('#placeOrderBtn').hide();
+            } else if (paymentMethod === 'wire_transfer') {
+                // Mostrar información de Wire Transfer
+                $('#wireTransferInfo').show();
+                $('#placeOrderBtn').show();
             } else {
                 // Procesar pedido sin PayPal
                 processOrderWithoutPayPal();
@@ -345,11 +478,17 @@ function setupPaymentMethod() {
     $('input[name="payment_method"]').on('change', function() {
         const paymentMethod = $(this).val();
         
+        // Ocultar todos los paneles primero
+        $('#paypal-button-container').hide();
+        $('#wireTransferInfo').hide();
+        
         if (paymentMethod === 'paypal' && paypalEnabled) {
             $('#paypal-button-container').show();
             $('#placeOrderBtn').hide();
+        } else if (paymentMethod === 'wire_transfer') {
+            $('#wireTransferInfo').show();
+            $('#placeOrderBtn').show();
         } else {
-            $('#paypal-button-container').hide();
             $('#placeOrderBtn').show();
         }
     });
@@ -359,8 +498,14 @@ function setupPaymentMethod() {
     if (selectedPayment === 'paypal' && paypalEnabled) {
         $('#paypal-button-container').show();
         $('#placeOrderBtn').hide();
+        $('#wireTransferInfo').hide();
+    } else if (selectedPayment === 'wire_transfer') {
+        $('#wireTransferInfo').show();
+        $('#paypal-button-container').hide();
+        $('#placeOrderBtn').show();
     } else {
         $('#paypal-button-container').hide();
+        $('#wireTransferInfo').hide();
         $('#placeOrderBtn').show();
     }
 }
@@ -388,7 +533,7 @@ function validateForm() {
     }
     
     if (!isValid) {
-        showNotification('Por favor, completa todos los campos requeridos', 'error');
+        showNotification(translations.complete_all_fields, 'error');
     }
     
     return isValid;
@@ -414,19 +559,38 @@ function processOrderWithPayPal(paypalDetails) {
 }
 
 function processOrderWithoutPayPal() {
-    const orderData = {
-        customer: getCustomerData(),
-        items: <?php echo json_encode($cart_items); ?>,
-        totals: {
-            subtotal: <?php echo $subtotal; ?>,
-            tax: <?php echo $tax; ?>,
-            total: <?php echo $total; ?>
-        },
-        payment: {
-            method: 'pickup',
-            status: 'pending'
-        }
-    };
+    const paymentMethod = $('input[name="payment_method"]:checked').val();
+    
+    let orderData;
+    if (paymentMethod === 'wire_transfer') {
+        orderData = {
+            customer: getCustomerData(),
+            items: <?php echo json_encode($cart_items); ?>,
+            totals: {
+                subtotal: <?php echo $subtotal; ?>,
+                tax: <?php echo $tax; ?>,
+                total: <?php echo $total; ?>
+            },
+            payment: {
+                method: 'wire_transfer',
+                status: 'pending'
+            }
+        };
+    } else {
+        orderData = {
+            customer: getCustomerData(),
+            items: <?php echo json_encode($cart_items); ?>,
+            totals: {
+                subtotal: <?php echo $subtotal; ?>,
+                tax: <?php echo $tax; ?>,
+                total: <?php echo $total; ?>
+            },
+            payment: {
+                method: 'pickup',
+                status: 'pending'
+            }
+        };
+    }
     
     submitOrder(orderData);
 }
@@ -445,7 +609,7 @@ function getCustomerData() {
 
 function submitOrder(orderData) {
     // Mostrar loading
-    $('#placeOrderBtn').html('<i class="fas fa-spinner fa-spin me-2"></i>Procesando...').prop('disabled', true);
+    $('#placeOrderBtn').html('<i class="fas fa-spinner fa-spin me-2"></i>' + translations.processing).prop('disabled', true);
     
     $.ajax({
         url: 'ajax/orders.ajax.php',
@@ -460,13 +624,13 @@ function submitOrder(orderData) {
                 // Redirigir a confirmación
                 window.location.href = `order-success.php?order_id=${response.order_id}`;
             } else {
-                showNotification('Error al procesar el pedido: ' + response.message, 'error');
-                $('#placeOrderBtn').html('<i class="fas fa-check me-2"></i>Confirmar Pedido').prop('disabled', false);
+                showNotification(translations.error_processing_order + response.message, 'error');
+                $('#placeOrderBtn').html('<i class="fas fa-check me-2"></i>' + translations.confirm_order).prop('disabled', false);
             }
         },
         error: function() {
-            showNotification('Error de conexión', 'error');
-            $('#placeOrderBtn').html('<i class="fas fa-check me-2"></i>Confirmar Pedido').prop('disabled', false);
+            showNotification(translations.connection_error, 'error');
+            $('#placeOrderBtn').html('<i class="fas fa-check me-2"></i>' + translations.confirm_order).prop('disabled', false);
         }
     });
 }
