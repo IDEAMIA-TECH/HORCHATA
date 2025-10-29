@@ -16,9 +16,11 @@ if (!$order_id) {
     exit;
 }
 
-// Obtener información de la orden
+// Obtener información de la orden (asegurarse de incluir campos de pago)
 $order = fetchOne("
     SELECT o.*, 
+           o.payment_method,
+           o.payment_status,
            COUNT(oi.id) as item_count
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
@@ -187,8 +189,9 @@ include 'includes/header.php';
                         $payment_method_raw = isset($order['payment_method']) ? $order['payment_method'] : null;
                         $payment_status_raw = isset($order['payment_status']) ? $order['payment_status'] : null;
                         
-                        // Debug: Log para ver qué valores tenemos (habilitar temporalmente si hay problemas)
-                        if (isset($_GET['debug']) && $_GET['debug'] === '1') {
+                        // Debug: Mostrar valores en la página (habilitar con ?debug=1 en la URL)
+                        $show_debug = isset($_GET['debug']) && $_GET['debug'] === '1';
+                        if ($show_debug) {
                             error_log("DEBUG order-success order_id={$order_id}: payment_method = " . var_export($payment_method_raw, true));
                             error_log("DEBUG order-success order_id={$order_id}: payment_status = " . var_export($payment_status_raw, true));
                             error_log("DEBUG order-success order_id={$order_id}: order data = " . json_encode($order));
@@ -232,10 +235,12 @@ include 'includes/header.php';
                         }
                         // 2. Wire Transfer - verificar SEGUNDO (antes que pickup para evitar conflictos)
                         elseif ($payment_method_clean === 'wiretransfer' || 
+                                $payment_method_lower === 'wire_transfer' ||
+                                $payment_method_lower === 'wire-transfer' ||
+                                $payment_method_lower === 'wire transfer' ||
                                 strpos($payment_method_clean, 'wire') !== false || 
                                 strpos($payment_method_clean, 'transfer') !== false ||
-                                $payment_method_lower === 'wire_transfer' ||
-                                $payment_method_lower === 'wire-transfer') {
+                                (strpos($payment_method_lower, 'wire') !== false && strpos($payment_method_lower, 'transfer') !== false)) {
                             // Wire Transfer
                             $display_method = '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
                             $display_status = __('pending');
@@ -292,6 +297,21 @@ include 'includes/header.php';
                         }
                         ?>
                         <?php if (!empty($debug_info)) echo $debug_info; ?>
+                        
+                        <?php if ($show_debug): ?>
+                        <!-- DEBUG INFO - Temporal -->
+                        <div class="alert alert-warning mt-3 mb-3">
+                            <strong>DEBUG INFO (order_id=<?php echo $order_id; ?>):</strong><br>
+                            <strong>payment_method (raw):</strong> <?php echo htmlspecialchars(var_export($payment_method_raw, true)); ?><br>
+                            <strong>payment_method (value):</strong> "<?php echo htmlspecialchars($payment_method_value); ?>"<br>
+                            <strong>payment_method (lower):</strong> "<?php echo htmlspecialchars($payment_method_lower); ?>"<br>
+                            <strong>payment_method (clean):</strong> "<?php echo htmlspecialchars($payment_method_clean); ?>"<br>
+                            <strong>payment_status (raw):</strong> <?php echo htmlspecialchars(var_export($payment_status_raw, true)); ?><br>
+                            <strong>payment_status (lower):</strong> "<?php echo htmlspecialchars($payment_status_lower); ?>"<br>
+                            <strong>Display Method:</strong> <?php echo htmlspecialchars($display_method); ?>
+                        </div>
+                        <?php endif; ?>
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_method'); ?></h6>
