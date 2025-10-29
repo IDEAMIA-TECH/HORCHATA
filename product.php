@@ -441,12 +441,13 @@ function loadExtrasForCategory() {
     // Limpiar extras existentes
     extrasContainer.empty();
     
-    // Cargar extras desde la base de datos
+    // Solo cargar extras desde la base de datos si hay productId
     if (productId > 0) {
         loadExtrasFromDatabase(productId);
     } else {
-        // Fallback al sistema anterior si no hay productId
-        loadExtrasLegacy(categoryName);
+        // Si no hay productId, no mostrar extras
+        console.log('No product ID available, hiding extras section');
+        extrasSection.hide();
     }
 }
 
@@ -462,15 +463,16 @@ function loadExtrasFromDatabase(productId) {
             if (response.success && response.data.length > 0) {
                 displayExtras(response.data);
             } else {
-                // Si no hay extras en BD, usar sistema legacy
-                const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
-                loadExtrasLegacy(categoryName);
+                // Si no hay extras en BD, no mostrar nada (no usar sistema legacy)
+                console.log('No extras found in database for this product');
+                const extrasSection = $('#extrasSection');
+                extrasSection.hide();
             }
         },
         error: function() {
-            console.log('Error loading extras from database, using legacy system');
-            const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
-            loadExtrasLegacy(categoryName);
+            console.log('Error loading extras from database');
+            const extrasSection = $('#extrasSection');
+            extrasSection.hide();
         }
     });
 }
