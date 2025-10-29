@@ -151,6 +151,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'extras.php' ? 'active' : ''; ?>" href="extras.php">
+                        <i class="fas fa-plus-circle me-2"></i>Extras
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : ''; ?>" href="users.php">
                         <i class="fas fa-users me-2"></i>Usuarios
                     </a>

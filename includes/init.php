@@ -328,7 +328,22 @@ function __($key, $default = '') {
         'status' => 'Estado',
         'subtotal' => 'Subtotal',
         'tax' => 'Impuestos',
-        'quantity' => 'Cantidad'
+        'quantity' => 'Cantidad',
+        // Product customization extras
+        'guacamole' => 'Guacamole',
+        'sour_cream' => 'Crema',
+        'cheese' => 'Queso',
+        // Extras Management
+        'extras_management' => 'Gestión de Extras',
+        'add_extra' => 'Agregar Extra',
+        'edit_extra' => 'Editar Extra',
+        'extras_list' => 'Lista de Extras',
+        'assign_extras_to_products' => 'Asignar Extras a Productos',
+        'select_product' => 'Seleccionar Producto',
+        'available_extras' => 'Extras Disponibles',
+        'select_product_first' => 'Selecciona un producto primero',
+        'no_category' => 'Sin categoría',
+        'confirm_delete_extra' => '¿Estás seguro de que quieres eliminar este extra?'
     ];
     
     // Textos en inglés
@@ -565,7 +580,22 @@ function __($key, $default = '') {
         'status' => 'Status',
         'subtotal' => 'Subtotal',
         'tax' => 'Tax',
-        'quantity' => 'Quantity'
+        'quantity' => 'Quantity',
+        // Product customization extras
+        'guacamole' => 'Guacamole',
+        'sour_cream' => 'Sour Cream',
+        'cheese' => 'Cheese',
+        // Extras Management
+        'extras_management' => 'Extras Management',
+        'add_extra' => 'Add Extra',
+        'edit_extra' => 'Edit Extra',
+        'extras_list' => 'Extras List',
+        'assign_extras_to_products' => 'Assign Extras to Products',
+        'select_product' => 'Select Product',
+        'available_extras' => 'Available Extras',
+        'select_product_first' => 'Select a product first',
+        'no_category' => 'No category',
+        'confirm_delete_extra' => 'Are you sure you want to delete this extra?'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

@@ -19,6 +19,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../includes/db_connect.php';
 
 try {
+    // Verificar si es una solicitud de extras
+    if (isset($_GET['action']) && $_GET['action'] === 'get_product_extras') {
+        $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
+        
+        if ($product_id <= 0) {
+            throw new Exception('ID de producto inválido');
+        }
+        
+        // Obtener extras asignados al producto
+        $sql = "SELECT e.id, e.name_en, e.name_es, e.price 
+                FROM product_extras e 
+                INNER JOIN product_extra_relations r ON e.id = r.extra_id 
+                WHERE r.product_id = ? AND e.is_active = 1 AND r.is_active = 1 
+                ORDER BY e.sort_order, e.name_en";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$product_id]);
+        $extras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Formatear extras para el frontend
+        $formatted_extras = [];
+        foreach ($extras as $extra) {
+            $formatted_extras[] = [
+                'id' => 'extra_' . $extra['id'],
+                'name' => $extra['name_en'], // Usar el idioma actual
+                'price' => floatval($extra['price'])
+            ];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'data' => $formatted_extras
+        ]);
+        exit;
+    }
+    
     // Obtener parámetros
     $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : null;
     $featured = isset($_GET['featured']) ? (int)$_GET['featured'] : 0;

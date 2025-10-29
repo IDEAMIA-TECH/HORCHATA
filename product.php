@@ -399,6 +399,13 @@ include 'includes/footer.php';
 
 <!-- JavaScript específico para la página de producto (después de footer para que jQuery esté cargado) -->
 <script>
+// Pasar traducciones al JavaScript
+window.translations = {
+    guacamole: '<?php echo __("guacamole"); ?>',
+    sour_cream: '<?php echo __("sour_cream"); ?>',
+    cheese: '<?php echo __("cheese"); ?>'
+};
+
 $(document).ready(function() {
     console.log('jQuery loaded, initializing product page');
     
@@ -424,7 +431,9 @@ $(document).ready(function() {
 function loadExtrasForCategory() {
     // Obtener la categoría del producto desde el PHP
     const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
+    const productId = <?php echo $product['id'] ?? 0; ?>;
     console.log('Product category:', categoryName);
+    console.log('Product ID:', productId);
     
     const extrasContainer = $('#extrasContainer');
     const extrasSection = $('#extrasSection');
@@ -432,22 +441,67 @@ function loadExtrasForCategory() {
     // Limpiar extras existentes
     extrasContainer.empty();
     
-    // Definir extras según categoría
+    // Cargar extras desde la base de datos
+    if (productId > 0) {
+        loadExtrasFromDatabase(productId);
+    } else {
+        // Fallback al sistema anterior si no hay productId
+        loadExtrasLegacy(categoryName);
+    }
+}
+
+function loadExtrasFromDatabase(productId) {
+    $.ajax({
+        url: 'ajax/products.ajax.php',
+        type: 'GET',
+        data: {
+            action: 'get_product_extras',
+            product_id: productId
+        },
+        success: function(response) {
+            if (response.success && response.data.length > 0) {
+                displayExtras(response.data);
+            } else {
+                // Si no hay extras en BD, usar sistema legacy
+                const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
+                loadExtrasLegacy(categoryName);
+            }
+        },
+        error: function() {
+            console.log('Error loading extras from database, using legacy system');
+            const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
+            loadExtrasLegacy(categoryName);
+        }
+    });
+}
+
+function loadExtrasLegacy(categoryName) {
+    const extrasContainer = $('#extrasContainer');
+    const extrasSection = $('#extrasSection');
+    
+    // Definir extras según categoría (sistema anterior)
     let extras = [];
     
     if (categoryName.includes('Burritos') || categoryName.includes('Breakfast Plates') || categoryName.includes('Daily Specials') || categoryName.includes('Seafood') || categoryName.includes('Combinations') || categoryName.includes('Salads & Burgers')) {
         // A) BURRITOS, TORTAS Y PLATILLOS: Guacamole, Crema y Queso +$2.50
         extras = [
-            { id: 'extraGuacamole', name: 'Guacamole', price: 2.50 },
-            { id: 'extraSourCream', name: 'Crema', price: 2.50 },
-            { id: 'extraCheese', name: 'Queso', price: 2.50 }
+            { id: 'extraGuacamole', name: window.translations.guacamole, price: 2.50 },
+            { id: 'extraSourCream', name: window.translations.sour_cream, price: 2.50 },
+            { id: 'extraCheese', name: window.translations.cheese, price: 2.50 }
         ];
     } else if (categoryName.includes('Tacos')) {
         // B) SOFT TACOS Y HARD SHELL TACOS: Guacamole +$1.00
         extras = [
-            { id: 'extraGuacamole', name: 'Guacamole', price: 1.00 }
+            { id: 'extraGuacamole', name: window.translations.guacamole, price: 1.00 }
         ];
     }
+    
+    displayExtras(extras);
+}
+
+function displayExtras(extras) {
+    const extrasContainer = $('#extrasContainer');
+    const extrasSection = $('#extrasSection');
     
     // Si hay extras para esta categoría, mostrarlos
     console.log('Extras found:', extras.length);
