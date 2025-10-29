@@ -190,7 +190,17 @@ include 'includes/header.php';
 </section>
 
 <script>
-$(document).ready(function() {
+// Esperar a que jQuery esté disponible
+(function() {
+    function initContactForm() {
+        if (typeof jQuery === 'undefined') {
+            // jQuery aún no está cargado, esperar un poco más
+            setTimeout(initContactForm, 50);
+            return;
+        }
+        
+        // jQuery está disponible, ejecutar código
+        jQuery(document).ready(function($) {
     // Manejar envío del formulario de contacto
     $('#contactForm').on('submit', function(e) {
         e.preventDefault();
@@ -281,7 +291,12 @@ $(document).ready(function() {
             notification.alert('close');
         }, 5000);
     }
-});
+        }); // Cerrar jQuery(document).ready
+    } // Cerrar initContactForm
+    
+    // Iniciar la función
+    initContactForm();
+})(); // Cerrar IIFE
 </script>
 
 <?php include 'includes/footer.php'; ?>
