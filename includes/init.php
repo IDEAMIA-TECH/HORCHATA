@@ -1351,30 +1351,42 @@ function __($key, $default = '') {
  */
 function getSetting($key, $default = '') {
     static $settings = null;
+    global $pdo;
     
     // Si las configuraciones no están cargadas, cargarlas
     if ($settings === null) {
         $settings = [];
         
-        // Solo cargar si hay conexión a BD
-        if (file_exists(__DIR__ . '/db_connect.php')) {
-            try {
-                require_once __DIR__ . '/db_connect.php';
+        try {
+            // Usar $pdo global si está disponible
+            if (isset($pdo) && $pdo instanceof PDO) {
+                $sql = "SELECT setting_key, setting_value FROM settings";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
-                // Verificar si $pdo existe después de incluir
-                if (isset($pdo)) {
-                    $sql = "SELECT setting_key, setting_value FROM settings";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute();
-                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($results as $result) {
+                    $settings[$result['setting_key']] = $result['setting_value'];
+                }
+            } else {
+                // Si $pdo no está disponible, intentar cargar db_connect.php
+                if (file_exists(__DIR__ . '/db_connect.php')) {
+                    require_once __DIR__ . '/db_connect.php';
                     
-                    foreach ($results as $result) {
-                        $settings[$result['setting_key']] = $result['setting_value'];
+                    if (isset($pdo) && $pdo instanceof PDO) {
+                        $sql = "SELECT setting_key, setting_value FROM settings";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute();
+                        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        
+                        foreach ($results as $result) {
+                            $settings[$result['setting_key']] = $result['setting_value'];
+                        }
                     }
                 }
-            } catch (Exception $e) {
-                error_log("Error loading settings: " . $e->getMessage());
             }
+        } catch (Exception $e) {
+            error_log("Error loading settings: " . $e->getMessage());
         }
     }
     

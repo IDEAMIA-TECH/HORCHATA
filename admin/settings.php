@@ -33,11 +33,20 @@ function getSettings() {
         $sql = "SELECT setting_key, setting_value FROM settings";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
-        $settings = $stmt->fetchAll();
+        $settings = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         $result = [];
         foreach ($settings as $setting) {
-            $result[$setting['setting_key']] = $setting['setting_value'];
+            $key = $setting['setting_key'];
+            $value = $setting['setting_value'];
+            
+            // Si es payment_methods, decodificar JSON
+            if ($key === 'payment_methods' && !empty($value)) {
+                $decoded = json_decode($value, true);
+                $result[$key] = is_array($decoded) ? $decoded : [$value];
+            } else {
+                $result[$key] = $value;
+            }
         }
         
         return $result;
@@ -298,6 +307,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Obtener configuraciones actuales
 $settings = getSettings();
 
+// Debug temporal: Verificar qué configuraciones se están obteniendo
+error_log("Settings Debug - PayPal Enabled: " . var_export($settings['paypal_enabled'] ?? 'NOT SET', true));
+error_log("Settings Debug - PayPal Client ID: " . substr($settings['paypal_client_id'] ?? 'NOT SET', 0, 20));
+error_log("Settings Debug - PayPal Mode: " . ($settings['paypal_mode'] ?? 'NOT SET'));
+error_log("Settings Debug - Currency: " . ($settings['currency'] ?? 'NOT SET'));
+
 // Configurar página
 $page_title = __('settings');
 $page_scripts = []; // JavaScript está inline en la página
@@ -538,17 +553,22 @@ include 'includes/admin-header.php';
                                     <label for="payment_methods" class="form-label">Accepted Payment Methods</label>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="cash_payment" name="payment_methods[]" value="cash" 
-                                               <?php echo in_array('cash', $settings['payment_methods'] ?? ['cash']) ? 'checked' : ''; ?>>
+                                               <?php 
+                                               $payment_methods = isset($settings['payment_methods']) && is_array($settings['payment_methods']) 
+                                                   ? $settings['payment_methods'] 
+                                                   : ['cash'];
+                                               echo in_array('cash', $payment_methods) ? 'checked' : ''; 
+                                               ?>>
                                         <label class="form-check-label" for="cash_payment">Cash</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="card_payment" name="payment_methods[]" value="card" 
-                                               <?php echo in_array('card', $settings['payment_methods'] ?? ['card']) ? 'checked' : ''; ?>>
+                                               <?php echo in_array('card', $payment_methods) ? 'checked' : ''; ?>>
                                         <label class="form-check-label" for="card_payment">Card</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="online_payment" name="payment_methods[]" value="online" 
-                                               <?php echo in_array('online', $settings['payment_methods'] ?? ['online']) ? 'checked' : ''; ?>>
+                                               <?php echo in_array('online', $payment_methods) ? 'checked' : ''; ?>>
                                         <label class="form-check-label" for="online_payment">Online</label>
                                     </div>
                                 </div>

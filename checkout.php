@@ -43,6 +43,12 @@ $paypal_client_id = getSetting('paypal_client_id', '');
 $paypal_mode = getSetting('paypal_mode', 'sandbox');
 $currency = getSetting('currency', 'USD');
 
+// Debug: Verificar que las configuraciones se están obteniendo correctamente
+error_log("Checkout PayPal Debug - Enabled: " . var_export($paypal_enabled, true));
+error_log("Checkout PayPal Debug - Client ID: " . substr($paypal_client_id, 0, 20) . "...");
+error_log("Checkout PayPal Debug - Mode: " . $paypal_mode);
+error_log("Checkout PayPal Debug - Currency: " . $currency);
+
 // Configurar página
 $page_title = 'Checkout';
 $page_scripts = [
