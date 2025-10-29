@@ -1346,15 +1346,30 @@ function __($key, $default = '') {
     return $texts[$key] ?? $default ?? $key;
 }
 
+// Variable global para invalidar caché de settings
+$GLOBALS['_settings_cache_invalid'] = false;
+
+/**
+ * Invalidar caché de configuraciones
+ */
+function invalidateSettingsCache() {
+    $GLOBALS['_settings_cache_invalid'] = true;
+}
+
 /**
  * Obtener configuración del sistema
  */
 function getSetting($key, $default = '') {
     static $settings = null;
+    static $last_load = null;
     global $pdo;
     
-    // Si las configuraciones no están cargadas, cargarlas
-    if ($settings === null) {
+    // Recargar caché si está invalidado, cada 5 minutos, o si es la primera vez
+    $cache_invalid = isset($GLOBALS['_settings_cache_invalid']) && $GLOBALS['_settings_cache_invalid'];
+    $should_reload = ($settings === null) || ($last_load === null) || $cache_invalid || (time() - $last_load > 300);
+    
+    // Si las configuraciones no están cargadas o necesitan recargarse
+    if ($should_reload) {
         $settings = [];
         
         try {
@@ -1388,6 +1403,10 @@ function getSetting($key, $default = '') {
         } catch (Exception $e) {
             error_log("Error loading settings: " . $e->getMessage());
         }
+        
+        $last_load = time();
+        // Resetear invalidación después de recargar
+        $GLOBALS['_settings_cache_invalid'] = false;
     }
     
     return $settings[$key] ?? $default;

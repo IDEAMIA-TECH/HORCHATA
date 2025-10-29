@@ -65,7 +65,14 @@ function updateSetting($key, $value) {
                 ON DUPLICATE KEY UPDATE setting_value = ?, updated_at = NOW()";
         
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute([$key, $value, $value]);
+        $result = $stmt->execute([$key, $value, $value]);
+        
+        // Invalidar caché de configuraciones después de actualizar
+        if ($result && function_exists('invalidateSettingsCache')) {
+            invalidateSettingsCache();
+        }
+        
+        return $result;
     } catch (Exception $e) {
         error_log("Error en updateSetting: " . $e->getMessage());
         return false;
@@ -306,12 +313,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Obtener configuraciones actuales
 $settings = getSettings();
-
-// Debug temporal: Verificar qué configuraciones se están obteniendo
-error_log("Settings Debug - PayPal Enabled: " . var_export($settings['paypal_enabled'] ?? 'NOT SET', true));
-error_log("Settings Debug - PayPal Client ID: " . substr($settings['paypal_client_id'] ?? 'NOT SET', 0, 20));
-error_log("Settings Debug - PayPal Mode: " . ($settings['paypal_mode'] ?? 'NOT SET'));
-error_log("Settings Debug - Currency: " . ($settings['currency'] ?? 'NOT SET'));
 
 // Configurar página
 $page_title = __('settings');
