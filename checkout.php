@@ -405,32 +405,51 @@ const translations = {
     $('#pickupDate').attr('min', today);
     
     // Definir todas las funciones dentro de este contexto
+    let paypalButtonsInstance = null; // Variable para evitar renderizado múltiple
+    
     function setupPayPal() {
-    // PayPal SDK se carga desde el header
-    if (typeof paypal !== 'undefined') {
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '<?php echo number_format($total, 2, '.', ''); ?>',
-                            currency_code: currency
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    // Procesar pedido con PayPal
-                    processOrderWithPayPal(details);
-                });
-            },
-            onError: function(err) {
-                showNotification(translations.paypal_error + err.message, 'error');
+        // PayPal SDK se carga desde el header
+        if (typeof paypal !== 'undefined' && paypal.Buttons) {
+            // Limpiar contenedor antes de renderizar para evitar duplicación
+            $('#paypal-button-container').empty();
+            
+            // Si ya existe una instancia, no crear otra
+            if (paypalButtonsInstance !== null) {
+                return;
             }
-        }).render('#paypal-button-container');
+            
+            // Crear nueva instancia de botones PayPal
+            try {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: '<?php echo number_format($total, 2, '.', ''); ?>',
+                                    currency_code: currency
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            // Procesar pedido con PayPal
+                            processOrderWithPayPal(details);
+                        });
+                    },
+                    onError: function(err) {
+                        showNotification(translations.paypal_error + err.message, 'error');
+                    }
+                }).render('#paypal-button-container');
+                
+                // Marcar que se ha renderizado
+                paypalButtonsInstance = true;
+            } catch (err) {
+                console.error('Error rendering PayPal buttons:', err);
+                paypalButtonsInstance = null; // Permitir reintento
+            }
+        }
     }
-}
 
 function setupCheckoutForm() {
     // Validar formulario antes de proceder

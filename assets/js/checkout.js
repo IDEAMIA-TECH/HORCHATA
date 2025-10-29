@@ -15,14 +15,14 @@ function initCheckout() {
     // Configurar validaciones
     setupFormValidation();
     
-    // Configurar PayPal
-    setupPayPalIntegration();
+    // PayPal se configura en checkout.php para evitar duplicación
+    // setupPayPalIntegration(); // COMENTADO - PayPal se maneja en checkout.php
     
-    // Configurar método de pago
+    // Configurar método de pago (solo para mostrar/ocultar elementos, no renderizar PayPal)
     setupPaymentMethodToggle();
     
-    // Configurar envío de formulario
-    setupFormSubmission();
+    // El envío de formulario se maneja en checkout.php para evitar conflictos
+    // setupFormSubmission(); // COMENTADO - checkout.php maneja el submit
 }
 
 /**
@@ -229,8 +229,13 @@ function setupPayPalIntegration() {
 
 /**
  * Configurar toggle de método de pago
+ * NOTA: Esta función está deshabilitada porque checkout.php maneja el toggle de métodos de pago
+ * para evitar conflictos con Wire Transfer y PayPal
  */
 function setupPaymentMethodToggle() {
+    // Comentado para evitar conflictos con checkout.php
+    // El manejo de métodos de pago se realiza en checkout.php
+    /*
     $('input[name="payment_method"]').on('change', function() {
         const paymentMethod = $(this).val();
         
@@ -242,6 +247,7 @@ function setupPaymentMethodToggle() {
             $('#placeOrderBtn').show();
         }
     });
+    */
 }
 
 /**
