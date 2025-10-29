@@ -183,14 +183,36 @@ include 'includes/header.php';
                             <!-- Order Items -->
                             <div class="order-items mb-4">
                                 <?php foreach ($cart_items as $item): ?>
-                                <div class="order-item d-flex justify-content-between align-items-center mb-3">
-                                    <div class="item-info">
-                                        <h6 class="mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                        <small class="text-muted">Cantidad: <?php echo $item['quantity']; ?></small>
+                                <div class="order-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="item-info">
+                                            <h6 class="mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
+                                            <small class="text-muted">Cantidad: <?php echo $item['quantity']; ?></small>
+                                        </div>
+                                        <div class="item-price">
+                                            <strong>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></strong>
+                                        </div>
                                     </div>
-                                    <div class="item-price">
-                                        <strong>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></strong>
+                                    
+                                    <?php if (isset($item['customizations']['extras']) && !empty($item['customizations']['extras'])): ?>
+                                    <div class="extras-info ms-3">
+                                        <?php foreach ($item['customizations']['extras'] as $extra): ?>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <small class="text-muted">+ <?php echo htmlspecialchars($extra['name']); ?></small>
+                                            <small class="text-success">+$<?php echo number_format($extra['price'], 2); ?></small>
+                                        </div>
+                                        <?php endforeach; ?>
                                     </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (isset($item['customizations']['specialInstructions']) && !empty($item['customizations']['specialInstructions'])): ?>
+                                    <div class="special-instructions ms-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-sticky-note me-1"></i>
+                                            <?php echo htmlspecialchars($item['customizations']['specialInstructions']); ?>
+                                        </small>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                                 <?php endforeach; ?>
                             </div>

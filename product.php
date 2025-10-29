@@ -224,25 +224,10 @@ include 'includes/header.php';
                                         <small class="text-muted"><?php echo __('special_instructions_help'); ?></small>
                                     </div>
                                     
-                                    <div class="mb-3">
+                                    <div class="mb-3" id="extrasSection" style="display: none;">
                                         <label class="form-label fw-bold"><?php echo __('extras'); ?></label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="extraCheese" value="extra-cheese">
-                                            <label class="form-check-label" for="extraCheese">
-                                                <?php echo __('extra_cheese'); ?> (+ $2.00)
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="extraGuacamole" value="extra-guacamole">
-                                            <label class="form-check-label" for="extraGuacamole">
-                                                <?php echo __('extra_guacamole'); ?> (+ $3.00)
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="extraSourCream" value="extra-sour-cream">
-                                            <label class="form-check-label" for="extraSourCream">
-                                                <?php echo __('extra_sour_cream'); ?> (+ $2.00)
-                                            </label>
+                                        <div id="extrasContainer">
+                                            <!-- Los extras se cargarán dinámicamente según la categoría -->
                                         </div>
                                     </div>
                                     
@@ -426,12 +411,61 @@ $(document).ready(function() {
     // Configurar botón de favoritos
     setupWishlist();
     
+    // Cargar extras según la categoría del producto
+    loadExtrasForCategory();
+    
     // Delegar evento al botón de confirmar en el modal (para asegurar que funciona)
     $(document).on('click', '#confirmAddToCart', function() {
         console.log('Confirm Add to Cart clicked (delegated)');
         handleConfirmAddToCart();
     });
 });
+
+function loadExtrasForCategory() {
+    // Obtener la categoría del producto desde el PHP
+    const categoryName = '<?php echo htmlspecialchars($product["category_name"] ?? ""); ?>';
+    console.log('Product category:', categoryName);
+    
+    const extrasContainer = $('#extrasContainer');
+    const extrasSection = $('#extrasSection');
+    
+    // Limpiar extras existentes
+    extrasContainer.empty();
+    
+    // Definir extras según categoría
+    let extras = [];
+    
+    if (categoryName.includes('Burritos') || categoryName.includes('Tortas') || categoryName.includes('Platillos')) {
+        // A) BURRITOS, TORTAS Y PLATILLOS: Guacamole, Crema y Queso +$2.50
+        extras = [
+            { id: 'extraGuacamole', name: 'Guacamole', price: 2.50 },
+            { id: 'extraSourCream', name: 'Crema', price: 2.50 },
+            { id: 'extraCheese', name: 'Queso', price: 2.50 }
+        ];
+    } else if (categoryName.includes('Tacos')) {
+        // B) SOFT TACOS Y HARD SHELL TACOS: Guacamole +$1.00
+        extras = [
+            { id: 'extraGuacamole', name: 'Guacamole', price: 1.00 }
+        ];
+    }
+    
+    // Si hay extras para esta categoría, mostrarlos
+    if (extras.length > 0) {
+        extras.forEach(extra => {
+            extrasContainer.append(`
+                <div class="form-check">
+                    <input class="form-check-input extra-checkbox" type="checkbox" id="${extra.id}" value="${extra.id}" data-price="${extra.price}">
+                    <label class="form-check-label" for="${extra.id}">
+                        ${extra.name} (+ $${extra.price.toFixed(2)})
+                    </label>
+                </div>
+            `);
+        });
+        extrasSection.show();
+    } else {
+        extrasSection.hide();
+    }
+}
 
 function handleConfirmAddToCart() {
     console.log('Current Product:', currentProduct);
@@ -447,9 +481,14 @@ function handleConfirmAddToCart() {
     // Obtener personalizaciones
     const specialInstructions = $('#specialInstructions').val();
     const extras = [];
-    if ($('#extraCheese').is(':checked')) extras.push({ name: 'Extra Cheese', price: 2.00 });
-    if ($('#extraGuacamole').is(':checked')) extras.push({ name: 'Extra Guacamole', price: 3.00 });
-    if ($('#extraSourCream').is(':checked')) extras.push({ name: 'Extra Sour Cream', price: 2.00 });
+    
+    // Obtener extras seleccionados dinámicamente
+    $('.extra-checkbox:checked').each(function() {
+        const extraName = $(this).next('label').text().split(' (+')[0]; // Obtener nombre sin precio
+        const extraPrice = parseFloat($(this).data('price'));
+        extras.push({ name: extraName, price: extraPrice });
+    });
+    
     const spiceLevel = $('#spiceLevel').val();
     
     console.log('Customizations:', { specialInstructions, extras, spiceLevel });
@@ -484,7 +523,7 @@ function handleConfirmAddToCart() {
     
     // Resetear modal
     $('#specialInstructions').val('');
-    $('#extraCheese, #extraGuacamole, #extraSourCream').prop('checked', false);
+    $('.extra-checkbox').prop('checked', false);
     $('#spiceLevel').val('medium');
 }
 
