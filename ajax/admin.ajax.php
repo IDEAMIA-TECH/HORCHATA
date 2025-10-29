@@ -103,6 +103,21 @@ try {
         case 'toggle_user_status':
             toggleUserStatus();
             break;
+        case 'get_all_extras':
+            getAllExtras();
+            break;
+        case 'get_product_extras':
+            getProductExtras();
+            break;
+        case 'create_extra':
+            createExtra();
+            break;
+        case 'assign_extra_to_product':
+            assignExtraToProduct();
+            break;
+        case 'remove_extra_from_product':
+            removeExtraFromProduct();
+            break;
         default:
             throw new Exception('Acción no válida');
     }
@@ -936,6 +951,166 @@ function toggleUserStatus() {
         }
     } catch (Exception $e) {
         error_log("❌ Error en toggleUserStatus: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Obtener todos los extras disponibles
+ */
+function getAllExtras() {
+    try {
+        global $pdo;
+        
+        $sql = "SELECT e.id, e.name_en, e.name_es, e.price, c.name_en as category_name 
+                FROM product_extras e 
+                LEFT JOIN extra_categories c ON e.category_id = c.id 
+                WHERE e.is_active = 1 
+                ORDER BY c.sort_order, e.name_en";
+        
+        $stmt = $pdo->query($sql);
+        $extras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'data' => $extras
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en getAllExtras: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Obtener extras de un producto específico
+ */
+function getProductExtras() {
+    try {
+        global $pdo;
+        
+        $product_id = (int)($_GET['product_id'] ?? 0);
+        
+        if ($product_id <= 0) {
+            throw new Exception('Invalid product ID');
+        }
+        
+        $sql = "SELECT e.id, e.name_en, e.name_es, e.price 
+                FROM product_extras e 
+                INNER JOIN product_extra_relations r ON e.id = r.extra_id 
+                WHERE r.product_id = ? AND e.is_active = 1 AND r.is_active = 1 
+                ORDER BY e.name_en";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$product_id]);
+        $extras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'data' => $extras
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en getProductExtras: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Crear un nuevo extra
+ */
+function createExtra() {
+    try {
+        global $pdo;
+        
+        $name_en = trim($_POST['name_en'] ?? '');
+        $name_es = trim($_POST['name_es'] ?? '');
+        $price = floatval($_POST['price'] ?? 0);
+        $category_id = intval($_POST['category_id'] ?? 0);
+        
+        if (empty($name_en) || empty($name_es) || $price <= 0) {
+            throw new Exception('Datos inválidos');
+        }
+        
+        $sql = "INSERT INTO product_extras (name_en, name_es, price, category_id, sort_order) VALUES (?, ?, ?, ?, 0)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$name_en, $name_es, $price, $category_id]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Extra creado exitosamente'
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en createExtra: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Asignar extra a producto
+ */
+function assignExtraToProduct() {
+    try {
+        global $pdo;
+        
+        $product_id = (int)($_POST['product_id'] ?? 0);
+        $extra_id = (int)($_POST['extra_id'] ?? 0);
+        
+        if ($product_id <= 0 || $extra_id <= 0) {
+            throw new Exception('IDs inválidos');
+        }
+        
+        $sql = "INSERT INTO product_extra_relations (product_id, extra_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE is_active = 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$product_id, $extra_id]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Extra asignado al producto'
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en assignExtraToProduct: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Remover extra de producto
+ */
+function removeExtraFromProduct() {
+    try {
+        global $pdo;
+        
+        $product_id = (int)($_POST['product_id'] ?? 0);
+        $extra_id = (int)($_POST['extra_id'] ?? 0);
+        
+        if ($product_id <= 0 || $extra_id <= 0) {
+            throw new Exception('IDs inválidos');
+        }
+        
+        $sql = "UPDATE product_extra_relations SET is_active = 0 WHERE product_id = ? AND extra_id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$product_id, $extra_id]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Extra removido del producto'
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en removeExtraFromProduct: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()

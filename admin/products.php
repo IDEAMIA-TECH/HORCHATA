@@ -313,6 +313,42 @@ include 'includes/admin-header.php';
                     </div>
                 </div>
 
+                <!-- Product Extras Section -->
+                <?php if ($action === 'edit'): ?>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-plus-circle me-2"></i>Extras del Producto
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Extras Disponibles</h6>
+                                        <div id="availableExtras" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                            <p class="text-muted">Cargando extras...</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Extras Asignados</h6>
+                                        <div id="assignedExtras" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                            <p class="text-muted">Cargando extras asignados...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addNewExtra()">
+                                        <i class="fas fa-plus me-1"></i>Agregar Nuevo Extra
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- Form Actions -->
                 <div class="row mt-4">
                     <div class="col-12">
@@ -344,6 +380,11 @@ $(document).ready(function() {
     
     // Configurar DataTable
     setupProductsTable();
+    
+    // Configurar extras si estamos editando
+    <?php if ($action === 'edit'): ?>
+    loadProductExtras(<?php echo $product['id']; ?>);
+    <?php endif; ?>
 });
 
 function setupProductForm() {
@@ -534,6 +575,195 @@ function deleteProduct(productId, productName) {
 
 function refreshProducts() {
     location.reload();
+}
+
+// Funciones para manejar extras de productos
+function loadProductExtras(productId) {
+    console.log('📋 Loading extras for product:', productId);
+    
+    // Cargar extras disponibles
+    $.ajax({
+        url: '../ajax/admin.ajax.php',
+        type: 'GET',
+        data: {
+            action: 'get_all_extras'
+        },
+        success: function(response) {
+            if (response.success) {
+                displayAvailableExtras(response.data);
+            } else {
+                $('#availableExtras').html('<p class="text-danger">Error: ' + response.message + '</p>');
+            }
+        },
+        error: function() {
+            $('#availableExtras').html('<p class="text-danger">Error al cargar extras disponibles</p>');
+        }
+    });
+    
+    // Cargar extras asignados al producto
+    $.ajax({
+        url: '../ajax/admin.ajax.php',
+        type: 'GET',
+        data: {
+            action: 'get_product_extras',
+            product_id: productId
+        },
+        success: function(response) {
+            if (response.success) {
+                displayAssignedExtras(response.data, productId);
+            } else {
+                $('#assignedExtras').html('<p class="text-danger">Error: ' + response.message + '</p>');
+            }
+        },
+        error: function() {
+            $('#assignedExtras').html('<p class="text-danger">Error al cargar extras asignados</p>');
+        }
+    });
+}
+
+function displayAvailableExtras(extras) {
+    let html = '';
+    if (extras.length === 0) {
+        html = '<p class="text-muted">No hay extras disponibles</p>';
+    } else {
+        extras.forEach(extra => {
+            html += `
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="extra_${extra.id}" 
+                           onchange="toggleProductExtra(${extra.id}, this.checked)">
+                    <label class="form-check-label" for="extra_${extra.id}">
+                        <strong>${extra.name_en}</strong> / ${extra.name_es}
+                        <br><small class="text-muted">$${extra.price}</small>
+                    </label>
+                </div>
+            `;
+        });
+    }
+    $('#availableExtras').html(html);
+}
+
+function displayAssignedExtras(extras, productId) {
+    let html = '';
+    if (extras.length === 0) {
+        html = '<p class="text-muted">No hay extras asignados</p>';
+    } else {
+        extras.forEach(extra => {
+            html += `
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                    <div>
+                        <strong>${extra.name_en}</strong> / ${extra.name_es}
+                        <br><small class="text-muted">$${extra.price}</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                            onclick="removeProductExtra(${extra.id}, ${productId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        });
+    }
+    $('#assignedExtras').html(html);
+}
+
+function toggleProductExtra(extraId, assign) {
+    const productId = <?php echo $action === 'edit' ? $product['id'] : 'null'; ?>;
+    
+    if (!productId) {
+        showNotification('Error: ID de producto no válido', 'error');
+        return;
+    }
+    
+    const action = assign ? 'assign_extra_to_product' : 'remove_extra_from_product';
+    
+    $.ajax({
+        url: '../ajax/admin.ajax.php',
+        type: 'POST',
+        data: {
+            action: action,
+            product_id: productId,
+            extra_id: extraId
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification(response.message, 'success');
+                // Recargar extras asignados
+                loadProductExtras(productId);
+            } else {
+                showNotification('Error: ' + response.message, 'error');
+                // Revertir checkbox
+                $('#extra_' + extraId).prop('checked', !assign);
+            }
+        },
+        error: function() {
+            showNotification('Error de conexión', 'error');
+            // Revertir checkbox
+            $('#extra_' + extraId).prop('checked', !assign);
+        }
+    });
+}
+
+function removeProductExtra(extraId, productId) {
+    if (confirm('¿Estás seguro de que quieres remover este extra del producto?')) {
+        $.ajax({
+            url: '../ajax/admin.ajax.php',
+            type: 'POST',
+            data: {
+                action: 'remove_extra_from_product',
+                product_id: productId,
+                extra_id: extraId
+            },
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message, 'success');
+                    // Recargar extras
+                    loadProductExtras(productId);
+                } else {
+                    showNotification('Error: ' + response.message, 'error');
+                }
+            },
+            error: function() {
+                showNotification('Error de conexión', 'error');
+            }
+        });
+    }
+}
+
+function addNewExtra() {
+    const nameEn = prompt('Nombre del extra (Inglés):');
+    if (!nameEn) return;
+    
+    const nameEs = prompt('Nombre del extra (Español):');
+    if (!nameEs) return;
+    
+    const price = prompt('Precio del extra:');
+    if (!price || isNaN(price)) {
+        showNotification('Precio inválido', 'error');
+        return;
+    }
+    
+    $.ajax({
+        url: '../ajax/admin.ajax.php',
+        type: 'POST',
+        data: {
+            action: 'create_extra',
+            name_en: nameEn,
+            name_es: nameEs,
+            price: parseFloat(price),
+            category_id: 2 // Default category: Sauces & Toppings
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification(response.message, 'success');
+                // Recargar extras disponibles
+                loadProductExtras(<?php echo $action === 'edit' ? $product['id'] : 'null'; ?>);
+            } else {
+                showNotification('Error: ' + response.message, 'error');
+            }
+        },
+        error: function() {
+            showNotification('Error de conexión', 'error');
+        }
+    });
 }
 </script>
 
