@@ -155,6 +155,12 @@ require_once '../includes/init.php';
                         <span class="badge bg-info ms-auto" id="pendingReviewsBadge">0</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'contact-messages.php' ? 'active' : ''; ?>" href="contact-messages.php">
+                        <i class="fas fa-envelope me-2"></i><?php echo __('contact_messages'); ?>
+                        <span class="badge bg-primary ms-auto" id="newMessagesBadge">0</span>
+                    </a>
+                </li>
                 <?php if ($user_role === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>" href="reports.php">

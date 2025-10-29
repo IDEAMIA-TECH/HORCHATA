@@ -69,6 +69,9 @@
         if (data.pending_reviews !== undefined) {
             $('#pendingReviewsBadge').text(data.pending_reviews);
         }
+        if (data.new_messages !== undefined) {
+            $('#newMessagesBadge').text(data.new_messages);
+        }
     }
     </script>
 </body>

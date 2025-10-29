@@ -118,6 +118,12 @@ try {
         case 'remove_extra_from_product':
             removeExtraFromProduct();
             break;
+        case 'update_contact_message_status':
+            updateContactMessageStatus();
+            break;
+        case 'delete_contact_message':
+            deleteContactMessage();
+            break;
         default:
             throw new Exception('Acción no válida');
     }
@@ -148,11 +154,18 @@ function getNotifications() {
         WHERE is_approved = 0
     ") ?: ['count' => 0];
     
+    $new_messages = fetchOne("
+        SELECT COUNT(*) as count
+        FROM contact_messages 
+        WHERE status = 'new' OR status IS NULL OR status = ''
+    ") ?: ['count' => 0];
+    
     echo json_encode([
         'success' => true,
         'data' => [
             'pending_orders' => $pending_orders['count'],
-            'pending_reviews' => $pending_reviews['count']
+            'pending_reviews' => $pending_reviews['count'],
+            'new_messages' => $new_messages['count']
         ]
     ]);
 }
@@ -1111,6 +1124,72 @@ function removeExtraFromProduct() {
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en removeExtraFromProduct: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Actualizar estado de mensaje de contacto
+ */
+function updateContactMessageStatus() {
+    try {
+        global $pdo;
+        
+        $message_id = (int)($_POST['message_id'] ?? 0);
+        $status = trim($_POST['status'] ?? '');
+        
+        if ($message_id <= 0 || empty($status)) {
+            throw new Exception('Datos inválidos');
+        }
+        
+        $valid_statuses = ['new', 'read', 'replied', 'archived'];
+        if (!in_array($status, $valid_statuses)) {
+            throw new Exception('Estado inválido');
+        }
+        
+        $sql = "UPDATE contact_messages SET status = ? WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$status, $message_id]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Estado actualizado correctamente'
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en updateContactMessageStatus: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Eliminar mensaje de contacto
+ */
+function deleteContactMessage() {
+    try {
+        global $pdo;
+        
+        $message_id = (int)($_POST['message_id'] ?? 0);
+        
+        if ($message_id <= 0) {
+            throw new Exception('ID inválido');
+        }
+        
+        $sql = "DELETE FROM contact_messages WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$message_id]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Mensaje eliminado correctamente'
+        ]);
+    } catch (Exception $e) {
+        error_log("❌ Error en deleteContactMessage: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
