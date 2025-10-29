@@ -358,10 +358,17 @@ include 'includes/admin-header.php';
 </div>
 
 <script>
-// Esperar a que jQuery esté disponible
+// Esperar a que jQuery y DataTables estén disponibles
 (function() {
     function initContactMessages() {
+        // Verificar jQuery
         if (typeof jQuery === 'undefined') {
+            setTimeout(initContactMessages, 50);
+            return;
+        }
+        
+        // Verificar DataTables
+        if (typeof jQuery.fn.DataTable === 'undefined') {
             setTimeout(initContactMessages, 50);
             return;
         }
@@ -390,7 +397,15 @@ include 'includes/admin-header.php';
         });
     }
     
-    initContactMessages();
+    // Esperar a que todos los scripts estén cargados (window.onload)
+    if (window.addEventListener) {
+        window.addEventListener('load', initContactMessages);
+    } else if (window.attachEvent) {
+        window.attachEvent('onload', initContactMessages);
+    } else {
+        // Fallback: intentar después de un delay
+        setTimeout(initContactMessages, 500);
+    }
 })();
 
 function updateMessageStatus(messageId, status) {
