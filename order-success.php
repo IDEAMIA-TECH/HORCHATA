@@ -211,7 +211,47 @@ include 'includes/header.php';
                         $status_icon = '<i class="fas fa-clock me-1"></i>';
                         
                         // Determinar método de pago - verificar múltiples variaciones posibles
-                        if (empty($payment_method_clean)) {
+                        // Orden importante: PayPal, Wire Transfer, Pickup, luego fallback
+                        
+                        // Debug temporal: mostrar valores si están vacíos o no coinciden
+                        $debug_info = '';
+                        if (isset($_GET['debug']) && $_GET['debug'] === '1') {
+                            $debug_info = '<!-- DEBUG: payment_method_raw=' . htmlspecialchars(var_export($payment_method_raw, true)) . 
+                                         ' | payment_method_clean=' . htmlspecialchars($payment_method_clean) . 
+                                         ' | payment_status=' . htmlspecialchars($payment_status_lower) . ' -->';
+                        }
+                        
+                        // 1. PayPal - verificar PRIMERO (puede tener variaciones)
+                        if ($payment_method_clean === 'paypal' || strpos($payment_method_clean, 'paypal') !== false) {
+                            // PayPal - verificar diferentes variaciones
+                            $display_method = '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
+                            // PayPal siempre se marca como pagado
+                            $display_status = __('paid');
+                            $status_badge = 'success';
+                            $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                        }
+                        // 2. Wire Transfer - verificar SEGUNDO (antes que pickup para evitar conflictos)
+                        elseif ($payment_method_clean === 'wiretransfer' || 
+                                strpos($payment_method_clean, 'wire') !== false || 
+                                strpos($payment_method_clean, 'transfer') !== false ||
+                                $payment_method_lower === 'wire_transfer' ||
+                                $payment_method_lower === 'wire-transfer') {
+                            // Wire Transfer
+                            $display_method = '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
+                            $display_status = __('pending');
+                            $status_badge = 'warning';
+                            $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        }
+                        // 3. Pickup - verificar TERCERO
+                        elseif ($payment_method_clean === 'pickup' || strpos($payment_method_clean, 'pickup') !== false) {
+                            // Pickup
+                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                            $display_status = __('pending');
+                            $status_badge = 'warning';
+                            $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        }
+                        // 4. Si está vacío, intentar determinar por estado
+                        elseif (empty($payment_method_clean)) {
                             // Si no hay método, intentar determinar por el estado de pago
                             if ($payment_status_lower === 'paid') {
                                 // Si está pagado pero no hay método, probablemente es PayPal
@@ -224,28 +264,15 @@ include 'includes/header.php';
                                 $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
                                 $display_status = __('pending');
                             }
-                        } elseif ($payment_method_clean === 'paypal' || strpos($payment_method_clean, 'paypal') !== false) {
-                            // PayPal - verificar diferentes variaciones
-                            $display_method = '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
-                            // PayPal siempre se marca como pagado
-                            $display_status = __('paid');
-                            $status_badge = 'success';
-                            $status_icon = '<i class="fas fa-check-circle me-1"></i>';
-                        } elseif ($payment_method_clean === 'wiretransfer' || strpos($payment_method_clean, 'wire') !== false || strpos($payment_method_clean, 'transfer') !== false) {
-                            // Wire Transfer
-                            $display_method = '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
-                            $display_status = __('pending');
-                            $status_badge = 'warning';
-                            $status_icon = '<i class="fas fa-clock me-1"></i>';
-                        } elseif ($payment_method_clean === 'pickup' || strpos($payment_method_clean, 'pickup') !== false) {
-                            // Pickup
-                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
-                            $display_status = __('pending');
-                            $status_badge = 'warning';
-                            $status_icon = '<i class="fas fa-clock me-1"></i>';
-                        } else {
-                            // Método desconocido - mostrar el valor original
-                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . htmlspecialchars($payment_method_value) ?: __('pay_on_pickup');
+                        }
+                        // 5. Método desconocido - mostrar el valor original o pickup
+                        else {
+                            // Método desconocido - intentar mostrar el valor original, si no hay mostrar pickup
+                            if (!empty($payment_method_value)) {
+                                $display_method = htmlspecialchars($payment_method_value);
+                            } else {
+                                $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                            }
                             $display_status = __('pending');
                             $status_badge = 'warning';
                             $status_icon = '<i class="fas fa-clock me-1"></i>';
@@ -264,6 +291,7 @@ include 'includes/header.php';
                             }
                         }
                         ?>
+                        <?php if (!empty($debug_info)) echo $debug_info; ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_method'); ?></h6>
