@@ -13,6 +13,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener estadísticas del dashboard
 $stats = [];
@@ -68,7 +69,7 @@ $top_products = fetchAll("
 ") ?: [];
 
 // Configurar página
-$page_title = 'Dashboard';
+$page_title = __('dashboard');
 $page_scripts = ['assets/js/dashboard.js'];
 
 // Incluir header del admin
@@ -80,17 +81,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            <i class="fas fa-tachometer-alt me-2"></i><?php echo __('dashboard'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshDashboard()">
-                    <i class="fas fa-sync-alt me-1"></i>Actualizar
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-primary" onclick="window.print()">
-                    <i class="fas fa-print me-1"></i>Imprimir
+                    <i class="fas fa-print me-1"></i><?php echo __('print'); ?>
                 </button>
             </div>
         </div>
@@ -104,7 +105,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Órdenes Hoy
+                                <?php echo __('orders_today'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $today_orders['count']; ?>
@@ -124,7 +125,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Ingresos Hoy
+                                <?php echo __('revenue_today'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 $<?php echo number_format($today_orders['revenue'], 2); ?>
@@ -144,7 +145,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Órdenes Pendientes
+                                <?php echo __('pending_orders'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $pending_orders['count']; ?>
@@ -164,7 +165,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Reseñas Pendientes
+                                <?php echo __('pending_reviews'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $pending_reviews['count']; ?>
@@ -185,7 +186,7 @@ include 'includes/admin-header.php';
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Órdenes por Día (Últimos 7 días)</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('orders_by_day'); ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
@@ -199,7 +200,7 @@ include 'includes/admin-header.php';
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Métodos de Pago</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('payment_methods'); ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-pie pt-4 pb-2">
@@ -216,20 +217,20 @@ include 'includes/admin-header.php';
         <div class="col-lg-8 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Órdenes Recientes</h6>
-                    <a href="orders.php" class="btn btn-sm btn-primary">Ver Todas</a>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('recent_orders'); ?></h6>
+                    <a href="orders.php" class="btn btn-sm btn-primary"><?php echo __('view_all'); ?></a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="recentOrdersTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Orden</th>
-                                    <th>Cliente</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                    <th>Fecha</th>
-                                    <th>Acciones</th>
+                                    <th><?php echo __('order'); ?></th>
+                                    <th><?php echo __('customer'); ?></th>
+                                    <th><?php echo __('total'); ?></th>
+                                    <th><?php echo __('status'); ?></th>
+                                    <th><?php echo __('date'); ?></th>
+                                    <th><?php echo __('actions'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -238,7 +239,7 @@ include 'includes/admin-header.php';
                                     <td>
                                         <strong>#<?php echo htmlspecialchars($order['order_number']); ?></strong>
                                         <br>
-                                        <small class="text-muted"><?php echo $order['item_count']; ?> items</small>
+                                        <small class="text-muted"><?php echo $order['item_count']; ?> <?php echo __('items'); ?></small>
                                     </td>
                                     <td>
                                         <?php echo htmlspecialchars($order['customer_name']); ?>
@@ -276,8 +277,8 @@ include 'includes/admin-header.php';
         <div class="col-lg-4 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Productos Más Vendidos</h6>
-                    <a href="products.php" class="btn btn-sm btn-primary">Ver Todos</a>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('top_products'); ?></h6>
+                    <a href="products.php" class="btn btn-sm btn-primary"><?php echo __('view_all_products'); ?></a>
                 </div>
                 <div class="card-body">
                     <?php foreach ($top_products as $product): ?>
@@ -289,7 +290,7 @@ include 'includes/admin-header.php';
                         <div class="flex-grow-1">
                             <h6 class="mb-1"><?php echo htmlspecialchars($product['name_en']); ?></h6>
                             <small class="text-muted">
-                                <?php echo $product['total_sold']; ?> vendidos
+                                <?php echo $product['total_sold']; ?> <?php echo __('sold'); ?>
                             </small>
                         </div>
                         <div class="text-end">
@@ -322,7 +323,7 @@ function initCharts() {
         data: {
             labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
             datasets: [{
-                label: 'Órdenes',
+                label: '<?php echo __('orders'); ?>',
                 data: [12, 19, 3, 5, 2, 3, 8],
                 borderColor: 'rgb(212, 175, 55)',
                 backgroundColor: 'rgba(212, 175, 55, 0.1)',
@@ -345,7 +346,7 @@ function initCharts() {
     new Chart(paymentCtx, {
         type: 'doughnut',
         data: {
-            labels: ['PayPal', 'Pagar al Recoger'],
+            labels: ['PayPal', '<?php echo __('pay_on_pickup'); ?>'],
             datasets: [{
                 data: [65, 35],
                 backgroundColor: ['#d4af37', '#ff6b35'],
@@ -373,7 +374,7 @@ function setupAutoRefresh() {
 
 function refreshDashboard() {
     // Mostrar indicador de carga
-    $('.btn-outline-secondary').html('<i class="fas fa-spinner fa-spin me-1"></i>Actualizando...');
+    $('.btn-outline-secondary').html('<i class="fas fa-spinner fa-spin me-1"></i><?php echo __('updating'); ?>');
     
     // Recargar página después de un breve delay
     setTimeout(function() {

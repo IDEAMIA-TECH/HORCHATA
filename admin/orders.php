@@ -14,6 +14,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'list';
@@ -52,7 +53,7 @@ switch ($action) {
 }
 
 // Configurar página
-$page_title = $action === 'view' ? 'Order Details' : 'Order Management';
+$page_title = $action === 'view' ? __('order_details') : __('order_management');
 $page_scripts = ['assets/js/orders.js'];
 
 // Incluir header del admin
@@ -64,17 +65,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-shopping-cart me-2"></i>Order Management
+            <i class="fas fa-shopping-cart me-2"></i><?php echo __('order_management'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshOrders()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-primary" onclick="printOrders()">
-                    <i class="fas fa-print me-1"></i>Print
+                    <i class="fas fa-print me-1"></i><?php echo __('print'); ?>
                 </button>
             </div>
         </div>
@@ -90,7 +91,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Pending
+                                <?php echo __('pending'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['pending'] ?? 0; ?>
@@ -110,7 +111,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Confirmed
+                                <?php echo __('confirmed'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['confirmed'] ?? 0; ?>
@@ -130,7 +131,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Preparing
+                                <?php echo __('preparing'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['preparing'] ?? 0; ?>
@@ -150,7 +151,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Ready
+                                <?php echo __('ready'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['ready'] ?? 0; ?>
@@ -168,31 +169,31 @@ include 'includes/admin-header.php';
     <!-- Orders Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Orders List</h6>
+            <h6 class="m-0 font-weight-bold text-primary"><?php echo __('orders_list'); ?></h6>
         </div>
         <div class="card-body">
             <!-- Filters -->
             <div class="row mb-3">
                 <div class="col-md-3">
                     <select class="form-select" id="statusFilter">
-                        <option value="">All statuses</option>
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="preparing">Preparing</option>
-                        <option value="ready">Ready</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value=""><?php echo __('all_statuses'); ?></option>
+                        <option value="pending"><?php echo __('pending'); ?></option>
+                        <option value="confirmed"><?php echo __('confirmed'); ?></option>
+                        <option value="preparing"><?php echo __('preparing'); ?></option>
+                        <option value="ready"><?php echo __('ready'); ?></option>
+                        <option value="completed"><?php echo __('completed'); ?></option>
+                        <option value="cancelled"><?php echo __('cancelled'); ?></option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="date" class="form-control" id="dateFilter" placeholder="Filter by date">
+                    <input type="date" class="form-control" id="dateFilter" placeholder="<?php echo __('filter_by_date'); ?>">
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search orders...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="<?php echo __('search_orders'); ?>">
                 </div>
                 <div class="col-md-3">
                     <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
-                        <i class="fas fa-search me-1"></i>Filter
+                        <i class="fas fa-search me-1"></i><?php echo __('filter'); ?>
                     </button>
                 </div>
             </div>
@@ -202,14 +203,14 @@ include 'includes/admin-header.php';
                 <table class="table table-bordered data-table" id="ordersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Order</th>
-                            <th>Customer</th>
-                            <th>Pickup</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Payment</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <th><?php echo __('order'); ?></th>
+                            <th><?php echo __('customer'); ?></th>
+                            <th><?php echo __('pickup'); ?></th>
+                            <th><?php echo __('total'); ?></th>
+                            <th><?php echo __('status'); ?></th>
+                            <th><?php echo __('payment'); ?></th>
+                            <th><?php echo __('date'); ?></th>
+                            <th><?php echo __('actions'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -218,7 +219,7 @@ include 'includes/admin-header.php';
                             <td>
                                 <strong>#<?php echo htmlspecialchars($order['order_number']); ?></strong>
                                 <br>
-                                <small class="text-muted"><?php echo $order['item_count']; ?> items</small>
+                                <small class="text-muted"><?php echo $order['item_count']; ?> <?php echo __('items'); ?></small>
                             </td>
                             <td>
                                 <strong><?php echo htmlspecialchars($order['customer_name']); ?></strong>
@@ -255,21 +256,21 @@ include 'includes/admin-header.php';
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="orders.php?action=view&id=<?php echo $order['id']; ?>" 
-                                       class="btn btn-sm btn-outline-primary" title="Ver">
+                                       class="btn btn-sm btn-outline-primary" title="<?php echo __('view'); ?>">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                                type="button" data-bs-toggle="dropdown" title="Cambiar Estado">
+                                                type="button" data-bs-toggle="dropdown" title="<?php echo __('change_status'); ?>">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <ul class="dropdown-menu" style="z-index: 9999;">
-                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'confirmed')">Confirm</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'preparing')">Preparing</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'ready')">Ready</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'completed')">Completed</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'confirmed')"><?php echo __('confirm'); ?></a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'preparing')"><?php echo __('preparing'); ?></a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'ready')"><?php echo __('ready'); ?></a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'completed')"><?php echo __('completed'); ?></a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'cancelled')">Cancel</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'cancelled')"><?php echo __('cancel'); ?></a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -289,28 +290,28 @@ include 'includes/admin-header.php';
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Order Details</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('order_details'); ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-muted">Customer Information</h6>
-                            <p><strong>Name:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
-                            <p><strong>Email:</strong> <?php echo htmlspecialchars($order['customer_email']); ?></p>
-                            <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['customer_phone']); ?></p>
+                            <h6 class="text-muted"><?php echo __('customer_information'); ?></h6>
+                            <p><strong><?php echo __('name'); ?>:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
+                            <p><strong><?php echo __('email'); ?>:</strong> <?php echo htmlspecialchars($order['customer_email']); ?></p>
+                            <p><strong><?php echo __('phone'); ?>:</strong> <?php echo htmlspecialchars($order['customer_phone']); ?></p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted">Order Information</h6>
-                            <p><strong>Number:</strong> #<?php echo htmlspecialchars($order['order_number']); ?></p>
-                            <p><strong>Date:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
-                            <p><strong>Pickup:</strong> <?php echo date('M d, Y g:i A', strtotime($order['pickup_time'])); ?></p>
+                            <h6 class="text-muted"><?php echo __('order_information'); ?></h6>
+                            <p><strong><?php echo __('number'); ?>:</strong> #<?php echo htmlspecialchars($order['order_number']); ?></p>
+                            <p><strong><?php echo __('date'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
+                            <p><strong><?php echo __('pickup_time'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($order['pickup_time'])); ?></p>
                         </div>
                     </div>
                     
                     <?php if (!empty($order['notes'])): ?>
                     <div class="row mt-3">
                         <div class="col-12">
-                            <h6 class="text-muted">Special Instructions</h6>
+                            <h6 class="text-muted"><?php echo __('special_instructions'); ?></h6>
                             <p><?php echo htmlspecialchars($order['notes']); ?></p>
                         </div>
                     </div>
@@ -321,18 +322,18 @@ include 'includes/admin-header.php';
             <!-- Order Items -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Order Items</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('order_items'); ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Customizations</th>
-                                    <th>Subtotal</th>
+                                    <th><?php echo __('product'); ?></th>
+                                    <th><?php echo __('price'); ?></th>
+                                    <th><?php echo __('quantity'); ?></th>
+                                    <th><?php echo __('customizations'); ?></th>
+                                    <th><?php echo __('subtotal'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -351,14 +352,14 @@ include 'includes/admin-header.php';
                                                 <?php if (!empty($customizations['specialInstructions'])): ?>
                                                     <div class="mb-2">
                                                         <i class="fas fa-info-circle text-primary me-1"></i>
-                                                        <strong>Instructions:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?>
+                                                        <strong><?php echo __('instructions'); ?>:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?>
                                                     </div>
                                                 <?php endif; ?>
                                                 
                                                 <?php if (!empty($customizations['extras']) && is_array($customizations['extras'])): ?>
                                                     <div class="mb-2">
                                                         <i class="fas fa-plus-circle text-success me-1"></i>
-                                                        <strong>Extras:</strong>
+                                                        <strong><?php echo __('extras'); ?>:</strong>
                                                         <ul class="mb-0">
                                                             <?php foreach ($customizations['extras'] as $extra): ?>
                                                                 <li><?php echo htmlspecialchars($extra['name']); ?> (+ $<?php echo number_format($extra['price'], 2); ?>)</li>
@@ -370,13 +371,13 @@ include 'includes/admin-header.php';
                                                 <?php if (!empty($customizations['spiceLevel'])): ?>
                                                     <div class="mb-2">
                                                         <i class="fas fa-fire text-danger me-1"></i>
-                                                        <strong>Spice Level:</strong> 
+                                                        <strong><?php echo __('spice_level'); ?>:</strong> 
                                                         <span class="badge bg-warning"><?php echo htmlspecialchars(ucfirst($customizations['spiceLevel'])); ?></span>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                         <?php else: ?>
-                                            <span class="text-muted">None</span>
+                                            <span class="text-muted"><?php echo __('none'); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td><strong>$<?php echo number_format($item['subtotal'], 2); ?></strong></td>
@@ -385,15 +386,15 @@ include 'includes/admin-header.php';
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="4">Subtotal:</th>
+                                    <th colspan="4"><?php echo __('subtotal'); ?>:</th>
                                     <th>$<?php echo number_format($order['subtotal'], 2); ?></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="4">Tax:</th>
+                                    <th colspan="4"><?php echo __('tax'); ?>:</th>
                                     <th>$<?php echo number_format($order['tax'], 2); ?></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="4">Total:</th>
+                                    <th colspan="4"><?php echo __('total'); ?>:</th>
                                     <th class="text-primary">$<?php echo number_format($order['total'], 2); ?></th>
                                 </tr>
                             </tfoot>
@@ -407,27 +408,27 @@ include 'includes/admin-header.php';
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('actions'); ?></h6>
                 </div>
                 <div class="card-body">
                     <!-- Status Update -->
                     <div class="mb-4">
-                        <h6 class="text-muted">Change Status</h6>
+                        <h6 class="text-muted"><?php echo __('change_status'); ?></h6>
                         <div class="btn-group-vertical w-100" role="group">
                             <button class="btn btn-outline-info" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'confirmed')">
-                                <i class="fas fa-check-circle me-2"></i>Confirm
+                                <i class="fas fa-check-circle me-2"></i><?php echo __('confirm'); ?>
                             </button>
                             <button class="btn btn-outline-warning" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'preparing')">
-                                <i class="fas fa-utensils me-2"></i>Preparing
+                                <i class="fas fa-utensils me-2"></i><?php echo __('preparing'); ?>
                             </button>
                             <button class="btn btn-outline-success" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'ready')">
-                                <i class="fas fa-check me-2"></i>Ready
+                                <i class="fas fa-check me-2"></i><?php echo __('ready'); ?>
                             </button>
                             <button class="btn btn-outline-primary" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'completed')">
-                                <i class="fas fa-flag-checkered me-2"></i>Completed
+                                <i class="fas fa-flag-checkered me-2"></i><?php echo __('completed'); ?>
                             </button>
                             <button class="btn btn-outline-danger" onclick="updateOrderStatus(<?php echo $order['id']; ?>, 'cancelled')">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i><?php echo __('cancel'); ?>
                             </button>
                         </div>
                     </div>
@@ -435,14 +436,14 @@ include 'includes/admin-header.php';
                     <!-- Print Order -->
                     <div class="mb-4">
                         <button class="btn btn-primary w-100" onclick="printOrder(<?php echo $order['id']; ?>)">
-                            <i class="fas fa-print me-2"></i>Print Order
+                            <i class="fas fa-print me-2"></i><?php echo __('print_order'); ?>
                         </button>
                     </div>
                     
                     <!-- Order Status -->
                     <div class="mb-4">
-                        <h6 class="text-muted">Order Status</h6>
-                        <p><strong>Current Status:</strong> 
+                        <h6 class="text-muted"><?php echo __('order_status'); ?></h6>
+                        <p><strong><?php echo __('current_status'); ?>:</strong> 
                             <span class="badge bg-<?php echo getStatusColor($order['status']); ?>">
                                 <?php echo ucfirst($order['status']); ?>
                             </span>
@@ -451,9 +452,9 @@ include 'includes/admin-header.php';
                     
                     <!-- Payment Information -->
                     <div class="mb-4">
-                        <h6 class="text-muted">Payment Information</h6>
-                        <p><strong>Method:</strong> <?php echo ucfirst($order['payment_method']); ?></p>
-                        <p><strong>Status:</strong> 
+                        <h6 class="text-muted"><?php echo __('payment_information'); ?></h6>
+                        <p><strong><?php echo __('method'); ?>:</strong> <?php echo ucfirst($order['payment_method']); ?></p>
+                        <p><strong><?php echo __('status'); ?>:</strong> 
                             <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?>">
                                 <?php echo ucfirst($order['payment_status']); ?>
                             </span>
@@ -463,7 +464,7 @@ include 'includes/admin-header.php';
                         <!-- Mark as Paid Button -->
                         <div class="mt-3">
                             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#markPaidModal">
-                                <i class="fas fa-credit-card me-1"></i>Mark as Paid
+                                <i class="fas fa-credit-card me-1"></i><?php echo __('mark_as_paid'); ?>
                             </button>
                         </div>
                         <?php endif; ?>
@@ -486,29 +487,29 @@ include 'includes/admin-header.php';
         <div class="order-info mb-4">
             <div class="row">
                 <div class="col-6">
-                    <h5>Order Information</h5>
-                    <p><strong>Order Number:</strong> <?php echo htmlspecialchars($order['order_number']); ?></p>
-                    <p><strong>Date:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
-                    <p><strong>Status:</strong> <span class="badge bg-<?php echo getStatusColor($order['status']); ?>"><?php echo ucfirst($order['status']); ?></span></p>
+                    <h5><?php echo __('order_information'); ?></h5>
+                    <p><strong><?php echo __('order_number'); ?>:</strong> <?php echo htmlspecialchars($order['order_number']); ?></p>
+                    <p><strong><?php echo __('date'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
+                    <p><strong><?php echo __('status'); ?>:</strong> <span class="badge bg-<?php echo getStatusColor($order['status']); ?>"><?php echo ucfirst($order['status']); ?></span></p>
                 </div>
                 <div class="col-6">
-                    <h5>Customer Information</h5>
-                    <p><strong>Name:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
-                    <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['customer_phone']); ?></p>
-                    <p><strong>Email:</strong> <?php echo htmlspecialchars($order['customer_email']); ?></p>
+                    <h5><?php echo __('customer_information'); ?></h5>
+                    <p><strong><?php echo __('name'); ?>:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
+                    <p><strong><?php echo __('phone'); ?>:</strong> <?php echo htmlspecialchars($order['customer_phone']); ?></p>
+                    <p><strong><?php echo __('email'); ?>:</strong> <?php echo htmlspecialchars($order['customer_email']); ?></p>
                 </div>
             </div>
         </div>
         
         <div class="order-items mb-4">
-            <h5>Order Items</h5>
+            <h5><?php echo __('order_items'); ?></h5>
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Subtotal</th>
+                        <th><?php echo __('item'); ?></th>
+                        <th><?php echo __('quantity'); ?></th>
+                        <th><?php echo __('unit_price'); ?></th>
+                        <th><?php echo __('subtotal'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -521,10 +522,10 @@ include 'includes/admin-header.php';
                             ?>
                                 <div class="customizations-info mt-2">
                                     <?php if (!empty($customizations['specialInstructions'])): ?>
-                                        <div><small><strong>Instructions:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?></small></div>
+                                        <div><small><strong><?php echo __('instructions'); ?>:</strong> <?php echo htmlspecialchars($customizations['specialInstructions']); ?></small></div>
                                     <?php endif; ?>
                                     <?php if (!empty($customizations['extras']) && is_array($customizations['extras'])): ?>
-                                        <div><small><strong>Extras:</strong> 
+                                        <div><small><strong><?php echo __('extras'); ?>:</strong> 
                                             <?php 
                                                 $extrasList = [];
                                                 foreach ($customizations['extras'] as $extra) {
@@ -535,7 +536,7 @@ include 'includes/admin-header.php';
                                         </small></div>
                                     <?php endif; ?>
                                     <?php if (!empty($customizations['spiceLevel'])): ?>
-                                        <div><small><strong>Spice Level:</strong> <?php echo htmlspecialchars(ucfirst($customizations['spiceLevel'])); ?></small></div>
+                                        <div><small><strong><?php echo __('spice_level'); ?>:</strong> <?php echo htmlspecialchars(ucfirst($customizations['spiceLevel'])); ?></small></div>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
@@ -548,7 +549,7 @@ include 'includes/admin-header.php';
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                        <td colspan="3" class="text-end"><strong><?php echo __('total'); ?>:</strong></td>
                         <td><strong>$<?php echo number_format($order['total'], 2); ?></strong></td>
                     </tr>
                 </tfoot>
@@ -557,13 +558,13 @@ include 'includes/admin-header.php';
         
         <?php if (!empty($order['notes'])): ?>
         <div class="order-notes mb-4">
-            <h5>Special Instructions</h5>
+            <h5><?php echo __('special_instructions'); ?></h5>
             <p><?php echo htmlspecialchars($order['notes']); ?></p>
         </div>
         <?php endif; ?>
         
         <div class="print-footer text-center mt-5">
-            <p class="text-muted"><small>Thank you for your order!</small></p>
+            <p class="text-muted"><small><?php echo __('thank_you_order'); ?></small></p>
         </div>
     </div>
     
@@ -664,7 +665,7 @@ include 'includes/admin-header.php';
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="markPaidModalLabel">
-                    <i class="fas fa-credit-card me-2"></i>Mark Order as Paid
+                    <i class="fas fa-credit-card me-2"></i><?php echo __('mark_order_as_paid'); ?>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -673,17 +674,17 @@ include 'includes/admin-header.php';
                     <input type="hidden" id="orderId" value="<?php echo $order['id']; ?>">
                     
                     <div class="mb-3">
-                        <label for="paymentMethod" class="form-label">Payment Method</label>
+                        <label for="paymentMethod" class="form-label"><?php echo __('payment_method'); ?></label>
                         <select class="form-select" id="paymentMethod" required>
-                            <option value="">Select payment method</option>
-                            <option value="cash">Cash</option>
-                            <option value="card">Card</option>
-                            <option value="online">Online</option>
+                            <option value=""><?php echo __('select_payment_method'); ?></option>
+                            <option value="cash"><?php echo __('cash'); ?></option>
+                            <option value="card"><?php echo __('card'); ?></option>
+                            <option value="online"><?php echo __('online'); ?></option>
                         </select>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="paymentAmount" class="form-label">Payment Amount</label>
+                        <label for="paymentAmount" class="form-label"><?php echo __('payment_amount'); ?></label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" class="form-control" id="paymentAmount" 
@@ -693,16 +694,16 @@ include 'includes/admin-header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="paymentNotes" class="form-label">Notes (Optional)</label>
+                        <label for="paymentNotes" class="form-label"><?php echo __('notes_optional'); ?></label>
                         <textarea class="form-control" id="paymentNotes" rows="3" 
-                                  placeholder="Add any payment notes..."></textarea>
+                                  placeholder="<?php echo __('add_payment_notes'); ?>"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo __('cancel'); ?></button>
                 <button type="button" class="btn btn-success" onclick="markOrderAsPaid()">
-                    <i class="fas fa-check me-1"></i>Mark as Paid
+                    <i class="fas fa-check me-1"></i><?php echo __('mark_as_paid'); ?>
                 </button>
             </div>
         </div>
@@ -742,7 +743,7 @@ function setupOrdersTable() {
 }
 
 function updateOrderStatus(orderId, newStatus) {
-    if (confirm(`¿Cambiar el estado del pedido a ${newStatus}?`)) {
+    if (confirm(`<?php echo __('change_order_status_confirm'); ?> ${newStatus}?`)) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -757,11 +758,11 @@ function updateOrderStatus(orderId, newStatus) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Error de conexión', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }
@@ -786,16 +787,16 @@ function markOrderAsPaid() {
     const paymentNotes = document.getElementById('paymentNotes').value;
     
     if (!paymentMethod) {
-        alert('Please select a payment method');
+        alert('<?php echo __('please_select_payment_method'); ?>');
         return;
     }
     
     if (!paymentAmount || paymentAmount <= 0) {
-        alert('Please enter a valid payment amount');
+        alert('<?php echo __('please_enter_valid_amount'); ?>');
         return;
     }
     
-    if (confirm(`Mark order #${orderId} as paid with ${paymentMethod} for $${paymentAmount}?`)) {
+    if (confirm(`<?php echo __('mark_order_paid_confirm'); ?> #${orderId} <?php echo __('as_paid_with'); ?> ${paymentMethod} <?php echo __('for'); ?> $${paymentAmount}?`)) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -815,11 +816,11 @@ function markOrderAsPaid() {
                     // Reload page to show updated status
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }

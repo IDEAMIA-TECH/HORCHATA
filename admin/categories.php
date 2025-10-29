@@ -20,6 +20,7 @@ if (($_SESSION['admin_role'] ?? 'staff') !== 'admin') {
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'list';
@@ -56,7 +57,7 @@ switch ($action) {
 }
 
 // Configurar página
-$page_title = $action === 'edit' ? 'Edit Category' : ($action === 'create' ? 'Create Category' : 'Categories Management');
+$page_title = $action === 'edit' ? __('edit_category') : ($action === 'create' ? __('create_category') : __('categories_management'));
 $page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
@@ -68,17 +69,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-tags me-2"></i>Categories Management
+            <i class="fas fa-tags me-2"></i><?php echo __('categories_management'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshCategories()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <a href="categories.php?action=create" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus me-1"></i>Add Category
+                    <i class="fas fa-plus me-1"></i><?php echo __('add_category'); ?>
                 </a>
             </div>
         </div>
@@ -88,17 +89,17 @@ include 'includes/admin-header.php';
     <!-- Categories Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Categories List</h6>
+            <h6 class="m-0 font-weight-bold text-primary"><?php echo __('categories_list'); ?></h6>
         </div>
         <div class="card-body">
             <!-- Filters -->
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search categories...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="<?php echo __('search_categories'); ?>">
                 </div>
                 <div class="col-md-3">
                     <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
-                        <i class="fas fa-search me-1"></i>Filter
+                        <i class="fas fa-search me-1"></i><?php echo __('filter'); ?>
                     </button>
                 </div>
             </div>
@@ -109,13 +110,13 @@ include 'includes/admin-header.php';
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Name (EN)</th>
-                            <th>Name (ES)</th>
-                            <th>Description</th>
-                            <th>Products</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <th><?php echo __('name_en'); ?></th>
+                            <th><?php echo __('name_es'); ?></th>
+                            <th><?php echo __('description'); ?></th>
+                            <th><?php echo __('products'); ?></th>
+                            <th><?php echo __('status'); ?></th>
+                            <th><?php echo __('created'); ?></th>
+                            <th><?php echo __('actions'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,23 +138,23 @@ include 'includes/admin-header.php';
                             </td>
                             <td>
                                 <span class="badge bg-<?php echo $category['is_active'] ? 'success' : 'danger'; ?>">
-                                    <?php echo $category['is_active'] ? 'Active' : 'Inactive'; ?>
+                                    <?php echo $category['is_active'] ? __('active') : __('inactive'); ?>
                                 </span>
                             </td>
                             <td><?php echo date('M d, Y', strtotime($category['created_at'])); ?></td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="categories.php?action=edit&id=<?php echo $category['id']; ?>" 
-                                       class="btn btn-sm btn-outline-primary" title="Edit">
+                                       class="btn btn-sm btn-outline-primary" title="<?php echo __('edit'); ?>">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button class="btn btn-sm btn-outline-<?php echo $category['is_active'] ? 'warning' : 'success'; ?>" 
                                             onclick="toggleCategoryStatus(<?php echo $category['id']; ?>, <?php echo $category['is_active'] ? 'false' : 'true'; ?>)" 
-                                            title="<?php echo $category['is_active'] ? 'Deactivate' : 'Activate'; ?>">
+                                            title="<?php echo $category['is_active'] ? __('deactivate') : __('activate'); ?>">
                                         <i class="fas fa-<?php echo $category['is_active'] ? 'pause' : 'play'; ?>"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="deleteCategory(<?php echo $category['id']; ?>)" title="Delete">
+                                            onclick="deleteCategory(<?php echo $category['id']; ?>)" title="<?php echo __('delete'); ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -173,7 +174,7 @@ include 'includes/admin-header.php';
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <?php echo $action === 'create' ? 'Create New Category' : 'Edit Category'; ?>
+                        <?php echo $action === 'create' ? __('create_new_category') : __('edit_category'); ?>
                     </h6>
                 </div>
                 <div class="card-body">
@@ -186,14 +187,14 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="name_en" class="form-label">Name (English) *</label>
+                                    <label for="name_en" class="form-label"><?php echo __('name_english_required'); ?></label>
                                     <input type="text" class="form-control" id="name_en" name="name_en" 
                                            value="<?php echo $category['name_en'] ?? ''; ?>" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="name_es" class="form-label">Name (Spanish) *</label>
+                                    <label for="name_es" class="form-label"><?php echo __('name_spanish_required'); ?></label>
                                     <input type="text" class="form-control" id="name_es" name="name_es" 
                                            value="<?php echo $category['name_es'] ?? ''; ?>" required>
                                 </div>
@@ -203,13 +204,13 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="description_en" class="form-label">Description (English)</label>
+                                    <label for="description_en" class="form-label"><?php echo __('description_english'); ?></label>
                                     <textarea class="form-control" id="description_en" name="description_en" rows="3"><?php echo $category['description_en'] ?? ''; ?></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="description_es" class="form-label">Description (Spanish)</label>
+                                    <label for="description_es" class="form-label"><?php echo __('description_spanish'); ?></label>
                                     <textarea class="form-control" id="description_es" name="description_es" rows="3"><?php echo $category['description_es'] ?? ''; ?></textarea>
                                 </div>
                             </div>
@@ -218,7 +219,7 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="icon" class="form-label">Icon Class</label>
+                                    <label for="icon" class="form-label"><?php echo __('icon_class'); ?></label>
                                     <input type="text" class="form-control" id="icon" name="icon" 
                                            value="<?php echo $category['icon'] ?? ''; ?>" 
                                            placeholder="fas fa-utensils">
@@ -227,7 +228,7 @@ include 'includes/admin-header.php';
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="color" class="form-label">Color</label>
+                                    <label for="color" class="form-label"><?php echo __('color'); ?></label>
                                     <input type="color" class="form-control" id="color" name="color" 
                                            value="<?php echo $category['color'] ?? '#007bff'; ?>">
                                 </div>
@@ -235,7 +236,7 @@ include 'includes/admin-header.php';
                         </div>
                         
                         <div class="mb-3">
-                            <label for="image" class="form-label">Category Image</label>
+                            <label for="image" class="form-label"><?php echo __('category_image'); ?></label>
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
                             <?php if ($action === 'edit' && !empty($category['image'])): ?>
                             <div class="mt-2">
@@ -249,18 +250,18 @@ include 'includes/admin-header.php';
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
                                        <?php echo ($category['is_active'] ?? true) ? 'checked' : ''; ?>>
                                 <label class="form-check-label" for="is_active">
-                                    Active Category
+                                    <?php echo __('active_category'); ?>
                                 </label>
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-between">
                             <a href="categories.php" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Back to Categories
+                                <i class="fas fa-arrow-left me-1"></i><?php echo __('back_to_categories'); ?>
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>
-                                <?php echo $action === 'create' ? 'Create Category' : 'Update Category'; ?>
+                                <?php echo $action === 'create' ? __('create_category') : __('update_category'); ?>
                             </button>
                         </div>
                     </form>
@@ -272,27 +273,27 @@ include 'includes/admin-header.php';
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Category Information</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('category_information'); ?></h6>
                 </div>
                 <div class="card-body">
                     <p class="text-muted">
-                        Categories help organize your products and make it easier for customers to find what they're looking for.
+                        <?php echo __('categories_help'); ?>
                     </p>
                     
-                    <h6>Tips:</h6>
+                    <h6><?php echo __('tips'); ?>:</h6>
                     <ul class="small">
-                        <li>Use descriptive names in both languages</li>
-                        <li>Choose appropriate icons and colors</li>
-                        <li>Keep descriptions concise but informative</li>
-                        <li>Upload high-quality images for better presentation</li>
+                        <li><?php echo __('use_descriptive_names'); ?></li>
+                        <li><?php echo __('choose_appropriate_icons'); ?></li>
+                        <li><?php echo __('keep_descriptions_concise'); ?></li>
+                        <li><?php echo __('upload_high_quality_images'); ?></li>
                     </ul>
                     
                     <?php if ($action === 'edit'): ?>
                     <hr>
-                    <h6>Category Stats:</h6>
-                    <p><strong>Products:</strong> <?php echo getCategoryProductCount($category['id']); ?></p>
-                    <p><strong>Created:</strong> <?php echo date('M d, Y', strtotime($category['created_at'])); ?></p>
-                    <p><strong>Updated:</strong> <?php echo $category['updated_at'] ? date('M d, Y', strtotime($category['updated_at'])) : 'Never'; ?></p>
+                    <h6><?php echo __('category_stats'); ?>:</h6>
+                    <p><strong><?php echo __('products'); ?>:</strong> <?php echo getCategoryProductCount($category['id']); ?></p>
+                    <p><strong><?php echo __('created'); ?>:</strong> <?php echo date('M d, Y', strtotime($category['created_at'])); ?></p>
+                    <p><strong><?php echo __('updated'); ?>:</strong> <?php echo $category['updated_at'] ? date('M d, Y', strtotime($category['updated_at'])) : __('never'); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -312,17 +313,17 @@ $(document).ready(function() {
             "pageLength": 25,
             "order": [[0, "desc"]],
             "language": {
-                "lengthMenu": "Show _MENU_ categories per page",
-                "zeroRecords": "No categories found",
-                "info": "Showing _START_ to _END_ of _TOTAL_ categories",
-                "infoEmpty": "No categories available",
-                "infoFiltered": "(filtered from _MAX_ total categories)",
-                "search": "Search:",
+                "lengthMenu": "<?php echo __('showing'); ?> _MENU_ <?php echo __('categories'); ?> <?php echo __('per_page'); ?>",
+                "zeroRecords": "<?php echo __('no_records_found'); ?>",
+                "info": "<?php echo __('showing'); ?> _START_ <?php echo __('to'); ?> _END_ <?php echo __('of'); ?> _TOTAL_ <?php echo __('categories'); ?>",
+                "infoEmpty": "<?php echo __('no_data_available'); ?>",
+                "infoFiltered": "(<?php echo __('filtered_from'); ?> _MAX_ <?php echo __('total_entries'); ?>)",
+                "search": "<?php echo __('search'); ?>:",
                 "paginate": {
-                    "first": "First",
-                    "last": "Last",
-                    "next": "Next",
-                    "previous": "Previous"
+                    "first": "<?php echo __('first'); ?>",
+                    "last": "<?php echo __('last'); ?>",
+                    "next": "<?php echo __('next'); ?>",
+                    "previous": "<?php echo __('previous'); ?>"
                 }
             }
             });
@@ -379,7 +380,7 @@ function saveCategory() {
     // Mostrar loading
     const submitBtn = $('#categoryForm button[type="submit"]');
     const originalText = submitBtn.html();
-    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
+    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i><?php echo __('saving'); ?>...');
     
     $.ajax({
         url: '../ajax/admin.ajax.php',
@@ -395,11 +396,11 @@ function saveCategory() {
                     window.location.href = 'categories.php';
                 }, 1500);
             } else {
-                showNotification('Error: ' + response.message, 'error');
+                showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
             }
         },
         error: function() {
-            showNotification('Connection error', 'error');
+            showNotification('<?php echo __('connection_error'); ?>', 'error');
         },
         complete: function() {
             submitBtn.prop('disabled', false).html(originalText);
@@ -410,7 +411,7 @@ function saveCategory() {
 function toggleCategoryStatus(categoryId, newStatus) {
     const action = newStatus === 'true' ? 'activate' : 'deactivate';
     
-    if (confirm(`Are you sure you want to ${action} this category?`)) {
+    if (confirm(`<?php echo __('are_you_sure'); ?> ${action} <?php echo __('this_category'); ?>?`)) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -425,18 +426,18 @@ function toggleCategoryStatus(categoryId, newStatus) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }
 }
 
 function deleteCategory(categoryId) {
-    if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+    if (confirm('<?php echo __('are_you_sure'); ?> <?php echo __('delete'); ?> <?php echo __('this_category'); ?>? <?php echo __('this_action_cannot_be_undone'); ?>.')) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -450,11 +451,11 @@ function deleteCategory(categoryId) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }
@@ -469,7 +470,7 @@ function showSaveIndicator() {
     
     indicator.html(`
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check me-1"></i>Auto-saved
+            <i class="fas fa-check me-1"></i><?php echo __('auto_saved'); ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     `);

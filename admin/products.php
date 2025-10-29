@@ -201,7 +201,7 @@ include 'includes/admin-header.php';
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                <?php echo $action === 'create' ? 'Nuevo Producto' : 'Editar Producto'; ?>
+                <?php echo $action === 'create' ? __('new_product') : __('edit_product'); ?>
             </h6>
         </div>
         <div class="card-body">
@@ -216,12 +216,12 @@ include 'includes/admin-header.php';
                     <div class="col-lg-8">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="name_en" class="form-label">Nombre (Inglés) *</label>
+                                <label for="name_en" class="form-label"><?php echo __('name_english'); ?> *</label>
                                 <input type="text" class="form-control" id="name_en" name="name_en" 
                                        value="<?php echo htmlspecialchars($product['name_en'] ?? ''); ?>" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="name_es" class="form-label">Nombre (Español) *</label>
+                                <label for="name_es" class="form-label"><?php echo __('name_spanish'); ?> *</label>
                                 <input type="text" class="form-control" id="name_es" name="name_es" 
                                        value="<?php echo htmlspecialchars($product['name_es'] ?? ''); ?>" required>
                             </div>
@@ -229,9 +229,9 @@ include 'includes/admin-header.php';
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category_id" class="form-label">Categoría *</label>
+                                <label for="category_id" class="form-label"><?php echo __('category'); ?> *</label>
                                 <select class="form-select" id="category_id" name="category_id" required>
-                                    <option value="">Seleccionar categoría</option>
+                                    <option value=""><?php echo __('select_category'); ?></option>
                                     <?php foreach ($categories as $category): ?>
                                     <option value="<?php echo $category['id']; ?>" 
                                             <?php echo (isset($product['category_id']) && $product['category_id'] == $category['id']) ? 'selected' : ''; ?>>
@@ -241,7 +241,7 @@ include 'includes/admin-header.php';
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Precio *</label>
+                                <label for="price" class="form-label"><?php echo __('price'); ?> *</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" class="form-control" id="price" name="price" 
@@ -252,12 +252,12 @@ include 'includes/admin-header.php';
                         </div>
 
                         <div class="mb-3">
-                            <label for="description_en" class="form-label">Descripción (Inglés)</label>
+                            <label for="description_en" class="form-label"><?php echo __('description_english'); ?></label>
                             <textarea class="form-control" id="description_en" name="description_en" rows="3"><?php echo htmlspecialchars($product['description_en'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="description_es" class="form-label">Descripción (Español)</label>
+                            <label for="description_es" class="form-label"><?php echo __('description_spanish'); ?></label>
                             <textarea class="form-control" id="description_es" name="description_es" rows="3"><?php echo htmlspecialchars($product['description_es'] ?? ''); ?></textarea>
                         </div>
 
@@ -267,7 +267,7 @@ include 'includes/admin-header.php';
                                     <input class="form-check-input" type="checkbox" id="is_available" name="is_available" 
                                            <?php echo (isset($product['is_available']) && $product['is_available']) ? 'checked' : ''; ?>>
                                     <label class="form-check-label" for="is_available">
-                                        Disponible
+                                        <?php echo __('available'); ?>
                                     </label>
                                 </div>
                             </div>
@@ -276,7 +276,7 @@ include 'includes/admin-header.php';
                                     <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" 
                                            <?php echo (isset($product['is_featured']) && $product['is_featured']) ? 'checked' : ''; ?>>
                                     <label class="form-check-label" for="is_featured">
-                                        Destacado
+                                        <?php echo __('featured'); ?>
                                     </label>
                                 </div>
                             </div>
@@ -287,7 +287,7 @@ include 'includes/admin-header.php';
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="mb-0">Imagen del Producto</h6>
+                                <h6 class="mb-0"><?php echo __('product_image'); ?></h6>
                             </div>
                             <div class="card-body text-center">
                                 <div class="mb-3">
@@ -301,13 +301,13 @@ include 'includes/admin-header.php';
                                     ?>
                                     <img id="imagePreview" 
                                          src="<?php echo $image_path; ?>" 
-                                         alt="Vista previa" 
+                                         alt="<?php echo __('preview'); ?>" 
                                          class="img-fluid rounded" 
                                          style="max-height: 200px;">
                                 </div>
                                 <input type="file" class="form-control" id="image" name="image" 
                                        accept="image/*" onchange="previewImage(this)">
-                                <small class="text-muted">Formatos: JPG, PNG, GIF. Máximo 5MB</small>
+                                <small class="text-muted"><?php echo __('image_formats'); ?></small>
                             </div>
                         </div>
                     </div>
@@ -320,27 +320,27 @@ include 'includes/admin-header.php';
                         <div class="card">
                             <div class="card-header">
                                 <h6 class="mb-0">
-                                    <i class="fas fa-plus-circle me-2"></i>Extras del Producto
+                                    <i class="fas fa-plus-circle me-2"></i><?php echo __('product_extras'); ?>
                                 </h6>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Extras Disponibles</h6>
+                                        <h6><?php echo __('available_extras'); ?></h6>
                                         <div id="availableExtras" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
-                                            <p class="text-muted">Cargando extras...</p>
+                                            <p class="text-muted"><?php echo __('loading_extras'); ?>...</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Extras Asignados</h6>
+                                        <h6><?php echo __('assigned_extras'); ?></h6>
                                         <div id="assignedExtras" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
-                                            <p class="text-muted">Cargando extras asignados...</p>
+                                            <p class="text-muted"><?php echo __('loading_assigned_extras'); ?>...</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-3">
                                     <button type="button" class="btn btn-success btn-sm" onclick="addNewExtra()">
-                                        <i class="fas fa-plus me-1"></i>Agregar Nuevo Extra
+                                        <i class="fas fa-plus me-1"></i><?php echo __('add_new_extra'); ?>
                                     </button>
                                 </div>
                             </div>
@@ -354,11 +354,11 @@ include 'includes/admin-header.php';
                     <div class="col-12">
                         <div class="d-flex justify-content-between">
                             <a href="products.php" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                                <i class="fas fa-arrow-left me-1"></i><?php echo __('cancel'); ?>
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>
-                                <?php echo $action === 'create' ? 'Crear Producto' : 'Actualizar Producto'; ?>
+                                <?php echo $action === 'create' ? __('create_product') : __('update_product'); ?>
                             </button>
                         </div>
                     </div>
