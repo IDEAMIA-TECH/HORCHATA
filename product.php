@@ -67,7 +67,7 @@ include 'includes/header.php';
             <div class="col-lg-6 mb-4">
                 <div class="product-image-container">
                     <div class="main-image">
-                        <img src="<?php echo $product['image'] ?: 'assets/images/placeholder.jpg'; ?>" 
+                        <img src="<?php echo $product['image'] ? str_replace('../', '', $product['image']) : 'assets/images/placeholder.jpg'; ?>" 
                              alt="<?php echo htmlspecialchars($product['name_en']); ?>" 
                              class="img-fluid rounded-3 shadow-lg" 
                              id="mainProductImage">
@@ -272,7 +272,7 @@ include 'includes/header.php';
             <?php foreach ($related_products as $related): ?>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="product-card">
-                    <div class="product-image" style="background-image: url('<?php echo $related['image'] ?: 'assets/images/placeholder.jpg'; ?>')"></div>
+                    <div class="product-image" style="background-image: url('<?php echo $related['image'] ? str_replace('../', '', $related['image']) : 'assets/images/placeholder.jpg'; ?>')"></div>
                         <div class="product-info">
                         <h5 class="product-title"><?php echo htmlspecialchars($related['name_' . getCurrentLanguage()]); ?></h5>
                         <p class="product-description"><?php echo htmlspecialchars(substr($related['description_' . getCurrentLanguage()], 0, 100)) . '...'; ?></p>

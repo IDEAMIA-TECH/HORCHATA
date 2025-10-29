@@ -283,7 +283,7 @@ include 'includes/admin-header.php';
                 <div class="card-body">
                     <?php foreach ($top_products as $product): ?>
                     <div class="d-flex align-items-center mb-3">
-                        <img src="<?php echo $product['image'] ?: '../assets/images/placeholder.jpg'; ?>" 
+                        <img src="<?php echo $product['image'] ? str_replace('../', '', $product['image']) : '../assets/images/placeholder.jpg'; ?>" 
                              alt="<?php echo htmlspecialchars($product['name_en']); ?>" 
                              class="rounded me-3" 
                              style="width: 50px; height: 50px; object-fit: cover;">

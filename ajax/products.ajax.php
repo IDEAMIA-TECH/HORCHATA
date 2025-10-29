@@ -133,7 +133,7 @@ try {
             'description' => $product['description_en'],
             'description_es' => $product['description_es'],
             'price' => number_format($product['price'], 2),
-            'image' => $product['image'] ?: 'assets/images/placeholder.jpg',
+            'image' => $product['image'] ? str_replace('../', '', $product['image']) : 'assets/images/placeholder.jpg',
             'category_id' => $product['category_id'],
             'category_name' => $product['category_name'],
             'is_featured' => (bool)$product['is_featured']

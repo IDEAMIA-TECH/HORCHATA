@@ -140,7 +140,7 @@ include 'includes/header.php';
                         <?php foreach ($order_items as $item): ?>
                         <div class="order-item d-flex align-items-center mb-3 pb-3 border-bottom">
                             <div class="item-image me-3">
-                                <img src="<?php echo $item['image'] ?: 'assets/images/placeholder.jpg'; ?>" 
+                                <img src="<?php echo $item['image'] ? str_replace('../', '', $item['image']) : 'assets/images/placeholder.jpg'; ?>" 
                                      alt="<?php echo htmlspecialchars($item['product_name']); ?>" 
                                      class="rounded" 
                                      style="width: 60px; height: 60px; object-fit: cover;">
