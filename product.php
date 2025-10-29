@@ -435,7 +435,7 @@ function loadExtrasForCategory() {
     // Definir extras según categoría
     let extras = [];
     
-    if (categoryName.includes('Burritos') || categoryName.includes('Tortas') || categoryName.includes('Platillos')) {
+    if (categoryName.includes('Burritos') || categoryName.includes('Breakfast Plates') || categoryName.includes('Daily Specials') || categoryName.includes('Seafood') || categoryName.includes('Combinations') || categoryName.includes('Salads & Burgers')) {
         // A) BURRITOS, TORTAS Y PLATILLOS: Guacamole, Crema y Queso +$2.50
         extras = [
             { id: 'extraGuacamole', name: 'Guacamole', price: 2.50 },
@@ -450,6 +450,7 @@ function loadExtrasForCategory() {
     }
     
     // Si hay extras para esta categoría, mostrarlos
+    console.log('Extras found:', extras.length);
     if (extras.length > 0) {
         extras.forEach(extra => {
             extrasContainer.append(`
@@ -462,8 +463,10 @@ function loadExtrasForCategory() {
             `);
         });
         extrasSection.show();
+        console.log('Extras section shown');
     } else {
         extrasSection.hide();
+        console.log('No extras for this category, section hidden');
     }
 }
 
