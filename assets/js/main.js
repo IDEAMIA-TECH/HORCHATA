@@ -135,7 +135,7 @@ function addToCart(productId, productName, productPrice, productImage) {
     }
     
     const price = parseFloat(productPrice) || 0;
-    const image = productImage || 'assets/images/placeholder.jpg';
+    const image = productImage ? productImage.replace('../', '') : 'assets/images/placeholder.jpg';
     
     let cart = getCartItems();
     const existingItem = cart.find(item => item.id == productId);
@@ -271,7 +271,7 @@ function updateCartOffcanvas(cart) {
         const price = parseFloat(item.price) || 0;
         const quantity = parseInt(item.quantity) || 0;
         const name = item.name || 'Producto';
-        const image = item.image || 'assets/images/placeholder.jpg';
+        const image = item.image ? item.image.replace('../', '') : 'assets/images/placeholder.jpg';
         const id = item.id || 0;
         
         html += `
@@ -435,7 +435,7 @@ function displayProducts(products) {
         html += `
             <div class="col-lg-4 col-md-6 mb-4 animate-on-scroll">
                 <div class="product-card">
-                    <div class="product-image" style="background-image: url('${product.image}')"></div>
+                    <div class="product-image" style="background-image: url('${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}')"></div>
                     <div class="product-info">
                         <h5 class="product-title">${product.name}</h5>
                         <p class="product-description">${product.description}</p>
@@ -445,7 +445,7 @@ function displayProducts(products) {
                                     data-product-id="${product.id}"
                                     data-product-name="${product.name}"
                                     data-product-price="${product.price}"
-                                    data-product-image="${product.image}">
+                                    data-product-image="${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}">
                                 <i class="fas fa-plus me-1"></i>Agregar
                             </button>
                         </div>

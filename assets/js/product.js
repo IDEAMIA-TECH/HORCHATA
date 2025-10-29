@@ -98,7 +98,7 @@ function addMultipleToCart(productId, productName, productPrice, productImage, q
             id: productId,
             name: productName,
             price: productPrice,
-            image: productImage,
+            image: productImage ? productImage.replace('../', '') : 'assets/images/placeholder.jpg',
             quantity: quantity
         });
     }

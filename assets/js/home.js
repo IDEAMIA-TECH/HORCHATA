@@ -128,7 +128,7 @@ function displayFeaturedProducts(products) {
         html += `
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card" onclick="window.location.href='product.php?id=${product.id}'">
-                    <div class="product-image" style="background-image: url('${product.image || 'assets/images/placeholder.jpg'}')"></div>
+                    <div class="product-image" style="background-image: url('${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}')"></div>
                     <div class="product-info">
                         <h5 class="product-title">${product.name || 'Producto'}</h5>
                         <p class="product-description">${product.description || ''}</p>
