@@ -474,6 +474,11 @@ function __($key, $default = '') {
         'special_instructions' => 'Instrucciones Especiales',
         'order_total' => 'Total del Pedido',
         'mark_as_paid' => 'Marcar como Pagado',
+        // Contact Form
+        'is_required' => 'es requerido',
+        'invalid_email' => 'Correo electrónico inválido',
+        'subject' => 'Asunto',
+        'contact_message_sent_successfully' => 'Mensaje enviado exitosamente. Te contactaremos pronto.',
         'print_order' => 'Imprimir Pedido',
         'back_to_orders' => 'Volver a Pedidos',
         'select_payment_method' => 'Seleccionar método de pago',
@@ -1147,6 +1152,11 @@ function __($key, $default = '') {
         'special_instructions' => 'Special Instructions',
         'order_total' => 'Order Total',
         'mark_as_paid' => 'Mark as Paid',
+        // Contact Form
+        'is_required' => 'is required',
+        'invalid_email' => 'Invalid email address',
+        'subject' => 'Subject',
+        'contact_message_sent_successfully' => 'Message sent successfully. We will contact you soon.',
         'print_order' => 'Print Order',
         'back_to_orders' => 'Back to Orders',
         'select_payment_method' => 'Select payment method',

@@ -87,7 +87,7 @@ include 'includes/header.php';
                         </p>
                     </div>
                     
-                    <form id="contactForm" class="contact-form">
+                    <form id="contactForm" class="contact-form" method="POST">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="contactName" class="form-label">Nombre Completo</label>
@@ -188,5 +188,100 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+
+<script>
+$(document).ready(function() {
+    // Manejar envío del formulario de contacto
+    $('#contactForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Obtener datos del formulario
+        const formData = {
+            name: $('#contactName').val().trim(),
+            email: $('#contactEmail').val().trim(),
+            phone: $('#contactPhone').val().trim(),
+            subject: $('#contactSubject').val().trim(),
+            message: $('#contactMessage').val().trim(),
+            newsletter: $('#contactNewsletter').is(':checked') ? 'on' : ''
+        };
+        
+        // Validar campos
+        if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+            showNotification('Por favor completa todos los campos requeridos', 'error');
+            return;
+        }
+        
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            showNotification('Por favor ingresa un correo electrónico válido', 'error');
+            return;
+        }
+        
+        // Deshabilitar botón mientras se envía
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Enviando...');
+        
+        // Enviar datos via AJAX
+        $.ajax({
+            url: 'ajax/contact.ajax.php',
+            method: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Mostrar mensaje de éxito
+                    showNotification(response.message || 'Mensaje enviado exitosamente', 'success');
+                    
+                    // Limpiar formulario
+                    $('#contactForm')[0].reset();
+                    
+                    // Ocultar formulario y mostrar mensaje de confirmación
+                    $('.contact-form-container').html(
+                        '<div class="alert alert-success text-center">' +
+                        '<i class="fas fa-check-circle fa-3x mb-3"></i>' +
+                        '<h4>¡Mensaje Enviado!</h4>' +
+                        '<p>Gracias por contactarnos. Te responderemos pronto.</p>' +
+                        '</div>'
+                    );
+                } else {
+                    showNotification(response.message || 'Error al enviar el mensaje', 'error');
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                showNotification('Error de conexión. Por favor intenta nuevamente.', 'error');
+                submitBtn.prop('disabled', false).html(originalText);
+            }
+        });
+    });
+    
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info') {
+        const alertClass = {
+            'success': 'alert-success',
+            'error': 'alert-danger',
+            'warning': 'alert-warning',
+            'info': 'alert-info'
+        }[type] || 'alert-info';
+        
+        const notification = $(`
+            <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                 style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(() => {
+            notification.alert('close');
+        }, 5000);
+    }
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>
