@@ -182,37 +182,71 @@ include 'includes/header.php';
                         </h5>
                     </div>
                     <div class="card-body">
+                        <?php 
+                        // Obtener valores de pago de la orden
+                        $payment_method_value = isset($order['payment_method']) ? trim($order['payment_method']) : '';
+                        $payment_status_value = isset($order['payment_status']) ? trim($order['payment_status']) : '';
+                        
+                        // Normalizar método de pago
+                        $payment_method_lower = strtolower($payment_method_value);
+                        
+                        // Inicializar variables de visualización
+                        $display_method = '';
+                        $display_status = '';
+                        $status_badge = 'warning';
+                        $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        
+                        // Determinar método de pago basado en el valor guardado
+                        if (empty($payment_method_lower)) {
+                            // Si no hay método, mostrar pickup como default
+                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                            $display_status = __('pending');
+                        } elseif (strpos($payment_method_lower, 'paypal') !== false) {
+                            // PayPal
+                            $display_method = '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
+                            // PayPal siempre se marca como pagado
+                            $display_status = __('paid');
+                            $status_badge = 'success';
+                            $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                        } elseif (strpos($payment_method_lower, 'wire') !== false || strpos($payment_method_lower, 'transfer') !== false) {
+                            // Wire Transfer
+                            $display_method = '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
+                            $display_status = __('pending');
+                            $status_badge = 'warning';
+                            $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        } else {
+                            // Pickup o método desconocido
+                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                            $display_status = __('pending');
+                            $status_badge = 'warning';
+                            $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        }
+                        
+                        // Verificar si hay un estado de pago específico que sobrescriba el predeterminado
+                        if (!empty($payment_status_value)) {
+                            $payment_status_lower = strtolower($payment_status_value);
+                            if ($payment_status_lower === 'paid') {
+                                $display_status = __('paid');
+                                $status_badge = 'success';
+                                $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                            } elseif ($payment_status_lower === 'pending' || $payment_status_lower === 'unpaid') {
+                                $display_status = __('pending');
+                                $status_badge = 'warning';
+                                $status_icon = '<i class="fas fa-clock me-1"></i>';
+                            }
+                        }
+                        ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_method'); ?></h6>
                                 <p class="payment-method">
-                                    <?php 
-                                    $payment_method = strtolower($order['payment_method'] ?? 'pickup');
-                                    switch ($payment_method) {
-                                        case 'paypal':
-                                            echo '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
-                                            break;
-                                        case 'wire_transfer':
-                                            echo '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
-                                            break;
-                                        case 'pickup':
-                                        default:
-                                            echo '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
-                                            break;
-                                    }
-                                    ?>
+                                    <?php echo $display_method; ?>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_status'); ?></h6>
-                                <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?> payment-status">
-                                    <?php 
-                                    if ($order['payment_status'] === 'paid') {
-                                        echo '<i class="fas fa-check-circle me-1"></i>' . __('paid');
-                                    } else {
-                                        echo '<i class="fas fa-clock me-1"></i>' . __('pending');
-                                    }
-                                    ?>
+                                <span class="badge bg-<?php echo $status_badge; ?> payment-status">
+                                    <?php echo $status_icon . $display_status; ?>
                                 </span>
                             </div>
                         </div>

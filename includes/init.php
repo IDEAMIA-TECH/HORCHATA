@@ -314,6 +314,8 @@ function __($key, $default = '') {
         'ssl_protected' => 'Tu información está protegida con encriptación SSL',
         'processing' => 'Procesando...',
         'complete_all_fields' => 'Por favor, completa todos los campos requeridos',
+        'please_complete_required_fields' => 'Por favor completa todos los campos requeridos',
+        'complete_customer_and_pickup_info' => 'Completa la información del cliente y la información de recogida antes de proceder al pago',
         'error_processing_order' => 'Error al procesar el pedido: ',
         // Wire Transfer
         'wire_transfer' => 'Transferencia Bancaria',
@@ -985,6 +987,8 @@ function __($key, $default = '') {
         'ssl_protected' => 'Your information is protected with SSL encryption',
         'processing' => 'Processing...',
         'complete_all_fields' => 'Please complete all required fields',
+        'please_complete_required_fields' => 'Please complete all required fields',
+        'complete_customer_and_pickup_info' => 'Complete customer information and pickup information before proceeding to payment',
         'error_processing_order' => 'Error processing order: ',
         // Wire Transfer
         'wire_transfer' => 'Wire Transfer',

@@ -290,9 +290,16 @@ include 'includes/header.php';
                             </div>
                             
                             <!-- Place Order Button -->
-                            <button class="btn btn-primary btn-lg w-100" id="placeOrderBtn">
+                            <button class="btn btn-primary btn-lg w-100" id="placeOrderBtn" disabled>
                                 <i class="fas fa-check me-2"></i><?php echo __('confirm_order'); ?>
                             </button>
+                            
+                            <!-- Mensaje de campos requeridos -->
+                            <div class="alert alert-info mt-3 mb-0" id="requiredFieldsMessage">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong><?php echo __('please_complete_required_fields'); ?></strong>
+                                <br><small><?php echo __('complete_customer_and_pickup_info'); ?></small>
+                            </div>
                             
                             <!-- Wire Transfer Information (mostrar cuando se selecciona) -->
                             <?php if ($wire_transfer_enabled && !empty($wire_transfer_account_number)): ?>
@@ -478,13 +485,17 @@ function setupCheckoutForm() {
 function setupPaymentMethod() {
     $('input[name="payment_method"]').on('change', function() {
         const paymentMethod = $(this).val();
+        const isValid = checkFormValidity();
         
         // Ocultar todos los paneles primero
         $('#paypal-button-container').hide();
         $('#wireTransferInfo').hide();
         
         if (paymentMethod === 'paypal' && paypalEnabled) {
-            $('#paypal-button-container').show();
+            // Solo mostrar PayPal si el formulario es válido
+            if (isValid) {
+                $('#paypal-button-container').show();
+            }
             $('#placeOrderBtn').hide();
         } else if (paymentMethod === 'wire_transfer') {
             $('#wireTransferInfo').show();
@@ -496,8 +507,13 @@ function setupPaymentMethod() {
     
     // Configurar estado inicial
     const selectedPayment = $('input[name="payment_method"]:checked').val();
+    const isValid = checkFormValidity();
+    
     if (selectedPayment === 'paypal' && paypalEnabled) {
-        $('#paypal-button-container').show();
+        // Solo mostrar PayPal si el formulario es válido
+        if (isValid) {
+            $('#paypal-button-container').show();
+        }
         $('#placeOrderBtn').hide();
         $('#wireTransferInfo').hide();
     } else if (selectedPayment === 'wire_transfer') {
@@ -509,6 +525,90 @@ function setupPaymentMethod() {
         $('#wireTransferInfo').hide();
         $('#placeOrderBtn').show();
     }
+}
+
+// Hacer la función checkFormValidity accesible globalmente para setupPaymentMethod
+function checkFormValidity() {
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'pickupDate', 'pickupTime'];
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        const input = $(`#${field}`);
+        const value = input.val().trim();
+        
+        if (!value) {
+            isValid = false;
+        } else if (field === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                isValid = false;
+            }
+        }
+    });
+    
+    return isValid;
+}
+
+function setupRealTimeValidation() {
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'pickupDate', 'pickupTime'];
+    
+    // Función para actualizar el estado de los botones
+    function updateButtonStates() {
+        const isValid = checkFormValidity();
+        const paymentMethod = $('input[name="payment_method"]:checked').val();
+        
+        if (isValid) {
+            // Habilitar botón de confirmar pedido
+            $('#placeOrderBtn').prop('disabled', false);
+            $('#requiredFieldsMessage').hide();
+            
+            // Si PayPal está seleccionado y habilitado, mostrar botón de PayPal
+            if (paymentMethod === 'paypal' && paypalEnabled) {
+                $('#paypal-button-container').show();
+            }
+        } else {
+            // Deshabilitar botón de confirmar pedido
+            $('#placeOrderBtn').prop('disabled', true);
+            $('#requiredFieldsMessage').show();
+            
+            // Ocultar botón de PayPal hasta que el formulario sea válido
+            $('#paypal-button-container').hide();
+        }
+    }
+    
+    // Agregar event listeners a todos los campos requeridos
+    requiredFields.forEach(field => {
+        $(`#${field}`).on('input change blur', function() {
+            const input = $(this);
+            const value = input.val().trim();
+            
+            // Validar campo individual
+            if (!value) {
+                input.addClass('is-invalid');
+            } else {
+                input.removeClass('is-invalid');
+                
+                // Validar email si es el campo email
+                if (field === 'email') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        input.addClass('is-invalid');
+                    }
+                }
+            }
+            
+            // Actualizar estado de botones
+            updateButtonStates();
+        });
+    });
+    
+    // Verificar estado inicial
+    updateButtonStates();
+    
+    // También verificar cuando cambia el método de pago
+    $('input[name="payment_method"]').on('change', function() {
+        updateButtonStates();
+    });
 }
 
 function validateForm() {
@@ -674,6 +774,9 @@ function showNotification(message, type = 'info') {
     
     // Configurar método de pago
     setupPaymentMethod();
+    
+    // Configurar validación en tiempo real
+    setupRealTimeValidation();
     
     // Configurar botón de confirmar pedido
     $('#placeOrderBtn').on('click', function(e) {
