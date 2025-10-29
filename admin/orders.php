@@ -309,32 +309,73 @@ include 'includes/admin-header.php';
                                 <strong><?php echo __('payment_method'); ?>:</strong> 
                                 <span class="badge bg-info ms-2">
                                     <?php 
-                                    $payment_method = strtolower($order['payment_method'] ?? 'unknown');
-                                    switch ($payment_method) {
-                                        case 'paypal':
+                                    // Obtener valores de pago de la orden
+                                    $payment_method_raw = isset($order['payment_method']) ? $order['payment_method'] : null;
+                                    $payment_status_raw = isset($order['payment_status']) ? $order['payment_status'] : null;
+                                    
+                                    // Normalizar método de pago - manejar diferentes formatos
+                                    $payment_method_value = $payment_method_raw ? trim($payment_method_raw) : '';
+                                    $payment_method_lower = strtolower($payment_method_value);
+                                    // Remover espacios y guiones bajos para comparación
+                                    $payment_method_clean = str_replace([' ', '_', '-'], '', $payment_method_lower);
+                                    
+                                    // Normalizar estado de pago
+                                    $payment_status_value = $payment_status_raw ? trim($payment_status_raw) : '';
+                                    $payment_status_lower = strtolower($payment_status_value);
+                                    
+                                    // Determinar método de pago - verificar múltiples variaciones posibles
+                                    if (empty($payment_method_clean)) {
+                                        // Si no hay método, intentar determinar por el estado de pago
+                                        if ($payment_status_lower === 'paid') {
+                                            // Si está pagado pero no hay método, probablemente es PayPal
                                             echo '<i class="fab fa-paypal me-1"></i>' . __('paypal');
-                                            break;
-                                        case 'wire_transfer':
-                                            echo '<i class="fas fa-university me-1"></i>' . __('wire_transfer');
-                                            break;
-                                        case 'pickup':
-                                        default:
+                                        } else {
+                                            // Si no está pagado y no hay método, mostrar pickup
                                             echo '<i class="fas fa-money-bill-wave me-1"></i>' . __('pay_on_pickup');
-                                            break;
+                                        }
+                                    } elseif ($payment_method_clean === 'paypal' || strpos($payment_method_clean, 'paypal') !== false) {
+                                        // PayPal - verificar diferentes variaciones
+                                        echo '<i class="fab fa-paypal me-1"></i>' . __('paypal');
+                                    } elseif ($payment_method_clean === 'wiretransfer' || strpos($payment_method_clean, 'wire') !== false || strpos($payment_method_clean, 'transfer') !== false) {
+                                        // Wire Transfer
+                                        echo '<i class="fas fa-university me-1"></i>' . __('wire_transfer');
+                                    } elseif ($payment_method_clean === 'pickup' || strpos($payment_method_clean, 'pickup') !== false) {
+                                        // Pickup
+                                        echo '<i class="fas fa-money-bill-wave me-1"></i>' . __('pay_on_pickup');
+                                    } else {
+                                        // Método desconocido - mostrar pickup como default
+                                        echo '<i class="fas fa-money-bill-wave me-1"></i>' . __('pay_on_pickup');
                                     }
                                     ?>
                                 </span>
                             </p>
                             <p>
                                 <strong><?php echo __('payment_status'); ?>:</strong> 
-                                <span class="badge bg-<?php echo ($order['payment_status'] === 'paid') ? 'success' : 'warning'; ?> ms-2">
-                                    <?php 
-                                    if ($order['payment_status'] === 'paid') {
-                                        echo '<i class="fas fa-check-circle me-1"></i>' . __('paid');
-                                    } else {
-                                        echo '<i class="fas fa-clock me-1"></i>' . __('pending');
+                                <?php 
+                                // Determinar el estado de pago y badge color
+                                $status_badge = 'warning';
+                                $status_text = __('pending');
+                                $status_icon = '<i class="fas fa-clock me-1"></i>';
+                                
+                                if (!empty($payment_status_lower)) {
+                                    if ($payment_status_lower === 'paid') {
+                                        $status_badge = 'success';
+                                        $status_text = __('paid');
+                                        $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                                    } elseif ($payment_status_lower === 'pending' || $payment_status_lower === 'unpaid') {
+                                        $status_badge = 'warning';
+                                        $status_text = __('pending');
+                                        $status_icon = '<i class="fas fa-clock me-1"></i>';
                                     }
-                                    ?>
+                                } elseif ($payment_method_clean === 'paypal' || strpos($payment_method_clean, 'paypal') !== false) {
+                                    // Si es PayPal y no hay estado, asumir que está pagado
+                                    $status_badge = 'success';
+                                    $status_text = __('paid');
+                                    $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                                }
+                                ?>
+                                <span class="badge bg-<?php echo $status_badge; ?> ms-2">
+                                    <?php echo $status_icon . $status_text; ?>
                                 </span>
                             </p>
                             <?php if (isset($order['payment_details']) && !empty($order['payment_details'])): ?>
