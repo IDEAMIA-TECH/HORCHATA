@@ -305,6 +305,44 @@ include 'includes/admin-header.php';
                             <p><strong><?php echo __('number'); ?>:</strong> #<?php echo htmlspecialchars($order['order_number']); ?></p>
                             <p><strong><?php echo __('date'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($order['created_at'])); ?></p>
                             <p><strong><?php echo __('pickup_time'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($order['pickup_time'])); ?></p>
+                            <p>
+                                <strong><?php echo __('payment_method'); ?>:</strong> 
+                                <span class="badge bg-info ms-2">
+                                    <?php 
+                                    $payment_method = strtolower($order['payment_method'] ?? 'unknown');
+                                    switch ($payment_method) {
+                                        case 'paypal':
+                                            echo '<i class="fab fa-paypal me-1"></i>' . __('paypal');
+                                            break;
+                                        case 'wire_transfer':
+                                            echo '<i class="fas fa-university me-1"></i>' . __('wire_transfer');
+                                            break;
+                                        case 'pickup':
+                                        default:
+                                            echo '<i class="fas fa-money-bill-wave me-1"></i>' . __('pay_on_pickup');
+                                            break;
+                                    }
+                                    ?>
+                                </span>
+                            </p>
+                            <p>
+                                <strong><?php echo __('payment_status'); ?>:</strong> 
+                                <span class="badge bg-<?php echo ($order['payment_status'] === 'paid') ? 'success' : 'warning'; ?> ms-2">
+                                    <?php 
+                                    if ($order['payment_status'] === 'paid') {
+                                        echo '<i class="fas fa-check-circle me-1"></i>' . __('paid');
+                                    } else {
+                                        echo '<i class="fas fa-clock me-1"></i>' . __('pending');
+                                    }
+                                    ?>
+                                </span>
+                            </p>
+                            <?php if (isset($order['payment_details']) && !empty($order['payment_details'])): ?>
+                            <p>
+                                <strong><?php echo __('payment_details'); ?>:</strong> 
+                                <small class="text-muted"><?php echo htmlspecialchars($order['payment_details']); ?></small>
+                            </p>
+                            <?php endif; ?>
                         </div>
                     </div>
                     
