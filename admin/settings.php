@@ -152,7 +152,16 @@ function updatePaymentSettings() {
             'paypal_mode' => trim($_POST['paypal_mode'] ?? 'sandbox'),
             'paypal_client_id' => trim($_POST['paypal_client_id'] ?? ''),
             'paypal_secret' => trim($_POST['paypal_secret'] ?? ''),
-            'paypal_enabled' => isset($_POST['paypal_enabled']) ? '1' : '0'
+            'paypal_enabled' => isset($_POST['paypal_enabled']) ? '1' : '0',
+            // Wire Transfer settings
+            'wire_transfer_enabled' => isset($_POST['wire_transfer_enabled']) ? '1' : '0',
+            'wire_transfer_bank_name' => trim($_POST['wire_transfer_bank_name'] ?? ''),
+            'wire_transfer_account_holder' => trim($_POST['wire_transfer_account_holder'] ?? ''),
+            'wire_transfer_account_number' => trim($_POST['wire_transfer_account_number'] ?? ''),
+            'wire_transfer_routing_number' => trim($_POST['wire_transfer_routing_number'] ?? ''),
+            'wire_transfer_direct_deposit_routing_number' => trim($_POST['wire_transfer_direct_deposit_routing_number'] ?? ''),
+            'wire_transfer_swift_code' => trim($_POST['wire_transfer_swift_code'] ?? ''),
+            'wire_transfer_instructions' => trim($_POST['wire_transfer_instructions'] ?? '')
         ];
         
         $payment_methods = $_POST['payment_methods'] ?? [];
@@ -645,6 +654,97 @@ include 'includes/admin-header.php';
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Note:</strong> Get your Client ID and Secret from the 
                                 <a href="https://developer.paypal.com" target="_blank">PayPal Developer Portal</a>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Wire Transfer Configuration -->
+                        <div class="mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-university me-2"></i>Wire Transfer Configuration
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="wire_transfer_enabled" name="wire_transfer_enabled" 
+                                           <?php echo ($settings['wire_transfer_enabled'] ?? '0') === '1' ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="wire_transfer_enabled">
+                                        Enable Wire Transfer Payments
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_bank_name" class="form-label">Bank Name</label>
+                                        <input type="text" class="form-control" id="wire_transfer_bank_name" name="wire_transfer_bank_name" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_bank_name'] ?? 'Wells Fargo'); ?>" 
+                                               placeholder="e.g., Wells Fargo">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_account_holder" class="form-label">Account Holder Name</label>
+                                        <input type="text" class="form-control" id="wire_transfer_account_holder" name="wire_transfer_account_holder" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_account_holder'] ?? 'HORCHATA, INC.'); ?>" 
+                                               placeholder="e.g., HORCHATA, INC.">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_account_number" class="form-label">Account Number</label>
+                                        <input type="text" class="form-control" id="wire_transfer_account_number" name="wire_transfer_account_number" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_account_number'] ?? ''); ?>" 
+                                               placeholder="Enter account number">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_routing_number" class="form-label">Routing Number (For Wire Transfers)</label>
+                                        <input type="text" class="form-control" id="wire_transfer_routing_number" name="wire_transfer_routing_number" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_routing_number'] ?? '121000248'); ?>" 
+                                               placeholder="e.g., 121000248">
+                                        <small class="form-text text-muted">Use this routing number for wire transfers</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_direct_deposit_routing_number" class="form-label">Routing Number (For Direct Deposit)</label>
+                                        <input type="text" class="form-control" id="wire_transfer_direct_deposit_routing_number" name="wire_transfer_direct_deposit_routing_number" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_direct_deposit_routing_number'] ?? '121042882'); ?>" 
+                                               placeholder="e.g., 121042882">
+                                        <small class="form-text text-muted">Optional: Use this routing number for direct deposits</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="wire_transfer_swift_code" class="form-label">SWIFT Code (International Wires)</label>
+                                        <input type="text" class="form-control" id="wire_transfer_swift_code" name="wire_transfer_swift_code" 
+                                               value="<?php echo htmlspecialchars($settings['wire_transfer_swift_code'] ?? ''); ?>" 
+                                               placeholder="Enter SWIFT code if applicable">
+                                        <small class="form-text text-muted">Optional: Required for international wire transfers</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="wire_transfer_instructions" class="form-label">Wire Transfer Instructions</label>
+                                <textarea class="form-control" id="wire_transfer_instructions" name="wire_transfer_instructions" rows="4" 
+                                          placeholder="Enter any additional instructions for customers making wire transfers..."><?php echo htmlspecialchars($settings['wire_transfer_instructions'] ?? ''); ?></textarea>
+                                <small class="form-text text-muted">Optional: Additional instructions to show customers</small>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Security Notice:</strong> Wire transfer information will be visible to customers. Ensure all details are accurate and secure.
                             </div>
                         </div>
                         
