@@ -389,41 +389,23 @@ const translations = {
     connection_error: '<?php echo __('connection_error'); ?>'
 };
 
-$(document).ready(function() {
+// Esperar a que jQuery esté disponible
+(function() {
+    function initCheckout() {
+        if (typeof jQuery === 'undefined') {
+            // jQuery aún no está cargado, esperar un poco más
+            setTimeout(initCheckout, 50);
+            return;
+        }
+        
+        // jQuery está disponible, ejecutar código
+        jQuery(document).ready(function($) {
     // Configurar fecha mínima (hoy)
     const today = new Date().toISOString().split('T')[0];
     $('#pickupDate').attr('min', today);
     
-    // Configurar PayPal solo si está habilitado
-    if (paypalEnabled) {
-        setupPayPal();
-    }
-    
-    // Configurar formulario
-    setupCheckoutForm();
-    
-    // Configurar método de pago
-    setupPaymentMethod();
-    
-    // Configurar botón de confirmar pedido
-    $('#placeOrderBtn').on('click', function(e) {
-        e.preventDefault();
-        
-        if (validateForm()) {
-            const paymentMethod = $('input[name="payment_method"]:checked').val();
-            
-            if (paymentMethod === 'paypal' && paypalEnabled) {
-                // No hacer nada, PayPal maneja su propio flujo
-                return;
-            } else {
-                // Procesar pedido (wire_transfer o pickup)
-                processOrderWithoutPayPal();
-            }
-        }
-    });
-});
-
-function setupPayPal() {
+    // Definir todas las funciones dentro de este contexto
+    function setupPayPal() {
     // PayPal SDK se carga desde el header
     if (typeof paypal !== 'undefined') {
         paypal.Buttons({
@@ -662,6 +644,40 @@ function showNotification(message, type = 'info') {
         notification.alert('close');
     }, 5000);
 }
+    
+    // Configurar PayPal solo si está habilitado
+    if (paypalEnabled) {
+        setupPayPal();
+    }
+    
+    // Configurar formulario
+    setupCheckoutForm();
+    
+    // Configurar método de pago
+    setupPaymentMethod();
+    
+    // Configurar botón de confirmar pedido
+    $('#placeOrderBtn').on('click', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            const paymentMethod = $('input[name="payment_method"]:checked').val();
+            
+            if (paymentMethod === 'paypal' && paypalEnabled) {
+                // No hacer nada, PayPal maneja su propio flujo
+                return;
+            } else {
+                // Procesar pedido (wire_transfer o pickup)
+                processOrderWithoutPayPal();
+            }
+        }
+    });
+        }); // Cerrar jQuery(document).ready
+    } // Cerrar initCheckout
+    
+    // Iniciar la función
+    initCheckout();
+})(); // Cerrar IIFE
 </script>
 
 <!-- Estilos adicionales para checkout -->
