@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once 'includes/db_connect.php';
+require_once 'includes/init.php';
 
 // Verificar que hay productos en el carrito
 session_start();
@@ -36,6 +37,12 @@ if ($subtotal == 0) {
     $total = $subtotal + $tax;
 }
 
+// Obtener configuraciones de PayPal
+$paypal_enabled = getSetting('paypal_enabled', '0') === '1';
+$paypal_client_id = getSetting('paypal_client_id', '');
+$paypal_mode = getSetting('paypal_mode', 'sandbox');
+$currency = getSetting('currency', 'USD');
+
 // Configurar página
 $page_title = 'Checkout';
 $page_scripts = [
@@ -47,7 +54,9 @@ include 'includes/header.php';
 ?>
 
 <!-- PayPal SDK -->
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+<?php if ($paypal_enabled && !empty($paypal_client_id)): ?>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=<?php echo htmlspecialchars($currency); ?>"></script>
+<?php endif; ?>
 
 <!-- Checkout Section -->
 <section class="py-5">
@@ -150,6 +159,7 @@ include 'includes/header.php';
                         </div>
                         <div class="card-body">
                             <div class="payment-methods">
+                                <?php if ($paypal_enabled && !empty($paypal_client_id)): ?>
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal" checked>
                                     <label class="form-check-label" for="paypal">
@@ -157,8 +167,9 @@ include 'includes/header.php';
                                         <small class="text-muted d-block">Paga de forma segura con PayPal</small>
                                     </label>
                                 </div>
+                                <?php endif; ?>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="pickup_payment" value="pickup">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="pickup_payment" value="pickup" <?php echo (!$paypal_enabled || empty($paypal_client_id)) ? 'checked' : ''; ?>>
                                     <label class="form-check-label" for="pickup_payment">
                                         <i class="fas fa-money-bill-wave me-2 text-success"></i>Pagar al Recoger
                                         <small class="text-muted d-block">Efectivo, tarjeta o PayPal al recoger</small>
@@ -261,13 +272,20 @@ include 'includes/header.php';
 
 <!-- JavaScript específico para checkout -->
 <script>
+// Variables de PayPal desde PHP
+const paypalEnabled = <?php echo $paypal_enabled && !empty($paypal_client_id) ? 'true' : 'false'; ?>;
+const paypalMode = '<?php echo htmlspecialchars($paypal_mode); ?>';
+const currency = '<?php echo htmlspecialchars($currency); ?>';
+
 $(document).ready(function() {
     // Configurar fecha mínima (hoy)
     const today = new Date().toISOString().split('T')[0];
     $('#pickupDate').attr('min', today);
     
-    // Configurar PayPal
-    setupPayPal();
+    // Configurar PayPal solo si está habilitado
+    if (paypalEnabled) {
+        setupPayPal();
+    }
     
     // Configurar formulario
     setupCheckoutForm();
@@ -284,8 +302,8 @@ function setupPayPal() {
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: '<?php echo $total; ?>',
-                            currency_code: 'USD'
+                            value: '<?php echo number_format($total, 2, '.', ''); ?>',
+                            currency_code: currency
                         }
                     }]
                 });
@@ -311,7 +329,7 @@ function setupCheckoutForm() {
         if (validateForm()) {
             const paymentMethod = $('input[name="payment_method"]:checked').val();
             
-            if (paymentMethod === 'paypal') {
+            if (paymentMethod === 'paypal' && paypalEnabled) {
                 // Mostrar botón de PayPal
                 $('#paypal-button-container').show();
                 $('#placeOrderBtn').hide();
@@ -327,7 +345,7 @@ function setupPaymentMethod() {
     $('input[name="payment_method"]').on('change', function() {
         const paymentMethod = $(this).val();
         
-        if (paymentMethod === 'paypal') {
+        if (paymentMethod === 'paypal' && paypalEnabled) {
             $('#paypal-button-container').show();
             $('#placeOrderBtn').hide();
         } else {
@@ -335,6 +353,16 @@ function setupPaymentMethod() {
             $('#placeOrderBtn').show();
         }
     });
+    
+    // Configurar estado inicial
+    const selectedPayment = $('input[name="payment_method"]:checked').val();
+    if (selectedPayment === 'paypal' && paypalEnabled) {
+        $('#paypal-button-container').show();
+        $('#placeOrderBtn').hide();
+    } else {
+        $('#paypal-button-container').hide();
+        $('#placeOrderBtn').show();
+    }
 }
 
 function validateForm() {
