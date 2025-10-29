@@ -1141,18 +1141,25 @@ function updateContactMessageStatus() {
         $message_id = (int)($_POST['message_id'] ?? 0);
         $status = trim($_POST['status'] ?? '');
         
+        error_log("📝 updateContactMessageStatus - message_id: $message_id, status: $status");
+        
         if ($message_id <= 0 || empty($status)) {
             throw new Exception('Datos inválidos');
         }
         
         $valid_statuses = ['new', 'read', 'replied', 'archived'];
         if (!in_array($status, $valid_statuses)) {
-            throw new Exception('Estado inválido');
+            throw new Exception('Estado inválido: ' . $status);
         }
         
         $sql = "UPDATE contact_messages SET status = ? WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$status, $message_id]);
+        $stmt = executeQuery($sql, [$status, $message_id]);
+        
+        if ($stmt === false) {
+            throw new Exception('Error al actualizar el estado del mensaje');
+        }
+        
+        error_log("✅ updateContactMessageStatus - Estado actualizado correctamente");
         
         echo json_encode([
             'success' => true,
@@ -1160,6 +1167,9 @@ function updateContactMessageStatus() {
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en updateContactMessageStatus: " . $e->getMessage());
+        error_log("❌ Stack trace: " . $e->getTraceAsString());
+        
+        http_response_code(500);
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
@@ -1176,13 +1186,20 @@ function deleteContactMessage() {
         
         $message_id = (int)($_POST['message_id'] ?? 0);
         
+        error_log("📝 deleteContactMessage - message_id: $message_id");
+        
         if ($message_id <= 0) {
             throw new Exception('ID inválido');
         }
         
         $sql = "DELETE FROM contact_messages WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$message_id]);
+        $stmt = executeQuery($sql, [$message_id]);
+        
+        if ($stmt === false) {
+            throw new Exception('Error al eliminar el mensaje');
+        }
+        
+        error_log("✅ deleteContactMessage - Mensaje eliminado correctamente");
         
         echo json_encode([
             'success' => true,
@@ -1190,6 +1207,9 @@ function deleteContactMessage() {
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en deleteContactMessage: " . $e->getMessage());
+        error_log("❌ Stack trace: " . $e->getTraceAsString());
+        
+        http_response_code(500);
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()

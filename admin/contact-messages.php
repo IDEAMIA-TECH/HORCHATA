@@ -409,7 +409,21 @@ function updateMessageStatus(messageId, status) {
             status: status
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        // Verificar si la respuesta es OK
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+        // Intentar parsear JSON
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Error parsing JSON:', text);
+                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+            }
+        });
+    })
     .then(data => {
         if (data.success) {
             location.reload();
@@ -419,7 +433,7 @@ function updateMessageStatus(messageId, status) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('<?php echo __('error'); ?>: <?php echo __('connection_error'); ?>');
+        alert('<?php echo __('error'); ?>: <?php echo __('connection_error'); ?>\n' + error.message);
     });
 }
 
@@ -438,7 +452,21 @@ function deleteMessage(messageId) {
             message_id: messageId
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        // Verificar si la respuesta es OK
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+        // Intentar parsear JSON
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Error parsing JSON:', text);
+                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+            }
+        });
+    })
     .then(data => {
         if (data.success) {
             location.reload();
@@ -448,7 +476,7 @@ function deleteMessage(messageId) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('<?php echo __('error'); ?>: <?php echo __('connection_error'); ?>');
+        alert('<?php echo __('error'); ?>: <?php echo __('connection_error'); ?>\n' + error.message);
     });
 }
 
