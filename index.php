@@ -158,8 +158,8 @@ include 'includes/header.php';
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="about-image">
-                    <img src="assets/images/restaurant-interior.jpg" alt="Interior del restaurante" class="img-fluid rounded-3 shadow">
+                <div class="about-image text-center">
+                    <img src="assets/images/LOGO.JPG" alt="Horchata Mexican Food Logo" class="img-fluid rounded-3 shadow" style="max-height: 400px; object-fit: contain;">
                 </div>
             </div>
         </div>
