@@ -1,5 +1,9 @@
+<?php
+// Incluir inicialización del sistema para traducciones
+require_once '../includes/init.php';
+?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo getCurrentLanguage(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,6 +79,18 @@
                     <?php endif; ?>
                 </ul>
                 
+                <!-- Language Switcher -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-globe me-1"></i>
+                        <?php echo getCurrentLanguage() == 'en' ? 'EN' : 'ES'; ?>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?lang=es">🇲🇽 <?php echo __('spanish'); ?></a></li>
+                        <li><a class="dropdown-item" href="?lang=en">🇺🇸 <?php echo __('english'); ?></a></li>
+                    </ul>
+                </div>
+                
                 <!-- User Menu -->
                 <div class="dropdown">
                     <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -83,19 +99,19 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="profile.php">
-                            <i class="fas fa-user-cog me-2"></i>Perfil
+                            <i class="fas fa-user-cog me-2"></i><?php echo __('profile'); ?>
                         </a></li>
                         <?php if ($user_role === 'admin'): ?>
                         <li><a class="dropdown-item" href="settings.php">
-                            <i class="fas fa-cog me-2"></i>Configuración
+                            <i class="fas fa-cog me-2"></i><?php echo __('settings'); ?>
                         </a></li>
                         <?php endif; ?>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../index.php" target="_blank">
-                            <i class="fas fa-external-link-alt me-2"></i>Ver Sitio
+                            <i class="fas fa-external-link-alt me-2"></i><?php echo __('view_site'); ?>
                         </a></li>
                         <li><a class="dropdown-item" href="logout.php">
-                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            <i class="fas fa-sign-out-alt me-2"></i><?php echo __('logout'); ?>
                         </a></li>
                     </ul>
                 </div>
@@ -114,55 +130,55 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>" href="dashboard.php">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        <i class="fas fa-tachometer-alt me-2"></i><?php echo __('dashboard'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'products.php' ? 'active' : ''; ?>" href="products.php">
-                        <i class="fas fa-box me-2"></i>Productos
+                        <i class="fas fa-box me-2"></i><?php echo __('products'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'orders.php' ? 'active' : ''; ?>" href="orders.php">
-                        <i class="fas fa-shopping-cart me-2"></i>Pedidos
+                        <i class="fas fa-shopping-cart me-2"></i><?php echo __('orders'); ?>
                         <span class="badge bg-warning ms-auto" id="pendingOrdersBadge">0</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'qr-scanner.php' ? 'active' : ''; ?>" href="qr-scanner.php">
-                        <i class="fas fa-qrcode me-2"></i>QR Scanner
+                        <i class="fas fa-qrcode me-2"></i><?php echo __('qr_scanner'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reviews.php' ? 'active' : ''; ?>" href="reviews.php">
-                        <i class="fas fa-star me-2"></i>Reseñas
+                        <i class="fas fa-star me-2"></i><?php echo __('reviews'); ?>
                         <span class="badge bg-info ms-auto" id="pendingReviewsBadge">0</span>
                     </a>
                 </li>
                 <?php if ($user_role === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>" href="reports.php">
-                        <i class="fas fa-chart-bar me-2"></i>Reportes
+                        <i class="fas fa-chart-bar me-2"></i><?php echo __('reports'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : ''; ?>" href="categories.php">
-                        <i class="fas fa-tags me-2"></i>Categorías
+                        <i class="fas fa-tags me-2"></i><?php echo __('categories'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'extras.php' ? 'active' : ''; ?>" href="extras.php">
-                        <i class="fas fa-plus-circle me-2"></i>Extras
+                        <i class="fas fa-plus-circle me-2"></i><?php echo __('extras'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : ''; ?>" href="users.php">
-                        <i class="fas fa-users me-2"></i>Usuarios
+                        <i class="fas fa-users me-2"></i><?php echo __('users'); ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>" href="settings.php">
-                        <i class="fas fa-cog me-2"></i>Configuración
+                        <i class="fas fa-cog me-2"></i><?php echo __('settings'); ?>
                     </a>
                 </li>
                 <?php endif; ?>

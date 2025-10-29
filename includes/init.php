@@ -343,7 +343,19 @@ function __($key, $default = '') {
         'available_extras' => 'Extras Disponibles',
         'select_product_first' => 'Selecciona un producto primero',
         'no_category' => 'Sin categoría',
-        'confirm_delete_extra' => '¿Estás seguro de que quieres eliminar este extra?'
+        'confirm_delete_extra' => '¿Estás seguro de que quieres eliminar este extra?',
+        // Admin Panel
+        'dashboard' => 'Dashboard',
+        'products' => 'Productos',
+        'orders' => 'Pedidos',
+        'qr_scanner' => 'QR Scanner',
+        'reports' => 'Reportes',
+        'categories' => 'Categorías',
+        'extras' => 'Extras',
+        'users' => 'Usuarios',
+        'profile' => 'Perfil',
+        'view_site' => 'Ver Sitio',
+        'logout' => 'Cerrar Sesión'
     ];
     
     // Textos en inglés
@@ -595,7 +607,19 @@ function __($key, $default = '') {
         'available_extras' => 'Available Extras',
         'select_product_first' => 'Select a product first',
         'no_category' => 'No category',
-        'confirm_delete_extra' => 'Are you sure you want to delete this extra?'
+        'confirm_delete_extra' => 'Are you sure you want to delete this extra?',
+        // Admin Panel
+        'dashboard' => 'Dashboard',
+        'products' => 'Products',
+        'orders' => 'Orders',
+        'qr_scanner' => 'QR Scanner',
+        'reports' => 'Reports',
+        'categories' => 'Categories',
+        'extras' => 'Extras',
+        'users' => 'Users',
+        'profile' => 'Profile',
+        'view_site' => 'View Site',
+        'logout' => 'Logout'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;
