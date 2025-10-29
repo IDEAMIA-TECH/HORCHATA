@@ -398,7 +398,7 @@ function updateMessageStatus(messageId, status) {
         return;
     }
     
-    fetch('ajax/admin.ajax.php', {
+    fetch('../ajax/admin.ajax.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -442,7 +442,7 @@ function deleteMessage(messageId) {
         return;
     }
     
-    fetch('ajax/admin.ajax.php', {
+    fetch('../ajax/admin.ajax.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
