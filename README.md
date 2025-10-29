@@ -26,15 +26,8 @@ Sistema web completo para gestión de pedidos pickup, reseñas verificadas y adm
 
 ### **Credenciales de Acceso**
 
-```php
-Host: 173.231.22.109
-Database: ideamiadev_horchata
-Username: ideamiadev_horchata
-Password: DfabGqB&gX3xM?ea
 
-// Panel Administrativo
-Usuario: admin@horchatamexicanfood.com
-Contraseña: password
+
 ```
 
 ## 📋 Características del Sistema
