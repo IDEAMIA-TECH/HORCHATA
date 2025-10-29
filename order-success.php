@@ -255,7 +255,7 @@ include 'includes/header.php';
                             $status_badge = 'warning';
                             $status_icon = '<i class="fas fa-clock me-1"></i>';
                         }
-                        // 4. Si está vacío, intentar determinar por estado
+                        // 4. Si está vacío, intentar determinar por estado y otros indicadores
                         elseif (empty($payment_method_clean)) {
                             // Si no hay método, intentar determinar por el estado de pago
                             if ($payment_status_lower === 'paid') {
@@ -265,7 +265,9 @@ include 'includes/header.php';
                                 $status_badge = 'success';
                                 $status_icon = '<i class="fas fa-check-circle me-1"></i>';
                             } else {
-                                // Si no está pagado y no hay método, mostrar pickup
+                                // Si no está pagado y no hay método, por defecto mostrar pickup
+                                // PERO si el usuario confirma que es Wire Transfer, se puede actualizar manualmente
+                                // Por ahora, mostramos un mensaje genérico
                                 $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
                                 $display_status = __('pending');
                             }

@@ -98,6 +98,26 @@ function createOrder() {
         $totals = $order_data['totals'];
         $payment = $order_data['payment'];
         
+        // Validar y obtener método de pago
+        $payment_method = isset($payment['method']) ? trim($payment['method']) : 'pickup';
+        if (empty($payment_method)) {
+            $payment_method = 'pickup'; // Default si está vacío
+        }
+        
+        // Validar y obtener estado de pago
+        $payment_status = isset($payment['status']) ? trim($payment['status']) : 'pending';
+        if (empty($payment_status)) {
+            // Si el método es PayPal, asumir que está pagado
+            if (strtolower($payment_method) === 'paypal') {
+                $payment_status = 'paid';
+            } else {
+                $payment_status = 'pending';
+            }
+        }
+        
+        // Log para debug (temporal)
+        error_log("Creating order - payment_method: " . $payment_method . ", payment_status: " . $payment_status);
+        
         // Crear datetime para pickup
         $pickup_datetime = $customer['pickup_date'] . ' ' . $customer['pickup_time'] . ':00';
         
@@ -108,8 +128,8 @@ function createOrder() {
             $customer['phone'],
             $pickup_datetime,
             'pending',
-            $payment['method'],
-            $payment['status'],
+            $payment_method,
+            $payment_status,
             $totals['subtotal'],
             $totals['tax'],
             $totals['total'],
