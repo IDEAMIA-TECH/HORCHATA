@@ -215,69 +215,6 @@ include 'includes/header.php';
                                     </label>
                                 </div>
                             </div>
-                            
-                            <!-- Wire Transfer Information (mostrar cuando se selecciona) -->
-                            <?php if ($wire_transfer_enabled && !empty($wire_transfer_account_number)): ?>
-                            <div id="wireTransferInfo" class="wire-transfer-info mt-4" style="display: none;">
-                                <div class="card border-info">
-                                    <div class="card-header bg-info text-white">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-university me-2"></i><?php echo __('wire_transfer_information'); ?>
-                                        </h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('bank_name'); ?>:</strong>
-                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_bank_name); ?></p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('account_holder'); ?>:</strong>
-                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_account_holder); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('account_number'); ?>:</strong>
-                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_account_number); ?></p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('routing_number_wire'); ?>:</strong>
-                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_routing_number); ?></p>
-                                            </div>
-                                        </div>
-                                        <?php if (!empty($wire_transfer_direct_deposit_routing_number)): ?>
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('routing_number_direct_deposit'); ?>:</strong>
-                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_direct_deposit_routing_number); ?></p>
-                                                <small class="text-muted"><?php echo __('for_direct_deposit'); ?></small>
-                                            </div>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($wire_transfer_swift_code)): ?>
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <strong><?php echo __('swift_code'); ?>:</strong>
-                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_swift_code); ?></p>
-                                                <small class="text-muted"><?php echo __('for_international_wires'); ?></small>
-                                            </div>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($wire_transfer_instructions)): ?>
-                                        <div class="mb-3">
-                                            <strong><?php echo __('wire_transfer_instructions'); ?>:</strong>
-                                            <p class="mb-0"><?php echo nl2br(htmlspecialchars($wire_transfer_instructions)); ?></p>
-                                        </div>
-                                        <?php endif; ?>
-                                        <div class="alert alert-warning mb-0">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <strong><?php echo __('important'); ?>:</strong> <?php echo __('wire_transfer_note'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -356,6 +293,69 @@ include 'includes/header.php';
                             <button class="btn btn-primary btn-lg w-100" id="placeOrderBtn">
                                 <i class="fas fa-check me-2"></i><?php echo __('confirm_order'); ?>
                             </button>
+                            
+                            <!-- Wire Transfer Information (mostrar cuando se selecciona) -->
+                            <?php if ($wire_transfer_enabled && !empty($wire_transfer_account_number)): ?>
+                            <div id="wireTransferInfo" class="wire-transfer-info mt-4" style="display: none;">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-university me-2"></i><?php echo __('wire_transfer_information'); ?>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <strong><?php echo __('bank_name'); ?>:</strong>
+                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_bank_name); ?></p>
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <strong><?php echo __('account_holder'); ?>:</strong>
+                                                <p class="mb-0"><?php echo htmlspecialchars($wire_transfer_account_holder); ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <strong><?php echo __('account_number'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_account_number); ?></p>
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <strong><?php echo __('routing_number_wire'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_routing_number); ?></p>
+                                            </div>
+                                        </div>
+                                        <?php if (!empty($wire_transfer_direct_deposit_routing_number)): ?>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <strong><?php echo __('routing_number_direct_deposit'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_direct_deposit_routing_number); ?></p>
+                                                <small class="text-muted"><?php echo __('for_direct_deposit'); ?></small>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($wire_transfer_swift_code)): ?>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <strong><?php echo __('swift_code'); ?>:</strong>
+                                                <p class="mb-0 font-monospace"><?php echo htmlspecialchars($wire_transfer_swift_code); ?></p>
+                                                <small class="text-muted"><?php echo __('for_international_wires'); ?></small>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($wire_transfer_instructions)): ?>
+                                        <div class="mb-3">
+                                            <strong><?php echo __('wire_transfer_instructions'); ?>:</strong>
+                                            <p class="mb-0"><?php echo nl2br(htmlspecialchars($wire_transfer_instructions)); ?></p>
+                                        </div>
+                                        <?php endif; ?>
+                                        <div class="alert alert-warning mb-0">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong><?php echo __('important'); ?>:</strong> <?php echo __('wire_transfer_note'); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                             
                             <!-- Security Notice -->
                             <div class="security-notice mt-3">
@@ -615,7 +615,7 @@ function submitOrder(orderData) {
     $.ajax({
         url: 'ajax/orders.ajax.php',
         method: 'POST',
-        data: { action: 'create_order', order_data: orderData },
+        data: { action: 'create_order', order_data: JSON.stringify(orderData) },
         dataType: 'json',
         success: function(response) {
             if (response.success) {

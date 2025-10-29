@@ -37,10 +37,12 @@ try {
     
 } catch (Exception $e) {
     error_log("Error en orders.ajax.php: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
     
+    http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Error del servidor',
+        'message' => 'Error del servidor: ' . $e->getMessage(),
         'error' => $e->getMessage()
     ]);
 }
@@ -51,7 +53,20 @@ try {
 function createOrder() {
     global $pdo;
     
-    $order_data = json_decode($_POST['order_data'], true);
+    $order_data_raw = $_POST['order_data'] ?? '';
+    
+    if (empty($order_data_raw)) {
+        error_log("orders.ajax.php: order_data está vacío o no existe");
+        throw new Exception('Datos de orden no recibidos');
+    }
+    
+    $order_data = json_decode($order_data_raw, true);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log("orders.ajax.php: Error JSON decode: " . json_last_error_msg());
+        error_log("orders.ajax.php: order_data_raw = " . substr($order_data_raw, 0, 200));
+        throw new Exception('Datos de orden no válidos: ' . json_last_error_msg());
+    }
     
     if (!$order_data) {
         throw new Exception('Datos de orden no válidos');
@@ -102,6 +117,9 @@ function createOrder() {
         ];
         
         $order_stmt = executeQuery($order_sql, $order_params);
+        if ($order_stmt === false) {
+            throw new Exception('Error al insertar la orden');
+        }
         $order_id = $pdo->lastInsertId();
         
         // Insertar items de la orden
@@ -128,7 +146,10 @@ function createOrder() {
                 $customizations
             ];
             
-            executeQuery($item_sql, $item_params);
+            $item_stmt = executeQuery($item_sql, $item_params);
+            if ($item_stmt === false) {
+                throw new Exception('Error al insertar item de la orden: ' . ($item['name'] ?? 'desconocido'));
+            }
         }
         
         // Si es pago con PayPal, guardar información de transacción
@@ -142,7 +163,10 @@ function createOrder() {
         
         // Actualizar la orden con el review_token
         $update_token_sql = "UPDATE orders SET review_token = ? WHERE id = ?";
-        executeQuery($update_token_sql, [$review_token, $order_id]);
+        $token_stmt = executeQuery($update_token_sql, [$review_token, $order_id]);
+        if ($token_stmt === false) {
+            throw new Exception('Error al actualizar el token de revisión');
+        }
         
         // Confirmar transacción
         $pdo->commit();
