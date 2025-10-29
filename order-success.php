@@ -184,11 +184,25 @@ include 'includes/header.php';
                     <div class="card-body">
                         <?php 
                         // Obtener valores de pago de la orden
-                        $payment_method_value = isset($order['payment_method']) ? trim($order['payment_method']) : '';
-                        $payment_status_value = isset($order['payment_status']) ? trim($order['payment_status']) : '';
+                        $payment_method_raw = isset($order['payment_method']) ? $order['payment_method'] : null;
+                        $payment_status_raw = isset($order['payment_status']) ? $order['payment_status'] : null;
                         
-                        // Normalizar método de pago
+                        // Debug: Log para ver qué valores tenemos (habilitar temporalmente si hay problemas)
+                        if (isset($_GET['debug']) && $_GET['debug'] === '1') {
+                            error_log("DEBUG order-success order_id={$order_id}: payment_method = " . var_export($payment_method_raw, true));
+                            error_log("DEBUG order-success order_id={$order_id}: payment_status = " . var_export($payment_status_raw, true));
+                            error_log("DEBUG order-success order_id={$order_id}: order data = " . json_encode($order));
+                        }
+                        
+                        // Normalizar método de pago - manejar diferentes formatos
+                        $payment_method_value = $payment_method_raw ? trim($payment_method_raw) : '';
                         $payment_method_lower = strtolower($payment_method_value);
+                        // Remover espacios y guiones bajos
+                        $payment_method_clean = str_replace([' ', '_', '-'], '', $payment_method_lower);
+                        
+                        // Normalizar estado de pago
+                        $payment_status_value = $payment_status_raw ? trim($payment_status_raw) : '';
+                        $payment_status_lower = strtolower($payment_status_value);
                         
                         // Inicializar variables de visualización
                         $display_method = '';
@@ -196,35 +210,49 @@ include 'includes/header.php';
                         $status_badge = 'warning';
                         $status_icon = '<i class="fas fa-clock me-1"></i>';
                         
-                        // Determinar método de pago basado en el valor guardado
-                        if (empty($payment_method_lower)) {
-                            // Si no hay método, mostrar pickup como default
-                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
-                            $display_status = __('pending');
-                        } elseif (strpos($payment_method_lower, 'paypal') !== false) {
-                            // PayPal
+                        // Determinar método de pago - verificar múltiples variaciones posibles
+                        if (empty($payment_method_clean)) {
+                            // Si no hay método, intentar determinar por el estado de pago
+                            if ($payment_status_lower === 'paid') {
+                                // Si está pagado pero no hay método, probablemente es PayPal
+                                $display_method = '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
+                                $display_status = __('paid');
+                                $status_badge = 'success';
+                                $status_icon = '<i class="fas fa-check-circle me-1"></i>';
+                            } else {
+                                // Si no está pagado y no hay método, mostrar pickup
+                                $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                                $display_status = __('pending');
+                            }
+                        } elseif ($payment_method_clean === 'paypal' || strpos($payment_method_clean, 'paypal') !== false) {
+                            // PayPal - verificar diferentes variaciones
                             $display_method = '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
                             // PayPal siempre se marca como pagado
                             $display_status = __('paid');
                             $status_badge = 'success';
                             $status_icon = '<i class="fas fa-check-circle me-1"></i>';
-                        } elseif (strpos($payment_method_lower, 'wire') !== false || strpos($payment_method_lower, 'transfer') !== false) {
+                        } elseif ($payment_method_clean === 'wiretransfer' || strpos($payment_method_clean, 'wire') !== false || strpos($payment_method_clean, 'transfer') !== false) {
                             // Wire Transfer
                             $display_method = '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
                             $display_status = __('pending');
                             $status_badge = 'warning';
                             $status_icon = '<i class="fas fa-clock me-1"></i>';
-                        } else {
-                            // Pickup o método desconocido
+                        } elseif ($payment_method_clean === 'pickup' || strpos($payment_method_clean, 'pickup') !== false) {
+                            // Pickup
                             $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                            $display_status = __('pending');
+                            $status_badge = 'warning';
+                            $status_icon = '<i class="fas fa-clock me-1"></i>';
+                        } else {
+                            // Método desconocido - mostrar el valor original
+                            $display_method = '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . htmlspecialchars($payment_method_value) ?: __('pay_on_pickup');
                             $display_status = __('pending');
                             $status_badge = 'warning';
                             $status_icon = '<i class="fas fa-clock me-1"></i>';
                         }
                         
                         // Verificar si hay un estado de pago específico que sobrescriba el predeterminado
-                        if (!empty($payment_status_value)) {
-                            $payment_status_lower = strtolower($payment_status_value);
+                        if (!empty($payment_status_lower)) {
                             if ($payment_status_lower === 'paid') {
                                 $display_status = __('paid');
                                 $status_badge = 'success';
