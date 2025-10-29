@@ -20,6 +20,7 @@ if (($_SESSION['admin_role'] ?? 'staff') !== 'admin') {
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Funciones auxiliares (definidas antes de uso)
 function getDashboardData($date_from, $date_to) {
@@ -121,7 +122,7 @@ $date_to = $_GET['date_to'] ?? date('Y-m-d');
 $report_data = getReportData($report_type, $date_from, $date_to);
 
 // Configurar página
-$page_title = 'Reports & Analytics';
+$page_title = __('reports_analytics');
 $page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
@@ -133,17 +134,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-chart-bar me-2"></i>Reports & Analytics
+            <i class="fas fa-chart-bar me-2"></i><?php echo __('reports_analytics'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshReports()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-primary" onclick="exportReport()">
-                    <i class="fas fa-download me-1"></i>Export
+                    <i class="fas fa-download me-1"></i><?php echo __('export'); ?>
                 </button>
             </div>
         </div>
@@ -156,27 +157,27 @@ include 'includes/admin-header.php';
                 <div class="card-body">
                     <form method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <label for="report_type" class="form-label">Report Type</label>
+                            <label for="report_type" class="form-label"><?php echo __('report_type'); ?></label>
                             <select class="form-select" id="report_type" name="type">
-                                <option value="dashboard" <?php echo $report_type === 'dashboard' ? 'selected' : ''; ?>>Dashboard Overview</option>
-                                <option value="sales" <?php echo $report_type === 'sales' ? 'selected' : ''; ?>>Sales Report</option>
-                                <option value="orders" <?php echo $report_type === 'orders' ? 'selected' : ''; ?>>Orders Report</option>
-                                <option value="products" <?php echo $report_type === 'products' ? 'selected' : ''; ?>>Products Report</option>
-                                <option value="customers" <?php echo $report_type === 'customers' ? 'selected' : ''; ?>>Customers Report</option>
+                                <option value="dashboard" <?php echo $report_type === 'dashboard' ? 'selected' : ''; ?>><?php echo __('dashboard_overview'); ?></option>
+                                <option value="sales" <?php echo $report_type === 'sales' ? 'selected' : ''; ?>><?php echo __('sales_report'); ?></option>
+                                <option value="orders" <?php echo $report_type === 'orders' ? 'selected' : ''; ?>><?php echo __('orders_report'); ?></option>
+                                <option value="products" <?php echo $report_type === 'products' ? 'selected' : ''; ?>><?php echo __('products_report'); ?></option>
+                                <option value="customers" <?php echo $report_type === 'customers' ? 'selected' : ''; ?>><?php echo __('customers_report'); ?></option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="date_from" class="form-label">From Date</label>
+                            <label for="date_from" class="form-label"><?php echo __('from_date'); ?></label>
                             <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo $date_from; ?>">
                         </div>
                         <div class="col-md-3">
-                            <label for="date_to" class="form-label">To Date</label>
+                            <label for="date_to" class="form-label"><?php echo __('to_date'); ?></label>
                             <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo $date_to; ?>">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">&nbsp;</label>
                             <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search me-1"></i>Generate Report
+                                <i class="fas fa-search me-1"></i><?php echo __('generate_report'); ?>
                             </button>
                         </div>
                     </form>
@@ -195,7 +196,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Revenue
+                                <?php echo __('total_revenue'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 $<?php echo number_format($report_data['total_revenue'], 2); ?>

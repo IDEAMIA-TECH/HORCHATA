@@ -14,9 +14,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Configurar página
-$page_title = 'QR Scanner';
+$page_title = __('qr_scanner');
 $page_scripts = []; // JavaScript está inline
 
 // Incluir header del admin
@@ -28,12 +29,12 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-qrcode me-2"></i>QR Scanner
+            <i class="fas fa-qrcode me-2"></i><?php echo __('qr_scanner'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <a href="orders.php" class="btn btn-sm btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Orders
+                    <i class="fas fa-arrow-left me-1"></i><?php echo __('back_to_orders'); ?>
                 </a>
             </div>
         </div>
@@ -45,7 +46,7 @@ include 'includes/admin-header.php';
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-qrcode me-2"></i>Scan QR Code
+                        <i class="fas fa-qrcode me-2"></i><?php echo __('scan_qr_code'); ?>
                     </h6>
                 </div>
                 <div class="card-body text-center">
@@ -55,30 +56,30 @@ include 'includes/admin-header.php';
                         <canvas id="scanner-canvas" style="display: none;"></canvas>
                         <div id="scanner-placeholder" style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; flex-direction: column;">
                             <i class="fas fa-camera fa-3x mb-3"></i>
-                            <p>Click "Start Scanner" to begin</p>
+                            <p><?php echo __('click_start_scanner'); ?></p>
                         </div>
                     </div>
                     
                     <!-- Manual Input -->
                     <div class="mb-3">
-                        <label for="order-id-input" class="form-label">Search by Order Number or ID</label>
+                        <label for="order-id-input" class="form-label"><?php echo __('search_by_order_number'); ?></label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="order-id-input" 
-                                   placeholder="Enter order number (e.g., HOR202510264726) or ID">
+                                   placeholder="<?php echo __('enter_order_number_placeholder'); ?>">
                             <button class="btn btn-primary" onclick="loadOrderManually()">
-                                <i class="fas fa-search me-1"></i>Search Order
+                                <i class="fas fa-search me-1"></i><?php echo __('search_order'); ?>
                             </button>
                         </div>
-                        <small class="text-muted">You can enter the order number (like HOR202510264726) or the numeric order ID</small>
+                        <small class="text-muted"><?php echo __('order_search_help'); ?></small>
                     </div>
                     
                     <!-- Scanner Controls -->
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success" id="startScannerBtn" onclick="startScanner()">
-                            <i class="fas fa-play me-1"></i>Start Scanner
+                            <i class="fas fa-play me-1"></i><?php echo __('start_scanner'); ?>
                         </button>
                         <button type="button" class="btn btn-danger" id="stopScannerBtn" onclick="stopScanner()" style="display: none;">
-                            <i class="fas fa-stop me-1"></i>Stop Scanner
+                            <i class="fas fa-stop me-1"></i><?php echo __('stop_scanner'); ?>
                         </button>
                     </div>
                     
@@ -86,7 +87,7 @@ include 'includes/admin-header.php';
                     <div id="scanner-status" class="mt-3">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <span id="scanner-status-text">Ready to scan QR code</span>
+                            <span id="scanner-status-text"><?php echo __('ready_to_scan'); ?></span>
                         </div>
                     </div>
                 </div>

@@ -20,6 +20,7 @@ if (($_SESSION['admin_role'] ?? 'staff') !== 'admin') {
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener parámetros
 $tab = $_GET['tab'] ?? 'general';
@@ -298,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $settings = getSettings();
 
 // Configurar página
-$page_title = 'Settings';
+$page_title = __('settings');
 $page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
@@ -310,17 +311,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-cog me-2"></i>Settings
+            <i class="fas fa-cog me-2"></i><?php echo __('settings'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshSettings()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-primary" onclick="saveAllSettings()">
-                    <i class="fas fa-save me-1"></i>Save All
+                    <i class="fas fa-save me-1"></i><?php echo __('save_all'); ?>
                 </button>
             </div>
         </div>
@@ -331,27 +332,27 @@ include 'includes/admin-header.php';
         <div class="col-lg-3">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Settings Menu</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('settings_menu'); ?></h6>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         <a href="?tab=general" class="list-group-item list-group-item-action <?php echo $tab === 'general' ? 'active' : ''; ?>">
-                            <i class="fas fa-cog me-2"></i>General Settings
+                            <i class="fas fa-cog me-2"></i><?php echo __('general_settings'); ?>
                         </a>
                         <a href="?tab=restaurant" class="list-group-item list-group-item-action <?php echo $tab === 'restaurant' ? 'active' : ''; ?>">
-                            <i class="fas fa-store me-2"></i>Restaurant Info
+                            <i class="fas fa-store me-2"></i><?php echo __('restaurant_info'); ?>
                         </a>
                         <a href="?tab=payment" class="list-group-item list-group-item-action <?php echo $tab === 'payment' ? 'active' : ''; ?>">
-                            <i class="fas fa-credit-card me-2"></i>Payment Settings
+                            <i class="fas fa-credit-card me-2"></i><?php echo __('payment_settings'); ?>
                         </a>
                         <a href="?tab=email" class="list-group-item list-group-item-action <?php echo $tab === 'email' ? 'active' : ''; ?>">
-                            <i class="fas fa-envelope me-2"></i>Email Settings
+                            <i class="fas fa-envelope me-2"></i><?php echo __('email_settings'); ?>
                         </a>
                         <a href="?tab=security" class="list-group-item list-group-item-action <?php echo $tab === 'security' ? 'active' : ''; ?>">
-                            <i class="fas fa-shield-alt me-2"></i>Security
+                            <i class="fas fa-shield-alt me-2"></i><?php echo __('security'); ?>
                         </a>
                         <a href="?tab=social" class="list-group-item list-group-item-action <?php echo $tab === 'social' ? 'active' : ''; ?>">
-                            <i class="fas fa-share-alt me-2"></i>Social Media
+                            <i class="fas fa-share-alt me-2"></i><?php echo __('social_media'); ?>
                         </a>
                     </div>
                 </div>
@@ -363,7 +364,7 @@ include 'includes/admin-header.php';
             <?php if ($tab === 'general'): ?>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">General Settings</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('general_settings'); ?></h6>
                 </div>
                 <div class="card-body">
                     <form id="generalSettingsForm" method="POST">
@@ -372,14 +373,14 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="site_name" class="form-label">Site Name</label>
+                                    <label for="site_name" class="form-label"><?php echo __('site_name'); ?></label>
                                     <input type="text" class="form-control" id="site_name" name="site_name" 
                                            value="<?php echo htmlspecialchars($settings['site_name'] ?? 'Horchata Mexican Food'); ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="site_url" class="form-label">Site URL</label>
+                                    <label for="site_url" class="form-label"><?php echo __('site_url'); ?></label>
                                     <input type="url" class="form-control" id="site_url" name="site_url" 
                                            value="<?php echo htmlspecialchars($settings['site_url'] ?? 'https://ideamia-dev.com/HORCHATA'); ?>">
                                 </div>
@@ -389,33 +390,33 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="default_language" class="form-label">Default Language</label>
+                                    <label for="default_language" class="form-label"><?php echo __('default_language'); ?></label>
                                     <select class="form-select" id="default_language" name="default_language">
-                                        <option value="es" <?php echo ($settings['default_language'] ?? 'es') === 'es' ? 'selected' : ''; ?>>Spanish</option>
-                                        <option value="en" <?php echo ($settings['default_language'] ?? 'es') === 'en' ? 'selected' : ''; ?>>English</option>
+                                        <option value="es" <?php echo ($settings['default_language'] ?? 'es') === 'es' ? 'selected' : ''; ?>><?php echo __('spanish'); ?></option>
+                                        <option value="en" <?php echo ($settings['default_language'] ?? 'es') === 'en' ? 'selected' : ''; ?>><?php echo __('english'); ?></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="timezone" class="form-label">Timezone</label>
+                                    <label for="timezone" class="form-label"><?php echo __('timezone'); ?></label>
                                     <select class="form-select" id="timezone" name="timezone">
-                                        <option value="America/Los_Angeles" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Los_Angeles' ? 'selected' : ''; ?>>Pacific Time (Los Angeles)</option>
-                                        <option value="America/New_York" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/New_York' ? 'selected' : ''; ?>>Eastern Time (New York)</option>
-                                        <option value="America/Chicago" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Chicago' ? 'selected' : ''; ?>>Central Time (Chicago)</option>
-                                        <option value="America/Denver" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Denver' ? 'selected' : ''; ?>>Mountain Time (Denver)</option>
+                                        <option value="America/Los_Angeles" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Los_Angeles' ? 'selected' : ''; ?>><?php echo __('pacific_time'); ?></option>
+                                        <option value="America/New_York" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/New_York' ? 'selected' : ''; ?>><?php echo __('eastern_time'); ?></option>
+                                        <option value="America/Chicago" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Chicago' ? 'selected' : ''; ?>><?php echo __('central_time'); ?></option>
+                                        <option value="America/Denver" <?php echo ($settings['timezone'] ?? 'America/Los_Angeles') === 'America/Denver' ? 'selected' : ''; ?>><?php echo __('mountain_time'); ?></option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="site_description" class="form-label">Site Description</label>
+                            <label for="site_description" class="form-label"><?php echo __('site_description'); ?></label>
                             <textarea class="form-control" id="site_description" name="site_description" rows="3"><?php echo htmlspecialchars($settings['site_description'] ?? 'Authentic Mexican Food'); ?></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="site_keywords" class="form-label">Site Keywords</label>
+                            <label for="site_keywords" class="form-label"><?php echo __('site_keywords'); ?></label>
                             <input type="text" class="form-control" id="site_keywords" name="site_keywords" 
                                    value="<?php echo htmlspecialchars($settings['site_keywords'] ?? 'mexican food, restaurant, horchata, authentic'); ?>">
                             <div class="form-text">Separate keywords with commas</div>

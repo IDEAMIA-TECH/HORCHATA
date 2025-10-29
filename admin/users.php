@@ -20,6 +20,7 @@ if (($_SESSION['admin_role'] ?? 'staff') !== 'admin') {
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'list';
@@ -60,7 +61,7 @@ switch ($action) {
 }
 
 // Configurar página
-$page_title = $action === 'edit' ? 'Edit User' : ($action === 'create' ? 'Create User' : 'Users Management');
+$page_title = $action === 'edit' ? __('edit_user') : ($action === 'create' ? __('create_user') : __('users_management'));
 $page_scripts = []; // JavaScript está inline en la página
 
 // Incluir header del admin
@@ -72,17 +73,17 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-users me-2"></i>Users Management
+            <i class="fas fa-users me-2"></i><?php echo __('users_management'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshUsers()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
             <div class="btn-group">
                 <a href="users.php?action=create" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus me-1"></i>Add User
+                    <i class="fas fa-plus me-1"></i><?php echo __('add_user'); ?>
                 </a>
             </div>
         </div>
@@ -98,7 +99,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Administrators
+                                <?php echo __('administrators'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $role_counts['admin'] ?? 0; ?>
@@ -118,7 +119,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Staff
+                                <?php echo __('staff'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $role_counts['staff'] ?? 0; ?>
@@ -138,7 +139,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Active Users
+                                <?php echo __('active_users'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $role_counts['active'] ?? 0; ?>
@@ -158,7 +159,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Total Users
+                                <?php echo __('total_users'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $role_counts['total'] ?? 0; ?>
@@ -176,31 +177,31 @@ include 'includes/admin-header.php';
     <!-- Users Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Users List</h6>
+            <h6 class="m-0 font-weight-bold text-primary"><?php echo __('users_list'); ?></h6>
         </div>
         <div class="card-body">
             <!-- Filters -->
             <div class="row mb-3">
                 <div class="col-md-3">
                     <select class="form-select" id="roleFilter">
-                        <option value="">All roles</option>
-                        <option value="admin">Administrator</option>
-                        <option value="staff">Staff</option>
+                        <option value=""><?php echo __('all_roles'); ?></option>
+                        <option value="admin"><?php echo __('administrator'); ?></option>
+                        <option value="staff"><?php echo __('staff'); ?></option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="statusFilter">
-                        <option value="">All statuses</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
+                        <option value=""><?php echo __('all_statuses'); ?></option>
+                        <option value="1"><?php echo __('active'); ?></option>
+                        <option value="0"><?php echo __('inactive'); ?></option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search users...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="<?php echo __('search_users'); ?>">
                 </div>
                 <div class="col-md-3">
                     <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
-                        <i class="fas fa-search me-1"></i>Filter
+                        <i class="fas fa-search me-1"></i><?php echo __('filter'); ?>
                     </button>
                 </div>
             </div>
@@ -211,14 +212,14 @@ include 'includes/admin-header.php';
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Last Login</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <th><?php echo __('name'); ?></th>
+                            <th><?php echo __('username'); ?></th>
+                            <th><?php echo __('email'); ?></th>
+                            <th><?php echo __('role'); ?></th>
+                            <th><?php echo __('status'); ?></th>
+                            <th><?php echo __('last_login'); ?></th>
+                            <th><?php echo __('created'); ?></th>
+                            <th><?php echo __('actions'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -237,27 +238,27 @@ include 'includes/admin-header.php';
                             </td>
                             <td>
                                 <span class="badge bg-<?php echo $user['is_active'] ? 'success' : 'danger'; ?>">
-                                    <?php echo $user['is_active'] ? 'Active' : 'Inactive'; ?>
+                                    <?php echo $user['is_active'] ? __('active') : __('inactive'); ?>
                                 </span>
                             </td>
                             <td>
-                                <?php echo $user['last_login'] ? date('M d, Y g:i A', strtotime($user['last_login'])) : 'Never'; ?>
+                                <?php echo $user['last_login'] ? date('M d, Y g:i A', strtotime($user['last_login'])) : __('never'); ?>
                             </td>
                             <td><?php echo date('M d, Y', strtotime($user['created_at'])); ?></td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="users.php?action=edit&id=<?php echo $user['id']; ?>" 
-                                       class="btn btn-sm btn-outline-primary" title="Edit">
+                                       class="btn btn-sm btn-outline-primary" title="<?php echo __('edit'); ?>">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button class="btn btn-sm btn-outline-<?php echo $user['is_active'] ? 'warning' : 'success'; ?>" 
                                             onclick="toggleUserStatus(<?php echo $user['id']; ?>, <?php echo $user['is_active'] ? 'false' : 'true'; ?>)" 
-                                            title="<?php echo $user['is_active'] ? 'Deactivate' : 'Activate'; ?>">
+                                            title="<?php echo $user['is_active'] ? __('deactivate') : __('activate'); ?>">
                                         <i class="fas fa-<?php echo $user['is_active'] ? 'pause' : 'play'; ?>"></i>
                                     </button>
                                     <?php if ($user['id'] != $_SESSION['admin_id']): ?>
                                     <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="deleteUser(<?php echo $user['id']; ?>)" title="Delete">
+                                            onclick="deleteUser(<?php echo $user['id']; ?>)" title="<?php echo __('delete'); ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                     <?php endif; ?>
@@ -278,7 +279,7 @@ include 'includes/admin-header.php';
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <?php echo $action === 'create' ? 'Create New User' : 'Edit User'; ?>
+                        <?php echo $action === 'create' ? __('create_new_user') : __('edit_user'); ?>
                     </h6>
                 </div>
                 <div class="card-body">
@@ -291,14 +292,14 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="first_name" class="form-label">First Name *</label>
+                                    <label for="first_name" class="form-label"><?php echo __('first_name'); ?> *</label>
                                     <input type="text" class="form-control" id="first_name" name="first_name" 
                                            value="<?php echo $user['first_name'] ?? ''; ?>" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="last_name" class="form-label">Last Name *</label>
+                                    <label for="last_name" class="form-label"><?php echo __('last_name'); ?> *</label>
                                     <input type="text" class="form-control" id="last_name" name="last_name" 
                                            value="<?php echo $user['last_name'] ?? ''; ?>" required>
                                 </div>
@@ -308,14 +309,14 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Username *</label>
+                                    <label for="username" class="form-label"><?php echo __('username'); ?> *</label>
                                     <input type="text" class="form-control" id="username" name="username" 
                                            value="<?php echo $user['username'] ?? ''; ?>" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email *</label>
+                                    <label for="email" class="form-label"><?php echo __('email'); ?> *</label>
                                     <input type="email" class="form-control" id="email" name="email" 
                                            value="<?php echo $user['email'] ?? ''; ?>" required>
                                 </div>
@@ -325,18 +326,18 @@ include 'includes/admin-header.php';
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="role" class="form-label">Role *</label>
+                                    <label for="role" class="form-label"><?php echo __('role'); ?> *</label>
                                     <select class="form-select" id="role" name="role" required>
-                                        <option value="">Select role</option>
-                                        <option value="admin" <?php echo ($user['role'] ?? '') === 'admin' ? 'selected' : ''; ?>>Administrator</option>
-                                        <option value="staff" <?php echo ($user['role'] ?? '') === 'staff' ? 'selected' : ''; ?>>Staff</option>
+                                        <option value=""><?php echo __('select_role'); ?></option>
+                                        <option value="admin" <?php echo ($user['role'] ?? '') === 'admin' ? 'selected' : ''; ?>><?php echo __('administrator'); ?></option>
+                                        <option value="staff" <?php echo ($user['role'] ?? '') === 'staff' ? 'selected' : ''; ?>><?php echo __('staff'); ?></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="password" class="form-label">
-                                        Password <?php echo $action === 'create' ? '*' : '(leave blank to keep current)'; ?>
+                                        <?php echo __('password'); ?> <?php echo $action === 'create' ? '*' : '(' . __('leave_blank_to_keep_current') . ')'; ?>
                                     </label>
                                     <input type="password" class="form-control" id="password" name="password" 
                                            <?php echo $action === 'create' ? 'required' : ''; ?>>
@@ -349,18 +350,18 @@ include 'includes/admin-header.php';
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
                                        <?php echo ($user['is_active'] ?? true) ? 'checked' : ''; ?>>
                                 <label class="form-check-label" for="is_active">
-                                    Active User
+                                    <?php echo __('active_user'); ?>
                                 </label>
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-between">
                             <a href="users.php" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Back to Users
+                                <i class="fas fa-arrow-left me-1"></i><?php echo __('back_to_users'); ?>
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>
-                                <?php echo $action === 'create' ? 'Create User' : 'Update User'; ?>
+                                <?php echo $action === 'create' ? __('create_user') : __('update_user'); ?>
                             </button>
                         </div>
                     </form>

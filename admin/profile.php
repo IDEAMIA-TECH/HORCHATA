@@ -14,13 +14,14 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener información del usuario actual
 $admin_id = $_SESSION['admin_user_id'] ?? 0;
 $user = getUserInfo($admin_id);
 
 // Configurar página
-$page_title = 'Mi Perfil';
+$page_title = __('my_profile');
 
 // Incluir header del admin
 include 'includes/admin-header.php';
@@ -31,12 +32,12 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-user me-2"></i>Mi Perfil
+            <i class="fas fa-user me-2"></i><?php echo __('my_profile'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group">
                 <a href="dashboard.php" class="btn btn-sm btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    <i class="fas fa-arrow-left me-1"></i><?php echo __('back_to_dashboard'); ?>
                 </a>
             </div>
         </div>
@@ -47,7 +48,7 @@ include 'includes/admin-header.php';
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Información Personal</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('personal_information'); ?></h6>
                 </div>
                 <div class="card-body">
                     <form id="profileForm">
@@ -56,12 +57,12 @@ include 'includes/admin-header.php';
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="first_name" class="form-label">Nombre</label>
+                                <label for="first_name" class="form-label"><?php echo __('first_name'); ?></label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" 
                                        value="<?php echo htmlspecialchars($user['first_name'] ?? ''); ?>" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="last_name" class="form-label">Apellido</label>
+                                <label for="last_name" class="form-label"><?php echo __('last_name'); ?></label>
                                 <input type="text" class="form-control" id="last_name" name="last_name" 
                                        value="<?php echo htmlspecialchars($user['last_name'] ?? ''); ?>" required>
                             </div>
@@ -69,12 +70,12 @@ include 'includes/admin-header.php';
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="username" class="form-label">Usuario</label>
+                                <label for="username" class="form-label"><?php echo __('username'); ?></label>
                                 <input type="text" class="form-control" id="username" name="username" 
                                        value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Correo Electrónico</label>
+                                <label for="email" class="form-label"><?php echo __('email'); ?></label>
                                 <input type="email" class="form-control" id="email" name="email" 
                                        value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
                             </div>
@@ -82,7 +83,7 @@ include 'includes/admin-header.php';
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label for="phone" class="form-label">Teléfono (opcional)</label>
+                                <label for="phone" class="form-label"><?php echo __('phone'); ?> (<?php echo __('optional'); ?>)</label>
                                 <input type="text" class="form-control" id="phone" name="phone" 
                                        value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
                             </div>
@@ -90,10 +91,10 @@ include 'includes/admin-header.php';
 
                         <div class="d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.php'">
-                                <i class="fas fa-times me-1"></i>Cancelar
+                                <i class="fas fa-times me-1"></i><?php echo __('cancel'); ?>
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i>Guardar Cambios
+                                <i class="fas fa-save me-1"></i><?php echo __('save_changes'); ?>
                             </button>
                         </div>
                     </form>

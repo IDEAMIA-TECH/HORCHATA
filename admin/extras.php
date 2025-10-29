@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $category_id = intval($_POST['category_id']);
                 
                 if (empty($name_en) || empty($name_es) || $price <= 0) {
-                    throw new Exception('Datos inválidos');
+                    throw new Exception(__('invalid_data'));
                 }
                 
                 $sql = "INSERT INTO product_extras (name_en, name_es, price, category_id, sort_order) VALUES (?, ?, ?, ?, 0)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$name_en, $name_es, $price, $category_id]);
                 
-                echo json_encode(['success' => true, 'message' => 'Extra creado exitosamente']);
+                echo json_encode(['success' => true, 'message' => __('extra_created_successfully')]);
                 break;
                 
             case 'update_extra':
@@ -47,14 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $category_id = intval($_POST['category_id']);
                 
                 if (empty($name_en) || empty($name_es) || $price <= 0) {
-                    throw new Exception('Datos inválidos');
+                    throw new Exception(__('invalid_data'));
                 }
                 
                 $sql = "UPDATE product_extras SET name_en = ?, name_es = ?, price = ?, category_id = ? WHERE id = ?";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$name_en, $name_es, $price, $category_id, $id]);
                 
-                echo json_encode(['success' => true, 'message' => 'Extra actualizado exitosamente']);
+                echo json_encode(['success' => true, 'message' => __('extra_updated_successfully')]);
                 break;
                 
             case 'delete_extra':
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$id]);
                 
-                echo json_encode(['success' => true, 'message' => 'Extra eliminado exitosamente']);
+                echo json_encode(['success' => true, 'message' => __('extra_deleted_successfully')]);
                 break;
                 
             case 'toggle_extra_status':
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$product_id, $extra_id]);
                 
-                echo json_encode(['success' => true, 'message' => 'Extra asignado al producto']);
+                echo json_encode(['success' => true, 'message' => __('extra_assigned_to_product')]);
                 break;
                 
             case 'remove_extra_from_product':
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$product_id, $extra_id]);
                 
-                echo json_encode(['success' => true, 'message' => 'Extra removido del producto']);
+                echo json_encode(['success' => true, 'message' => __('extra_removed_from_product')]);
                 break;
                 
             case 'get_product_extras':
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 break;
                 
             default:
-                throw new Exception('Acción no válida');
+                throw new Exception(__('invalid_action'));
         }
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
@@ -215,7 +215,7 @@ include '../includes/admin-header.php';
                                         <?php if ($extra['category_name_en']): ?>
                                             <?php echo htmlspecialchars($extra['category_name_en']); ?>
                                         <?php else: ?>
-                                            <span class="text-muted">Sin categoría</span>
+                                            <span class="text-muted"><?php echo __('no_category'); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td>$<?php echo number_format($extra['price'], 2); ?></td>

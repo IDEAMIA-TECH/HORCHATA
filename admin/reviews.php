@@ -14,6 +14,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Obtener parámetros
 $action = $_GET['action'] ?? 'list';
@@ -47,7 +48,7 @@ switch ($action) {
 }
 
 // Configurar página
-$page_title = $action === 'view' ? 'Review Details' : 'Reviews Management';
+$page_title = $action === 'view' ? __('review_details') : __('reviews_management');
 $page_scripts = []; // No necesita script adicional
 
 // Incluir header del admin
@@ -59,12 +60,12 @@ include 'includes/admin-header.php';
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <i class="fas fa-star me-2"></i>Reviews Management
+            <i class="fas fa-star me-2"></i><?php echo __('reviews_management'); ?>
         </h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshReviews()">
-                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                    <i class="fas fa-sync-alt me-1"></i><?php echo __('refresh'); ?>
                 </button>
             </div>
         </div>
@@ -80,7 +81,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending
+                                <?php echo __('pending'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['pending'] ?? 0; ?>
@@ -100,7 +101,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Approved
+                                <?php echo __('approved'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['approved'] ?? 0; ?>
@@ -120,7 +121,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Rejected
+                                <?php echo __('rejected'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['rejected'] ?? 0; ?>
@@ -140,7 +141,7 @@ include 'includes/admin-header.php';
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total
+                                <?php echo __('total'); ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php echo $status_counts['total'] ?? 0; ?>
@@ -158,25 +159,25 @@ include 'includes/admin-header.php';
     <!-- Reviews Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Reviews List</h6>
+            <h6 class="m-0 font-weight-bold text-primary"><?php echo __('reviews_list'); ?></h6>
         </div>
         <div class="card-body">
             <!-- Filters -->
             <div class="row mb-3">
                 <div class="col-md-3">
                     <select class="form-select" id="statusFilter">
-                        <option value="">All statuses</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
+                        <option value=""><?php echo __('all_statuses'); ?></option>
+                        <option value="pending"><?php echo __('pending'); ?></option>
+                        <option value="approved"><?php echo __('approved'); ?></option>
+                        <option value="rejected"><?php echo __('rejected'); ?></option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search reviews...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="<?php echo __('search_reviews'); ?>">
                 </div>
                 <div class="col-md-3">
                     <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
-                        <i class="fas fa-search me-1"></i>Filter
+                        <i class="fas fa-search me-1"></i><?php echo __('filter'); ?>
                     </button>
                 </div>
             </div>
@@ -187,12 +188,12 @@ include 'includes/admin-header.php';
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Customer</th>
-                            <th>Rating</th>
-                            <th>Review</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <th><?php echo __('customer'); ?></th>
+                            <th><?php echo __('rating'); ?></th>
+                            <th><?php echo __('comment'); ?></th>
+                            <th><?php echo __('status'); ?></th>
+                            <th><?php echo __('date'); ?></th>
+                            <th><?php echo __('actions'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -225,21 +226,21 @@ include 'includes/admin-header.php';
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="reviews.php?action=view&id=<?php echo $review['id']; ?>" 
-                                       class="btn btn-sm btn-outline-primary" title="View">
+                                       class="btn btn-sm btn-outline-primary" title="<?php echo __('view'); ?>">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($review['is_approved'] === 0): ?>
                                     <button class="btn btn-sm btn-outline-success" 
-                                            onclick="approveReview(<?php echo $review['id']; ?>)" title="Approve">
+                                            onclick="approveReview(<?php echo $review['id']; ?>)" title="<?php echo __('approve'); ?>">
                                         <i class="fas fa-check"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="rejectReview(<?php echo $review['id']; ?>)" title="Reject">
+                                            onclick="rejectReview(<?php echo $review['id']; ?>)" title="<?php echo __('reject'); ?>">
                                         <i class="fas fa-times"></i>
                                     </button>
                                     <?php endif; ?>
                                     <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="deleteReview(<?php echo $review['id']; ?>)" title="Delete">
+                                            onclick="deleteReview(<?php echo $review['id']; ?>)" title="<?php echo __('delete'); ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -259,37 +260,37 @@ include 'includes/admin-header.php';
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Review Details</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('review_details'); ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-muted">Customer Information</h6>
-                            <p><strong>Name:</strong> <?php echo htmlspecialchars($review['customer_name']); ?></p>
-                            <p><strong>Email:</strong> <?php echo htmlspecialchars($review['customer_email']); ?></p>
-                            <p><strong>Order:</strong> #<?php echo htmlspecialchars($review['order_number']); ?></p>
+                            <h6 class="text-muted"><?php echo __('customer_information'); ?></h6>
+                            <p><strong><?php echo __('name'); ?>:</strong> <?php echo htmlspecialchars($review['customer_name']); ?></p>
+                            <p><strong><?php echo __('email'); ?>:</strong> <?php echo htmlspecialchars($review['customer_email']); ?></p>
+                            <p><strong><?php echo __('order'); ?>:</strong> #<?php echo htmlspecialchars($review['order_number']); ?></p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted">Review Information</h6>
-                            <p><strong>Rating:</strong> 
+                            <h6 class="text-muted"><?php echo __('review_information'); ?></h6>
+                            <p><strong><?php echo __('rating'); ?>:</strong> 
                                 <div class="rating">
                                     <?php for ($i = 1; $i <= 5; $i++): ?>
                                         <i class="fas fa-star <?php echo $i <= $review['rating'] ? 'text-warning' : 'text-muted'; ?>"></i>
                                     <?php endfor; ?>
                                 </div>
                             </p>
-                            <p><strong>Status:</strong> 
+                            <p><strong><?php echo __('status'); ?>:</strong> 
                                 <span class="badge bg-<?php echo getReviewStatusColor($review['is_approved']); ?>">
                                     <?php echo getReviewStatusText($review['is_approved']); ?>
                                 </span>
                             </p>
-                            <p><strong>Date:</strong> <?php echo date('M d, Y g:i A', strtotime($review['created_at'])); ?></p>
+                            <p><strong><?php echo __('date'); ?>:</strong> <?php echo date('M d, Y g:i A', strtotime($review['created_at'])); ?></p>
                         </div>
                     </div>
                     
                     <div class="row mt-3">
                         <div class="col-12">
-                            <h6 class="text-muted">Review Comment</h6>
+                            <h6 class="text-muted"><?php echo __('review_comment'); ?></h6>
                             <div class="review-comment p-3 bg-light rounded">
                                 <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
                             </div>
@@ -303,22 +304,22 @@ include 'includes/admin-header.php';
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?php echo __('actions'); ?></h6>
                 </div>
                 <div class="card-body">
                     <?php if ($review['is_approved'] === 0): ?>
                     <div class="d-grid gap-2">
                         <button class="btn btn-success" onclick="approveReview(<?php echo $review['id']; ?>)">
-                            <i class="fas fa-check me-2"></i>Approve Review
+                            <i class="fas fa-check me-2"></i><?php echo __('approve_review'); ?>
                         </button>
                         <button class="btn btn-danger" onclick="rejectReview(<?php echo $review['id']; ?>)">
-                            <i class="fas fa-times me-2"></i>Reject Review
+                            <i class="fas fa-times me-2"></i><?php echo __('reject_review'); ?>
                         </button>
                     </div>
                     <?php else: ?>
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-1"></i>
-                        This review has already been <?php echo $review['is_approved'] === 1 ? 'approved' : 'rejected'; ?>.
+                        <?php echo __('this_review_already'); ?> <?php echo $review['is_approved'] === 1 ? __('approved') : __('rejected'); ?>.
                     </div>
                     <?php endif; ?>
                     
@@ -326,7 +327,7 @@ include 'includes/admin-header.php';
                     
                     <div class="d-grid gap-2">
                         <button class="btn btn-outline-danger" onclick="deleteReview(<?php echo $review['id']; ?>)">
-                            <i class="fas fa-trash me-2"></i>Delete Review
+                            <i class="fas fa-trash me-2"></i><?php echo __('delete_review'); ?>
                         </button>
                     </div>
                 </div>
@@ -347,17 +348,17 @@ $(document).ready(function() {
             "pageLength": 25,
             "order": [[0, "desc"]],
             "language": {
-                "lengthMenu": "Show _MENU_ reviews per page",
-                "zeroRecords": "No reviews found",
-                "info": "Showing _START_ to _END_ of _TOTAL_ reviews",
-                "infoEmpty": "No reviews available",
-                "infoFiltered": "(filtered from _MAX_ total reviews)",
-                "search": "Search:",
+                "lengthMenu": "<?php echo __('showing'); ?> _MENU_ <?php echo __('reviews'); ?> <?php echo __('per_page'); ?>",
+                "zeroRecords": "<?php echo __('no_records_found'); ?>",
+                "info": "<?php echo __('showing'); ?> _START_ <?php echo __('to'); ?> _END_ <?php echo __('of'); ?> _TOTAL_ <?php echo __('reviews'); ?>",
+                "infoEmpty": "<?php echo __('no_data_available'); ?>",
+                "infoFiltered": "(<?php echo __('filtered_from'); ?> _MAX_ <?php echo __('total_entries'); ?>)",
+                "search": "<?php echo __('search'); ?>:",
                 "paginate": {
-                    "first": "First",
-                    "last": "Last",
-                    "next": "Next",
-                    "previous": "Previous"
+                    "first": "<?php echo __('first'); ?>",
+                    "last": "<?php echo __('last'); ?>",
+                    "next": "<?php echo __('next'); ?>",
+                    "previous": "<?php echo __('previous'); ?>"
                 }
             }
             });
@@ -371,7 +372,7 @@ function refreshReviews() {
 }
 
 function approveReview(reviewId) {
-    if (confirm('Are you sure you want to approve this review?')) {
+    if (confirm('<?php echo __('approve_review_confirm'); ?>')) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -385,18 +386,18 @@ function approveReview(reviewId) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }
 }
 
 function rejectReview(reviewId) {
-    if (confirm('Are you sure you want to reject this review?')) {
+    if (confirm('<?php echo __('reject_review_confirm'); ?>')) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -410,18 +411,18 @@ function rejectReview(reviewId) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }
 }
 
 function deleteReview(reviewId) {
-    if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+    if (confirm('<?php echo __('delete_review_confirm'); ?> <?php echo __('this_action_cannot_be_undone'); ?>.')) {
         $.ajax({
             url: '../ajax/admin.ajax.php',
             method: 'POST',
@@ -435,11 +436,11 @@ function deleteReview(reviewId) {
                     showNotification(response.message, 'success');
                     location.reload();
                 } else {
-                    showNotification('Error: ' + response.message, 'error');
+                    showNotification('<?php echo __('error'); ?>: ' + response.message, 'error');
                 }
             },
             error: function() {
-                showNotification('Connection error', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
             }
         });
     }

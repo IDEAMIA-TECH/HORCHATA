@@ -14,6 +14,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 $error_message = '';
 
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     
     if (empty($username) || empty($password)) {
-        $error_message = 'Por favor, completa todos los campos';
+        $error_message = __('please_complete_all_fields');
     } else {
         // Buscar usuario en la base de datos (por username o email)
         $user = fetchOne("
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: dashboard.php');
             exit;
         } else {
-            $error_message = 'Usuario o contraseña incorrectos';
+            $error_message = __('incorrect_username_password');
         }
     }
 }
@@ -225,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <form method="POST" action="">
                             <div class="mb-4">
-                                <label for="username" class="form-label fw-bold">Usuario</label>
+                                <label for="username" class="form-label fw-bold"><?php echo __('username'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-user"></i>
@@ -234,14 +235,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            class="form-control" 
                                            id="username" 
                                            name="username" 
-                                           placeholder="Ingresa tu usuario"
+                                           placeholder="<?php echo __('enter_username'); ?>"
                                            value="<?php echo htmlspecialchars($username ?? ''); ?>"
                                            required>
                                 </div>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="password" class="form-label fw-bold">Contraseña</label>
+                                <label for="password" class="form-label fw-bold"><?php echo __('password'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
@@ -250,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            class="form-control" 
                                            id="password" 
                                            name="password" 
-                                           placeholder="Ingresa tu contraseña"
+                                           placeholder="<?php echo __('enter_password'); ?>"
                                            required>
                                 </div>
                             </div>
@@ -258,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-login btn-lg">
                                     <i class="fas fa-sign-in-alt me-2"></i>
-                                    Iniciar Sesión
+                                    <?php echo __('login'); ?>
                                 </button>
                             </div>
                         </form>
@@ -267,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="text-center mt-4">
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Acceso restringido al personal autorizado
+                                <?php echo __('restricted_access'); ?>
                             </small>
                         </div>
                     </div>
