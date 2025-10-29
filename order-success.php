@@ -186,17 +186,33 @@ include 'includes/header.php';
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_method'); ?></h6>
                                 <p class="payment-method">
-                                    <?php if ($order['payment_method'] === 'paypal'): ?>
-                                        <i class="fab fa-paypal me-2 text-primary"></i>PayPal
-                                    <?php else: ?>
-                                        <i class="fas fa-money-bill-wave me-2 text-success"></i><?php echo __('pay_on_pickup'); ?>
-                                    <?php endif; ?>
+                                    <?php 
+                                    $payment_method = strtolower($order['payment_method'] ?? 'pickup');
+                                    switch ($payment_method) {
+                                        case 'paypal':
+                                            echo '<i class="fab fa-paypal me-2 text-primary"></i>' . __('paypal');
+                                            break;
+                                        case 'wire_transfer':
+                                            echo '<i class="fas fa-university me-2 text-info"></i>' . __('wire_transfer');
+                                            break;
+                                        case 'pickup':
+                                        default:
+                                            echo '<i class="fas fa-money-bill-wave me-2 text-success"></i>' . __('pay_on_pickup');
+                                            break;
+                                    }
+                                    ?>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('payment_status'); ?></h6>
                                 <span class="badge bg-<?php echo $order['payment_status'] === 'paid' ? 'success' : 'warning'; ?> payment-status">
-                                    <?php echo ucfirst($order['payment_status']); ?>
+                                    <?php 
+                                    if ($order['payment_status'] === 'paid') {
+                                        echo '<i class="fas fa-check-circle me-1"></i>' . __('paid');
+                                    } else {
+                                        echo '<i class="fas fa-clock me-1"></i>' . __('pending');
+                                    }
+                                    ?>
                                 </span>
                             </div>
                         </div>
