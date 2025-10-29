@@ -206,14 +206,14 @@ function displayMenuContent(products, categoryId = null) {
             html += `
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="${product.image || 'assets/images/placeholder.jpg'}" alt="${product.name}">
+                        <img src="${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}" alt="${product.name}">
                     </div>
                     <div class="product-content">
                         <h3 class="product-title">${product.name}</h3>
                         <p class="product-description">${product.description || ''}</p>
                         <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                         <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                            <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}')">
                                 <i class="fas fa-plus me-2"></i>Agregar al Carrito
                             </button>
                             <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
@@ -259,14 +259,14 @@ function displayMenuContent(products, categoryId = null) {
                 html += `
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="${product.image || 'assets/images/placeholder.jpg'}" alt="${product.name}">
+                            <img src="${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}" alt="${product.name}">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">${product.name}</h3>
                             <p class="product-description">${product.description || ''}</p>
                             <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                             <div class="product-actions">
-                                <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image || 'assets/images/placeholder.jpg'}')">
+                                <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, '${product.name}', ${parseFloat(product.price)}, '${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}')">
                                     <i class="fas fa-plus me-2"></i>Agregar al Carrito
                                 </button>
                                 <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
