@@ -42,33 +42,6 @@ require_once '../includes/init.php';
     <meta name="description" content="Panel administrativo de Horchata Mexican Food">
     <meta name="robots" content="noindex, nofollow">
 
-    <!-- OneSignal Web Push -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-        try {
-            await OneSignal.init({
-                appId: "0e5cac7c-c36d-4e66-954b-282606b8fa03",
-                safari_web_id: "web.onesignal.auto.4f832ce8-c167-4c63-9514-5546a8912edb",
-                notifyButton: { enable: true }
-            });
-            // Mostrar notificaciones también cuando la página esté en primer plano
-            try {
-                OneSignal.Notifications.addEventListener('foregroundWillDisplay', function(event){
-                    try { event.preventDefault(); } catch(e) {}
-                    try { event.notification.display(); } catch(e) { console.log('OS foreground display error', e); }
-                });
-            } catch(e) { console.log('OS foreground handler error', e); }
-            // Prompt suave si aún no está permitido
-            const perm = await OneSignal.Notifications.permission;
-            if (perm !== 'granted') {
-                // no force-prompt; el botón de OneSignal manejará el flujo
-                console.log('OneSignal ready. Permission:', perm);
-            }
-        } catch(e) { console.log('OneSignal init error', e); }
-    });
-    </script>
 </head>
 <body>
     <!-- Navigation -->

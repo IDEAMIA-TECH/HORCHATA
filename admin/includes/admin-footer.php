@@ -49,8 +49,6 @@
         // Preparar permisos de notificación/sonido
         initAlertPermissionsUI();
 
-        // Preparar botón de OneSignal (campana) para suscripción push
-        initOneSignalBell();
     });
     
     function loadPendingNotifications() {
@@ -224,55 +222,7 @@
         }
     }
 
-    // OneSignal bell (UI mínima, manual)
-    function initOneSignalBell() {
-        const bellId = 'oneSignalBellBtn';
-        if ($('#' + bellId).length === 0) {
-            const bell = $(
-                '<button id="'+bellId+'" class="btn btn-outline-dark shadow position-fixed no-print" \
-                         style="bottom: 120px; right: 20px; z-index: 99999; display:none; border-radius: 50%; width: 48px; height: 48px;">\
-                         <i class="fas fa-bell"></i>\
-                 </button>'
-            );
-            $('body').append(bell);
-            bell.on('click', function(){
-                if (window.OneSignalDeferred) {
-                    window.OneSignalDeferred.push(async function(OneSignal){
-                        try {
-                            const perm = await OneSignal.Notifications.permission;
-                            if (perm !== 'granted') {
-                                // v16: usar Slidedown o requestPermission
-                                if (OneSignal?.Slidedown?.promptPush) {
-                                    await OneSignal.Slidedown.promptPush();
-                                } else {
-                                    await OneSignal.Notifications.requestPermission();
-                                }
-                            }
-                        } catch(e) { console.log('OneSignal bell error', e); }
-                    });
-                } else {
-                    // Fallback: pedir permiso del navegador
-                    requestBrowserNotifications();
-                }
-            });
-        }
-        // Mostrar/ocultar según estado de permiso
-        if (window.OneSignalDeferred) {
-            window.OneSignalDeferred.push(async function(OneSignal){
-                try {
-                    const perm = await OneSignal.Notifications.permission;
-                    if (perm !== 'granted') {
-                        $('#'+bellId).fadeIn();
-                    } else {
-                        $('#'+bellId).hide();
-                    }
-                } catch(e) { $('#'+bellId).fadeIn(); }
-            });
-        } else {
-            // Si OneSignal aún no cargó, mostrar campana para guiar al usuario
-            $('#'+bellId).fadeIn();
-        }
-    }
+    // (OneSignal removido) – mantenemos solo sonido y notificación inline
 
     function updateNotificationBadges(data) {
         if (data.pending_orders !== undefined) {
