@@ -258,25 +258,26 @@
             icon: '../assets/images/LOGO.JPG',
             badge: '../assets/images/LOGO.JPG',
         };
+        // Intentar Notification API (si está permitido)
         if ("Notification" in window && Notification.permission === 'granted') {
             try {
                 const n = new Notification(title, options);
                 setTimeout(() => n.close && n.close(), 5000);
-            } catch(e) {}
-        } else {
-            // Fallback visual
-            try {
-                const notification = $(
-                    '<div class="alert alert-info alert-dismissible fade show position-fixed" \
-                         style="top: 20px; right: 20px; z-index: 99999; min-width: 280px;" role="alert">' +
-                        '<i class="fas fa-bell me-2"></i>' + title +
-                        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                    '</div>'
-                );
-                $('body').append(notification);
-                setTimeout(function(){ notification.alert('close'); }, 5000);
-            } catch(e) {}
+            } catch(e) { console.log('Notification error', e); }
         }
+        // Mostrar SIEMPRE un aviso visual dentro del panel (compatible con iOS/Android)
+        try {
+            const id = 'inlineOrderNotice_' + Date.now();
+            const notification = $(
+                '<div id="'+id+'" class="alert alert-info alert-dismissible fade show position-fixed" \
+                     style="top: 20px; right: 20px; z-index: 99999; min-width: 300px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);" role="alert">' +
+                    '<i class="fas fa-bell me-2"></i>' + title +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                '</div>'
+            );
+            $('body').append(notification);
+            setTimeout(function(){ notification.alert('close'); }, 8000);
+        } catch(e) { console.log('Inline notification error', e); }
     }
     </script>
 </body>
