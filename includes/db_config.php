@@ -5,10 +5,11 @@
  */
 
 // Configuración de la base de datos
-define('DB_HOST', '173.231.22.109');
-define('DB_NAME', 'ideamiadev_horchata');
-define('DB_USER', 'ideamiadev_horchata');
-define('DB_PASS', 'DfabGqB&gX3xM?ea');
+// PRODUCCIÓN: Actualizar con las credenciales correctas de producción
+define('DB_HOST', '173.231.22.109'); // Actualizar si el host de producción es diferente
+define('DB_NAME', 'horchatamexfood_horchata'); // Base de datos de producción
+define('DB_USER', 'horchatamexfood_horchata'); // Usuario de producción
+define('DB_PASS', 'DfabGqB&gX3xM?ea'); // Actualizar con la contraseña de producción
 define('DB_CHARSET', 'utf8mb4');
 
 // Configuración de conexión PDO

@@ -5,10 +5,11 @@
  */
 
 // Configuración de la base de datos
-$host = '173.231.22.109';
-$dbname = 'ideamiadev_horchata';
-$username = 'ideamiadev_horchata';
-$password = 'DfabGqB&gX3xM?ea';
+// PRODUCCIÓN: Actualizar con las credenciales correctas de producción
+$host = '173.231.22.109'; // Actualizar si el host de producción es diferente
+$dbname = 'horchatamexfood_horchata'; // Base de datos de producción
+$username = 'horchatamexfood_horchata'; // Usuario de producción
+$password = 'DfabGqB&gX3xM?ea'; // Actualizar con la contraseña de producción
 
 try {
     // Conexión usando PDO
