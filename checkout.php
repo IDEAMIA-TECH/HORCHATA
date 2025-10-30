@@ -20,30 +20,25 @@ if (empty($cart_items)) {
     exit;
 }
 
-// Usar totales calculados en la sesión o calcular si no existen
-$subtotal = $_SESSION['cart_subtotal'] ?? 0;
-$tax = $_SESSION['cart_tax'] ?? 0;
-$total = $_SESSION['cart_total'] ?? 0;
-
-// Leer porcentaje de impuesto desde settings para mostrarlo en la UI
+// Leer porcentaje de impuesto desde settings para cálculo y para mostrarlo en la UI
 $tax_rate_display_setting = getSetting('tax_rate', '8.25');
 $tax_rate_percent = is_numeric($tax_rate_display_setting) ? (float)$tax_rate_display_setting : 8.25;
+$tax_rate_setting = $tax_rate_display_setting;
+$tax_rate = is_numeric($tax_rate_setting) ? ((float)$tax_rate_setting) / 100 : 0.0825;
 
-// Si no hay totales en sesión, calcular
-if ($subtotal == 0) {
-    // Impuesto dinámico desde settings (porcentaje) con fallback a 8.25%
-    $tax_rate_setting = getSetting('tax_rate', '8.25');
-    $tax_rate = is_numeric($tax_rate_setting) ? ((float)$tax_rate_setting) / 100 : 0.0825;
-    $subtotal = 0;
-    
-    foreach ($cart_items as $item) {
-        $item_total = $item['price'] * $item['quantity'];
-        $subtotal += $item_total;
-    }
-    
-    $tax = $subtotal * $tax_rate;
-    $total = $subtotal + $tax;
+// Calcular SIEMPRE usando el impuesto de settings (ignorar posibles totales anteriores en sesión)
+$subtotal = 0;
+foreach ($cart_items as $item) {
+    $item_total = $item['price'] * $item['quantity'];
+    $subtotal += $item_total;
 }
+$tax = $subtotal * $tax_rate;
+$total = $subtotal + $tax;
+
+// Actualizar sesión para mantener consistencia
+$_SESSION['cart_subtotal'] = $subtotal;
+$_SESSION['cart_tax'] = $tax;
+$_SESSION['cart_total'] = $total;
 
 // Obtener configuraciones de PayPal
 $paypal_enabled = getSetting('paypal_enabled', '0') === '1';
