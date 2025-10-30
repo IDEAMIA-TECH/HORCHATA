@@ -53,6 +53,13 @@ require_once '../includes/init.php';
                 safari_web_id: "web.onesignal.auto.4f832ce8-c167-4c63-9514-5546a8912edb",
                 notifyButton: { enable: true }
             });
+            // Mostrar notificaciones también cuando la página esté en primer plano
+            try {
+                OneSignal.Notifications.addEventListener('foregroundWillDisplay', function(event){
+                    try { event.preventDefault(); } catch(e) {}
+                    try { event.notification.display(); } catch(e) { console.log('OS foreground display error', e); }
+                });
+            } catch(e) { console.log('OS foreground handler error', e); }
             // Prompt suave si aún no está permitido
             const perm = await OneSignal.Notifications.permission;
             if (perm !== 'granted') {
