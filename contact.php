@@ -81,52 +81,52 @@ include 'includes/header.php';
             <div class="col-lg-8">
                 <div class="contact-form-container">
                     <div class="text-center mb-5">
-                        <h2 class="form-title">Envíanos un Mensaje</h2>
+                        <h2 class="form-title"><?php echo __('contact_form_title'); ?></h2>
                         <p class="form-description">
-                            ¿Tienes alguna pregunta o sugerencia? Nos encantaría escucharte.
+                            <?php echo __('contact_form_desc'); ?>
                         </p>
                     </div>
                     
                     <form id="contactForm" class="contact-form" method="POST">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="contactName" class="form-label">Nombre Completo</label>
+                                <label for="contactName" class="form-label"><?php echo __('full_name'); ?></label>
                                 <input type="text" class="form-control" id="contactName" name="name" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="contactEmail" class="form-label">Correo Electrónico</label>
+                                <label for="contactEmail" class="form-label"><?php echo __('email_address'); ?></label>
                                 <input type="email" class="form-control" id="contactEmail" name="email" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="contactPhone" class="form-label">Teléfono (Opcional)</label>
+                                <label for="contactPhone" class="form-label"><?php echo __('phone_optional'); ?></label>
                                 <input type="tel" class="form-control" id="contactPhone" name="phone">
                             </div>
                             <div class="col-md-6">
-                                <label for="contactSubject" class="form-label">Asunto</label>
+                                <label for="contactSubject" class="form-label"><?php echo __('subject'); ?></label>
                                 <select class="form-select" id="contactSubject" name="subject" required>
-                                    <option value="">Selecciona un asunto</option>
-                                    <option value="general">Consulta General</option>
-                                    <option value="reservation">Reservación</option>
-                                    <option value="complaint">Queja o Sugerencia</option>
-                                    <option value="feedback">Comentarios</option>
-                                    <option value="other">Otro</option>
+                                    <option value=""><?php echo __('select_subject'); ?></option>
+                                    <option value="general"><?php echo __('general_inquiry'); ?></option>
+                                    <option value="reservation"><?php echo __('reservation'); ?></option>
+                                    <option value="complaint"><?php echo __('complaint'); ?></option>
+                                    <option value="feedback"><?php echo __('feedback'); ?></option>
+                                    <option value="other"><?php echo __('other'); ?></option>
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label for="contactMessage" class="form-label">Mensaje</label>
-                                <textarea class="form-control" id="contactMessage" name="message" rows="5" required placeholder="Escribe tu mensaje aquí..."></textarea>
+                                <label for="contactMessage" class="form-label"><?php echo __('message'); ?></label>
+                                <textarea class="form-control" id="contactMessage" name="message" rows="5" required placeholder="<?php echo __('message_placeholder'); ?>"></textarea>
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="contactNewsletter" name="newsletter">
                                     <label class="form-check-label" for="contactNewsletter">
-                                        Quiero recibir noticias y promociones por correo electrónico
+                                        <?php echo __('newsletter_opt_in'); ?>
                                     </label>
                                 </div>
                             </div>
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn btn-primary btn-lg px-5">
-                                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                                    <i class="fas fa-paper-plane me-2"></i><?php echo __('send_message'); ?>
                                 </button>
                             </div>
                         </div>
@@ -142,7 +142,7 @@ include 'includes/header.php';
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h3 class="text-center mb-4">Nuestra Ubicación</h3>
+                <h3 class="text-center mb-4"><?php echo __('our_location'); ?></h3>
                 <div class="map-container">
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3306.123456789!2d-118.3965!3d34.0123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2b8b8b8b8b8b8%3A0x1234567890abcdef!2s10814%20Jefferson%20Blvd%2C%20Culver%20City%2C%20CA%2090232!5e0!3m2!1sen!2sus!4v1234567890"
@@ -166,22 +166,20 @@ include 'includes/header.php';
             <div class="col-lg-6">
                 <div class="info-card">
                     <h4 class="info-card-title">
-                        <i class="fas fa-utensils me-2"></i>Servicio Pickup
+                        <i class="fas fa-utensils me-2"></i><?php echo __('pickup_service'); ?>
                     </h4>
                     <p class="info-card-text">
-                        Ofrecemos servicio de pickup para que puedas disfrutar de nuestros platillos 
-                        auténticos en la comodidad de tu hogar.
+                        <?php echo __('pickup_service_desc'); ?>
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="info-card">
                     <h4 class="info-card-title">
-                        <i class="fas fa-heart me-2"></i>Compromiso con la Calidad
+                        <i class="fas fa-heart me-2"></i><?php echo __('quality_commitment'); ?>
                     </h4>
                     <p class="info-card-text">
-                        Utilizamos solo ingredientes frescos y recetas tradicionales para brindarte 
-                        la mejor experiencia culinaria mexicana.
+                        <?php echo __('quality_commitment_desc'); ?>
                     </p>
                 </div>
             </div>
@@ -217,21 +215,21 @@ include 'includes/header.php';
         
         // Validar campos
         if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-            showNotification('Por favor completa todos los campos requeridos', 'error');
+            showNotification('<?php echo __('please_complete_fields'); ?>', 'error');
             return;
         }
         
         // Validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            showNotification('Por favor ingresa un correo electrónico válido', 'error');
+            showNotification('<?php echo __('invalid_email'); ?>', 'error');
             return;
         }
         
         // Deshabilitar botón mientras se envía
         const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Enviando...');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i><?php echo __('sending'); ?>...');
         
         // Enviar datos via AJAX
         $.ajax({
@@ -251,8 +249,8 @@ include 'includes/header.php';
                     $('.contact-form-container').html(
                         '<div class="alert alert-success text-center">' +
                         '<i class="fas fa-check-circle fa-3x mb-3"></i>' +
-                        '<h4>¡Mensaje Enviado!</h4>' +
-                        '<p>Gracias por contactarnos. Te responderemos pronto.</p>' +
+                        '<h4><?php echo __('message_sent_title'); ?></h4>' +
+                        '<p><?php echo __('message_sent_text'); ?></p>' +
                         '</div>'
                     );
                 } else {
@@ -262,7 +260,7 @@ include 'includes/header.php';
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
-                showNotification('Error de conexión. Por favor intenta nuevamente.', 'error');
+                showNotification('<?php echo __('connection_error'); ?>', 'error');
                 submitBtn.prop('disabled', false).html(originalText);
             }
         });
