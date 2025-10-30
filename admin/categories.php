@@ -51,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'message' => 'Invalid action']);
         }
     } catch (Exception $e) {
-        http_response_code(500);
+        // Responder siempre 200 para que el frontend pueda leer el JSON
+        http_response_code(200);
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
     exit;
