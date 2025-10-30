@@ -51,10 +51,7 @@ require_once '../includes/init.php';
             await OneSignal.init({
                 appId: "0e5cac7c-c36d-4e66-954b-282606b8fa03",
                 safari_web_id: "web.onesignal.auto.4f832ce8-c167-4c63-9514-5546a8912edb",
-                notifyButton: { enable: true },
-                serviceWorkerParam: { scope: '/' },
-                serviceWorkerPath: '/OneSignalSDKWorker.js',
-                serviceWorkerUpdaterPath: '/OneSignalSDKUpdaterWorker.js'
+                notifyButton: { enable: true }
             });
             // Prompt suave si aún no está permitido
             const perm = await OneSignal.Notifications.permission;
