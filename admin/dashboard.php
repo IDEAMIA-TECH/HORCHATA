@@ -70,7 +70,7 @@ $top_products = fetchAll("
 
 // Configurar página
 $page_title = __('dashboard');
-$page_scripts = ['assets/js/dashboard.js'];
+$page_scripts = [];
 
 // Incluir header del admin
 include 'includes/admin-header.php';
