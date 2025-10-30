@@ -254,7 +254,8 @@ include 'includes/header.php';
                         <i class="fas fa-phone fa-2x text-primary"></i>
                     </div>
                     <h5><?php echo __('phone'); ?></h5>
-                    <p class="text-muted"><?php echo __('phone_number'); ?></p>
+                    <?php $phone = getSetting('restaurant_phone', '+1 (310) 204-2659'); $tel = 'tel:' . preg_replace('/[^\d+]/', '', $phone); ?>
+                    <p class="text-muted"><a href="<?php echo htmlspecialchars($tel); ?>" class="text-decoration-none"><?php echo htmlspecialchars($phone); ?></a></p>
                 </div>
             </div>
             <div class="col-lg-4 mb-4">
