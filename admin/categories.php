@@ -556,8 +556,6 @@ function createCategory() {
     $name_es = trim($_POST['name_es'] ?? '');
     $description_en = trim($_POST['description_en'] ?? '');
     $description_es = trim($_POST['description_es'] ?? '');
-    $icon = trim($_POST['icon'] ?? '');
-    $color = trim($_POST['color'] ?? '#007bff');
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if (empty($name_en) || empty($name_es)) {
@@ -581,11 +579,11 @@ function createCategory() {
         }
     }
     
-    $sql = "INSERT INTO categories (name_en, name_es, description_en, description_es, icon, color, image, is_active, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    $sql = "INSERT INTO categories (name_en, name_es, description_en, description_es, image, is_active, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())";
     
     $stmt = $pdo->prepare($sql);
-    if ($stmt->execute([$name_en, $name_es, $description_en, $description_es, $icon, $color, $image_path, $is_active])) {
+    if ($stmt->execute([$name_en, $name_es, $description_en, $description_es, $image_path, $is_active])) {
         echo json_encode([
             'success' => true,
             'message' => 'Category created successfully'
@@ -603,8 +601,6 @@ function updateCategory() {
     $name_es = trim($_POST['name_es'] ?? '');
     $description_en = trim($_POST['description_en'] ?? '');
     $description_es = trim($_POST['description_es'] ?? '');
-    $icon = trim($_POST['icon'] ?? '');
-    $color = trim($_POST['color'] ?? '#007bff');
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if ($category_id <= 0) {
@@ -633,8 +629,8 @@ function updateCategory() {
     }
     
     $sql = "UPDATE categories SET name_en = ?, name_es = ?, description_en = ?, description_es = ?, 
-            icon = ?, color = ?, is_active = ?, updated_at = NOW()";
-    $params = [$name_en, $name_es, $description_en, $description_es, $icon, $color, $is_active];
+            is_active = ?, updated_at = NOW()";
+    $params = [$name_en, $name_es, $description_en, $description_es, $is_active];
     
     if (!empty($image_path)) {
         $sql .= ", image = ?";
