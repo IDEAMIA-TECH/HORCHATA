@@ -736,7 +736,7 @@ function addNewExtra() {
     if (!nameEs) return;
     
     const price = prompt('Precio del extra:');
-    if (!price || isNaN(price)) {
+    if (price === null || price === '' || isNaN(price)) {
         showNotification('Precio inválido', 'error');
         return;
     }

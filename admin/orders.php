@@ -54,7 +54,7 @@ switch ($action) {
 
 // Configurar página
 $page_title = $action === 'view' ? __('order_details') : __('order_management');
-$page_scripts = ['assets/js/orders.js'];
+$page_scripts = ['../assets/js/orders.js'];
 
 // Incluir header del admin
 include 'includes/admin-header.php';
