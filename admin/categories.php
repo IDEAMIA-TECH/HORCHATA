@@ -28,20 +28,33 @@ $category_id = $_GET['id'] ?? 0;
 
 // Procesar acciones
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    switch ($_POST['action']) {
-        case 'create':
-            createCategory();
-            break;
-        case 'update':
-            updateCategory();
-            break;
-        case 'delete':
-            deleteCategory();
-            break;
-        case 'toggle_status':
-            toggleCategoryStatus();
-            break;
+    header('Content-Type: application/json');
+    try {
+        $postAction = $_POST['action'] ?? '';
+        switch ($postAction) {
+            case 'create':
+                createCategory();
+                break;
+            case 'update':
+                updateCategory();
+                break;
+            case 'delete':
+                deleteCategory();
+                break;
+            case 'toggle_status':
+                toggleCategoryStatus();
+                break;
+            case 'auto_save_category':
+                echo json_encode(['success' => true, 'message' => 'Auto-saved']);
+                break;
+            default:
+                echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
+    exit;
 }
 
 // Obtener datos según la acción
@@ -357,7 +370,7 @@ function autoSaveCategory() {
     formData.append('action', 'auto_save_category');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'categories.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -376,6 +389,11 @@ function autoSaveCategory() {
 
 function saveCategory() {
     const formData = new FormData($('#categoryForm')[0]);
+    // Normalizar acción: si viene 'edit' debe enviarse como 'update'
+    const currentAction = formData.get('action');
+    if (currentAction === 'edit') {
+        formData.set('action', 'update');
+    }
     
     // Mostrar loading
     const submitBtn = $('#categoryForm button[type="submit"]');
@@ -383,7 +401,7 @@ function saveCategory() {
     submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i><?php echo __('saving'); ?>...');
     
     $.ajax({
-        url: '../ajax/admin.ajax.php',
+        url: 'categories.php',
         method: 'POST',
         data: formData,
         processData: false,
@@ -413,10 +431,10 @@ function toggleCategoryStatus(categoryId, newStatus) {
     
     if (confirm(`<?php echo __('are_you_sure'); ?> ${action} <?php echo __('this_category'); ?>?`)) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'categories.php',
             method: 'POST',
             data: {
-                action: 'toggle_category_status',
+                action: 'toggle_status',
                 category_id: categoryId,
                 status: newStatus
             },
@@ -439,10 +457,10 @@ function toggleCategoryStatus(categoryId, newStatus) {
 function deleteCategory(categoryId) {
     if (confirm('<?php echo __('are_you_sure'); ?> <?php echo __('delete'); ?> <?php echo __('this_category'); ?>? <?php echo __('this_action_cannot_be_undone'); ?>.')) {
         $.ajax({
-            url: '../ajax/admin.ajax.php',
+            url: 'categories.php',
             method: 'POST',
             data: {
-                action: 'delete_category',
+                action: 'delete',
                 category_id: categoryId
             },
             dataType: 'json',
