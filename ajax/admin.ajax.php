@@ -27,6 +27,26 @@ function normalizeEmailImageUrl(?string $path): string {
     return $siteUrl . '/' . ltrim($path, '/');
 }
 
+function imageToDataUri(?string $path): string {
+    if (!$path) return '';
+    if (preg_match('~^https?://~i', $path)) { return $path; }
+    if (str_starts_with($path, '../')) { $path = substr($path, 3); }
+    if (str_starts_with($path, './')) { $path = substr($path, 2); }
+    $fs = realpath(__DIR__ . '/../' . $path);
+    if (!$fs || !file_exists($fs)) {
+        $fsAlt = realpath(__DIR__ . '/../../' . $path);
+        if ($fsAlt && file_exists($fsAlt)) { $fs = $fsAlt; }
+    }
+    if ($fs && file_exists($fs)) {
+        $mime = function_exists('mime_content_type') ? mime_content_type($fs) : 'image/jpeg';
+        $data = @file_get_contents($fs);
+        if ($data !== false) {
+            return 'data:' . $mime . ';base64,' . base64_encode($data);
+        }
+    }
+    return normalizeEmailImageUrl($path);
+}
+
 // Verificar autenticación
 session_start();
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
@@ -658,13 +678,13 @@ function sendAdminOrderStatusEmail(int $orderId, string $newStatus, string $paym
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = normalizeEmailImageUrl('assets/images/LOGO.JPG');
+    $logoUrl = imageToDataUri('assets/images/LOGO.JPG');
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
     if (!$order) { throw new Exception('Order not found'); }
     $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];
     $itemsHtml = '';
     foreach ($items as $it) {
-        $img = normalizeEmailImageUrl($it['image'] ?? '');
+        $img = imageToDataUri($it['image'] ?? '');
         $itemsHtml .= '<tr>' .
             '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['product_name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .

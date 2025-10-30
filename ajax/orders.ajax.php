@@ -37,6 +37,33 @@ function normalizeImageUrl(?string $path): string {
     return $siteUrl . '/' . ltrim($path, '/');
 }
 
+function imagePathToDataUri(?string $path): string {
+    if (!$path) return '';
+    // Normalize to relative web path first
+    if (str_starts_with($path, 'http')) {
+        // Try downloading remote (avoid for performance) -> fallback to URL
+        return $path;
+    }
+    if (str_starts_with($path, '../')) { $path = substr($path, 3); }
+    if (str_starts_with($path, './')) { $path = substr($path, 2); }
+    // Build filesystem path from project root
+    $fs = realpath(__DIR__ . '/../' . $path);
+    if (!$fs || !file_exists($fs)) {
+        // Try from two levels up (in case of different working dir)
+        $fsAlt = realpath(__DIR__ . '/../../' . $path);
+        if ($fsAlt && file_exists($fsAlt)) { $fs = $fsAlt; }
+    }
+    if ($fs && file_exists($fs)) {
+        $mime = function_exists('mime_content_type') ? mime_content_type($fs) : 'image/jpeg';
+        $data = @file_get_contents($fs);
+        if ($data !== false) {
+            return 'data:' . $mime . ';base64,' . base64_encode($data);
+        }
+    }
+    // Fallback to absolute URL
+    return normalizeImageUrl($path);
+}
+
 
 try {
     $action = $_POST['action'] ?? '';
@@ -346,7 +373,7 @@ function sendOrderConfirmationEmail($email, $order_number, $order_data) {
         }
         $img = normalizeImageUrl($img);
         $itemsHtml .= '<tr>' .
-            '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
+            '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars(imagePathToDataUri($img)) . '" alt="' . htmlspecialchars($it['name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .
             '<td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">$' . number_format($it['price'] * $it['quantity'], 2) . '</td>' .
         '</tr>';
@@ -396,7 +423,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = normalizeImageUrl('assets/images/LOGO.JPG');
+    $logoUrl = imagePathToDataUri('assets/images/LOGO.JPG');
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
@@ -407,7 +434,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     foreach ($items as $it) {
         $img = normalizeImageUrl($it['image'] ?? '');
         $itemsHtml .= '<tr>' .
-            '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
+            '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars(imagePathToDataUri($img)) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['product_name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .
             '<td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">$' . number_format($it['subtotal'], 2) . '</td>' .
         '</tr>';
