@@ -18,6 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Incluir conexión a BD
 require_once '../includes/db_connect.php';
 require_once '../includes/init.php';
+function normalizeEmailImageUrl(?string $path): string {
+    if (!$path) return '';
+    $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+    if (str_starts_with($path, '../')) { $path = substr($path, 3); }
+    if (str_starts_with($path, './')) { $path = substr($path, 2); }
+    if (preg_match('~^https?://~i', $path)) { return $path; }
+    return $siteUrl . '/' . ltrim($path, '/');
+}
 
 // Verificar autenticación
 session_start();
@@ -650,15 +658,13 @@ function sendAdminOrderStatusEmail(int $orderId, string $newStatus, string $paym
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = $siteUrl . '/assets/images/LOGO.JPG';
+    $logoUrl = normalizeEmailImageUrl('assets/images/LOGO.JPG');
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
     if (!$order) { throw new Exception('Order not found'); }
     $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];
     $itemsHtml = '';
     foreach ($items as $it) {
-        $img = $it['image'] ?? '';
-        if ($img && str_starts_with($img, '../')) { $img = substr($img, 3); }
-        if ($img && !str_starts_with($img, 'http')) { $img = rtrim($siteUrl, '/') . '/' . ltrim($img, '/'); }
+        $img = normalizeEmailImageUrl($it['image'] ?? '');
         $itemsHtml .= '<tr>' .
             '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['product_name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .

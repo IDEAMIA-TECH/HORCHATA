@@ -18,6 +18,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Incluir conexión a BD
 require_once '../includes/db_connect.php';
 require_once '../includes/init.php';
+function normalizeImageUrl(?string $path): string {
+    if (!$path) return '';
+    $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+    // Remove leading ../
+    if (str_starts_with($path, '../')) {
+        $path = substr($path, 3);
+    }
+    // Remove leading ./
+    if (str_starts_with($path, './')) {
+        $path = substr($path, 2);
+    }
+    // If already absolute, return as is
+    if (preg_match('~^https?://~i', $path)) {
+        return $path;
+    }
+    // Ensure no duplicate slashes
+    return $siteUrl . '/' . ltrim($path, '/');
+}
+
 
 try {
     $action = $_POST['action'] ?? '';
@@ -319,9 +338,13 @@ function sendOrderConfirmationEmail($email, $order_number, $order_data) {
     // Construir HTML elegante con productos
     $itemsHtml = '';
     foreach ($order_data['items'] as $it) {
+        // Prefer image from payload; if absent, fetch from DB
         $img = isset($it['image']) && $it['image'] ? $it['image'] : '';
-        if ($img && str_starts_with($img, '../')) { $img = substr($img, 3); }
-        if ($img && !str_starts_with($img, 'http')) { $img = rtrim($siteUrl, '/') . '/' . ltrim($img, '/'); }
+        if (!$img && !empty($it['id'])) {
+            $row = fetchOne("SELECT image FROM products WHERE id = ?", [(int)$it['id']]);
+            $img = $row['image'] ?? '';
+        }
+        $img = normalizeImageUrl($img);
         $itemsHtml .= '<tr>' .
             '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .
@@ -373,7 +396,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = $siteUrl . '/assets/images/LOGO.JPG';
+    $logoUrl = normalizeImageUrl('assets/images/LOGO.JPG');
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
@@ -382,9 +405,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     
     $itemsHtml = '';
     foreach ($items as $it) {
-        $img = $it['image'] ?? '';
-        if ($img && str_starts_with($img, '../')) { $img = substr($img, 3); }
-        if ($img && !str_starts_with($img, 'http')) { $img = rtrim($siteUrl, '/') . '/' . ltrim($img, '/'); }
+        $img = normalizeImageUrl($it['image'] ?? '');
         $itemsHtml .= '<tr>' .
             '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
             '<strong>' . htmlspecialchars($it['product_name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .
