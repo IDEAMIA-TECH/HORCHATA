@@ -25,6 +25,10 @@ $subtotal = $_SESSION['cart_subtotal'] ?? 0;
 $tax = $_SESSION['cart_tax'] ?? 0;
 $total = $_SESSION['cart_total'] ?? 0;
 
+// Leer porcentaje de impuesto desde settings para mostrarlo en la UI
+$tax_rate_display_setting = getSetting('tax_rate', '8.25');
+$tax_rate_percent = is_numeric($tax_rate_display_setting) ? (float)$tax_rate_display_setting : 8.25;
+
 // Si no hay totales en sesión, calcular
 if ($subtotal == 0) {
     // Impuesto dinámico desde settings (porcentaje) con fallback a 8.25%
@@ -276,7 +280,7 @@ include 'includes/header.php';
                                     <span>$<?php echo number_format($subtotal, 2); ?></span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span><?php echo __('tax_percentage'); ?>:</span>
+                                    <span><?php echo __('tax'); ?> (<?php echo number_format($tax_rate_percent, 2); ?>%):</span>
                                     <span>$<?php echo number_format($tax, 2); ?></span>
                                 </div>
                                 <hr>
