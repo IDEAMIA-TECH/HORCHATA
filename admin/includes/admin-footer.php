@@ -46,6 +46,10 @@
         
         // Auto-refresh cada 30 segundos
         setInterval(loadPendingNotifications, 30000);
+        // Solicitar permiso de notificaciones si no se tiene
+        if ("Notification" in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
     });
     
     function loadPendingNotifications() {
@@ -62,15 +66,63 @@
         });
     }
     
+    // Audio de alerta (beep corto, inline base64)
+    const alertAudio = (function(){
+        const audio = new Audio('data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA//////////////////////////////////////////////8AAAADTEFNRTMuMTAwA8MAAAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////8AAAA=');
+        audio.preload = 'auto';
+        audio.volume = 0.8;
+        return audio;
+    })();
+
+    // Guardar último conteo para detectar nuevos pedidos
+    window.__lastPendingOrders = typeof window.__lastPendingOrders === 'number' ? window.__lastPendingOrders : null;
+
     function updateNotificationBadges(data) {
         if (data.pending_orders !== undefined) {
-            $('#pendingOrdersBadge').text(data.pending_orders);
+            const prev = window.__lastPendingOrders;
+            const curr = parseInt(data.pending_orders, 10) || 0;
+            $('#pendingOrdersBadge').text(curr);
+            // Si hay incremento, reproducir sonido y notificación
+            if (prev !== null && curr > prev) {
+                try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
+                showNewOrderNotification(curr - prev);
+            }
+            window.__lastPendingOrders = curr;
         }
         if (data.pending_reviews !== undefined) {
             $('#pendingReviewsBadge').text(data.pending_reviews);
         }
         if (data.new_messages !== undefined) {
             $('#newMessagesBadge').text(data.new_messages);
+        }
+    }
+
+    function showNewOrderNotification(increment) {
+        const count = increment || 1;
+        const title = count > 1 ? `${count} nuevos pedidos` : 'Nuevo pedido recibido';
+        const options = {
+            body: 'Abre el panel para revisar y confirmar el pedido.',
+            icon: '../assets/images/LOGO.JPG',
+            badge: '../assets/images/LOGO.JPG',
+        };
+        if ("Notification" in window && Notification.permission === 'granted') {
+            try {
+                const n = new Notification(title, options);
+                setTimeout(() => n.close && n.close(), 5000);
+            } catch(e) {}
+        } else {
+            // Fallback visual
+            try {
+                const notification = $(
+                    '<div class="alert alert-info alert-dismissible fade show position-fixed" \
+                         style="top: 20px; right: 20px; z-index: 99999; min-width: 280px;" role="alert">' +
+                        '<i class="fas fa-bell me-2"></i>' + title +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                    '</div>'
+                );
+                $('body').append(notification);
+                setTimeout(function(){ notification.alert('close'); }, 5000);
+            } catch(e) {}
         }
     }
     </script>

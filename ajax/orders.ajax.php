@@ -471,8 +471,8 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    // Para máxima compatibilidad de clientes, usar URL absoluta para el logo
-    $logoUrl = resolveLogoUrl();
+    // Usar data URI para asegurar visualización del logo en clientes que bloquean imágenes externas
+    $logoUrl = resolveLogoDataUri();
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
