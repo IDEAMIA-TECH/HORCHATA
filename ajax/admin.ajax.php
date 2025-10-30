@@ -47,6 +47,31 @@ function imageToDataUri(?string $path): string {
     return normalizeEmailImageUrl($path);
 }
 
+function resolveLogoDataUriAdmin(): string {
+    $candidates = [
+        'assets/images/LOGO.JPG',
+        'assets/images/LOGO.jpg',
+        'assets/images/logo.jpg',
+        'assets/images/logo.png',
+        'assets/images/LOGO.png',
+        'assets/images/LOGO.webp',
+    ];
+    foreach ($candidates as $rel) {
+        $fs = realpath(__DIR__ . '/../' . $rel);
+        if (!$fs || !file_exists($fs)) {
+            $fs = realpath(__DIR__ . '/../../' . $rel);
+        }
+        if ($fs && file_exists($fs)) {
+            $mime = function_exists('mime_content_type') ? mime_content_type($fs) : 'image/jpeg';
+            $data = @file_get_contents($fs);
+            if ($data !== false) {
+                return 'data:' . $mime . ';base64,' . base64_encode($data);
+            }
+        }
+    }
+    return normalizeEmailImageUrl('assets/images/LOGO.JPG');
+}
+
 // Verificar autenticación
 session_start();
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
@@ -678,7 +703,7 @@ function sendAdminOrderStatusEmail(int $orderId, string $newStatus, string $paym
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = imageToDataUri('assets/images/LOGO.JPG');
+    $logoUrl = resolveLogoDataUriAdmin();
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
     if (!$order) { throw new Exception('Order not found'); }
     $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];

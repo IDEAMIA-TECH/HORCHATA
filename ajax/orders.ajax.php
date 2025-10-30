@@ -64,6 +64,33 @@ function imagePathToDataUri(?string $path): string {
     return normalizeImageUrl($path);
 }
 
+function resolveLogoDataUri(): string {
+    $candidates = [
+        'assets/images/LOGO.JPG',
+        'assets/images/LOGO.jpg',
+        'assets/images/logo.jpg',
+        'assets/images/logo.png',
+        'assets/images/LOGO.png',
+        'assets/images/LOGO.webp',
+        'assets/images/LOGO.webp',
+    ];
+    foreach ($candidates as $rel) {
+        $fs = realpath(__DIR__ . '/../' . $rel);
+        if (!$fs || !file_exists($fs)) {
+            $fs = realpath(__DIR__ . '/../../' . $rel);
+        }
+        if ($fs && file_exists($fs)) {
+            $mime = function_exists('mime_content_type') ? mime_content_type($fs) : 'image/jpeg';
+            $data = @file_get_contents($fs);
+            if ($data !== false) {
+                return 'data:' . $mime . ';base64,' . base64_encode($data);
+            }
+        }
+    }
+    // Fallback to absolute URL
+    return normalizeImageUrl('assets/images/LOGO.JPG');
+}
+
 
 try {
     $action = $_POST['action'] ?? '';
@@ -423,7 +450,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = imagePathToDataUri('assets/images/LOGO.JPG');
+    $logoUrl = resolveLogoDataUri();
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
