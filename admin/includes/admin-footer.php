@@ -44,8 +44,8 @@
         // Cargar notificaciones pendientes
         loadPendingNotifications();
         
-        // Auto-refresh cada 30 segundos
-        setInterval(loadPendingNotifications, 30000);
+        // Auto-refresh cada 10 segundos para detectar nuevos pedidos con menor latencia
+        setInterval(loadPendingNotifications, 10000);
         // Preparar permisos de notificación/sonido
         initAlertPermissionsUI();
     });
@@ -73,7 +73,9 @@
     })();
 
     // Guardar último conteo para detectar nuevos pedidos
-    window.__lastPendingOrders = typeof window.__lastPendingOrders === 'number' ? window.__lastPendingOrders : null;
+    // Cargar último conteo desde localStorage para que persista entre recargas
+    const lastStored = localStorage.getItem('admin_last_pending_orders');
+    window.__lastPendingOrders = lastStored !== null ? parseInt(lastStored, 10) : null;
     window.__alertsEnabled = false;
 
     function initAlertPermissionsUI() {
@@ -112,6 +114,27 @@
                 $('#'+btnId).fadeIn();
             }
         }, 1000);
+
+        // Botón de prueba para verificar audio/notifications
+        const testId = 'testAlertsBtn';
+        if ($('#' + testId).length === 0) {
+            const testBtn = $(
+                '<button id="'+testId+'" class="btn btn-outline-info shadow position-fixed no-print" \
+                         style="bottom: 70px; right: 20px; z-index: 99999; display:none;">\
+                         <i class="fas fa-volume-up me-2"></i>Probar alerta\
+                 </button>'
+            );
+            $('body').append(testBtn);
+            testBtn.on('click', function(){
+                // Prueba sonido y notificación
+                if (window.__alertsEnabled) {
+                    try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
+                }
+                showNewOrderNotification(1);
+            });
+            // Mostrar botón de prueba siempre para facilitar verificación
+            testBtn.fadeIn();
+        }
     }
 
     function enableAlertsGesture() {
@@ -163,6 +186,7 @@
                 showNewOrderNotification(curr - prev);
             }
             window.__lastPendingOrders = curr;
+            try { localStorage.setItem('admin_last_pending_orders', String(curr)); } catch(e) {}
         }
         if (data.pending_reviews !== undefined) {
             $('#pendingReviewsBadge').text(data.pending_reviews);
