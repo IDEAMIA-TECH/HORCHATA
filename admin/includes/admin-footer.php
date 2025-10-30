@@ -72,6 +72,33 @@
         return audio;
     })();
 
+    // WebAudio fallback (más confiable para disparar desde gestos del usuario)
+    let audioCtx = null;
+    function playBeep(durationMs = 200, freq = 880) {
+        try {
+            if (!audioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                audioCtx = Ctx ? new Ctx() : null;
+            }
+            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+            if (!audioCtx) {
+                // Fallback a elemento <audio>
+                alertAudio.currentTime = 0; alertAudio.play();
+                return;
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs/1000);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + durationMs/1000 + 0.02);
+        } catch(e) {}
+    }
+
     // Guardar último conteo para detectar nuevos pedidos
     // Cargar último conteo desde localStorage para que persista entre recargas
     const lastStored = localStorage.getItem('admin_last_pending_orders');
@@ -92,6 +119,8 @@
             btn.on('click', function(){
                 enableAlertsGesture();
                 requestBrowserNotifications();
+                // Sonido de confirmación inmediato
+                playBeep(150, 1000);
                 $(this).fadeOut();
             });
         }
@@ -126,10 +155,13 @@
             );
             $('body').append(testBtn);
             testBtn.on('click', function(){
-                // Prueba sonido y notificación
-                if (window.__alertsEnabled) {
-                    try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
-                }
+                // Forzar habilitación y permisos
+                enableAlertsGesture();
+                requestBrowserNotifications();
+                // Prueba sonido (WebAudio)
+                window.__alertsEnabled = true;
+                playBeep(200, 1200);
+                // Notificación
                 showNewOrderNotification(1);
             });
             // Mostrar botón de prueba siempre para facilitar verificación
@@ -178,6 +210,8 @@
             if (prev !== null && curr > prev) {
                 // Reproducir solo si alertsEnabled
                 if (window.__alertsEnabled) {
+                    // Intentar WebAudio primero (más robusto), luego elemento <audio>
+                    playBeep(160, 1000);
                     try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
                 } else {
                     // Vibración como fallback en móviles
