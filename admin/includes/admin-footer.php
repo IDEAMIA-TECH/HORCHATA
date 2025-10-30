@@ -68,13 +68,13 @@
     const alertAudio = (function(){
         const audio = new Audio('data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA//////////////////////////////////////////////8AAAADTEFNRTMuMTAwA8MAAAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////8AAAA=');
         audio.preload = 'auto';
-        audio.volume = 0.8;
+        audio.volume = 1.0;
         return audio;
     })();
 
     // WebAudio fallback (más confiable para disparar desde gestos del usuario)
     let audioCtx = null;
-    function playBeep(durationMs = 200, freq = 880) {
+    function playBeep(durationMs = 500, freq = 1000, gainLevel = 0.7) {
         try {
             if (!audioCtx) {
                 const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -88,15 +88,35 @@
             }
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sine';
+            osc.type = 'square';
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(gainLevel, audioCtx.currentTime + 0.02);
             gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs/1000);
             osc.connect(gain).connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + durationMs/1000 + 0.02);
         } catch(e) {}
+    }
+
+    function playAlarm(totalMs = 5000) {
+        // Patrón de alarma: ráfagas ascendentes y descendentes en bucle
+        try {
+            if (!audioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                audioCtx = Ctx ? new Ctx() : null;
+            }
+            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+        } catch(e) {}
+        const start = Date.now();
+        (function loop() {
+            const elapsed = Date.now() - start;
+            if (elapsed >= totalMs) return;
+            // sweep up
+            playBeep(250, 1200, 0.9);
+            setTimeout(function(){ playBeep(250, 900, 0.9); }, 260);
+            setTimeout(loop, 600);
+        })();
     }
 
     // Guardar último conteo para detectar nuevos pedidos
@@ -120,7 +140,7 @@
                 enableAlertsGesture();
                 requestBrowserNotifications();
                 // Sonido de confirmación inmediato
-                playBeep(150, 1000);
+                playBeep(300, 1200, 0.9);
                 $(this).fadeOut();
             });
         }
@@ -160,7 +180,7 @@
                 requestBrowserNotifications();
                 // Prueba sonido (WebAudio)
                 window.__alertsEnabled = true;
-                playBeep(200, 1200);
+                playAlarm(4000);
                 // Notificación
                 showNewOrderNotification(1);
             });
@@ -210,8 +230,8 @@
             if (prev !== null && curr > prev) {
                 // Reproducir solo si alertsEnabled
                 if (window.__alertsEnabled) {
-                    // Intentar WebAudio primero (más robusto), luego elemento <audio>
-                    playBeep(160, 1000);
+                    // Patrón de alarma más largo e intenso
+                    playAlarm(6000);
                     try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
                 } else {
                     // Vibración como fallback en móviles
