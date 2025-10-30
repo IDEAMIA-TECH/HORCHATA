@@ -91,6 +91,27 @@ function resolveLogoDataUri(): string {
     return normalizeImageUrl('assets/images/LOGO.JPG');
 }
 
+function resolveLogoUrl(): string {
+    $candidates = [
+        'assets/images/LOGO.JPG',
+        'assets/images/LOGO.jpg',
+        'assets/images/logo.jpg',
+        'assets/images/logo.png',
+        'assets/images/LOGO.png',
+        'assets/images/LOGO.webp',
+    ];
+    foreach ($candidates as $rel) {
+        $fs = realpath(__DIR__ . '/../' . $rel);
+        if (!$fs || !file_exists($fs)) {
+            $fs = realpath(__DIR__ . '/../../' . $rel);
+        }
+        if ($fs && file_exists($fs)) {
+            return normalizeImageUrl($rel);
+        }
+    }
+    return normalizeImageUrl('assets/images/LOGO.JPG');
+}
+
 
 try {
     $action = $_POST['action'] ?? '';
@@ -450,7 +471,8 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     $siteUrl = defined('SITE_URL') ? SITE_URL : '';
     $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
-    $logoUrl = resolveLogoDataUri();
+    // Para máxima compatibilidad de clientes, usar URL absoluta para el logo
+    $logoUrl = resolveLogoUrl();
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);

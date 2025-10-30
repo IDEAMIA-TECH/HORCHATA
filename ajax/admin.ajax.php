@@ -661,27 +661,9 @@ function updateOrderStatus() {
         throw new Exception('Pedido no encontrado');
     }
     
-    // Determinar si también actualizar el estado de pago
-    $payment_status = $order['payment_status'];
-    // Solo marcar pagado automáticamente si NO es pickup (es decir, fue online)
-    $isPickup = strtolower(trim($order['payment_method'])) === 'pickup';
-    if ($status === 'confirmed' && $payment_status === 'pending' && !$isPickup) {
-        $payment_status = 'paid';
-    } elseif ($status === 'cancelled' && $payment_status === 'paid') {
-        $payment_status = 'refunded';
-    }
-    
-    // Actualizar estado del pedido y estado de pago si es necesario
-    $sql = "UPDATE orders SET status = ?, updated_at = NOW()";
-    $params = [$status];
-    
-    if ($payment_status !== $order['payment_status']) {
-        $sql .= ", payment_status = ?";
-        $params[] = $payment_status;
-    }
-    
-    $sql .= " WHERE id = ?";
-    $params[] = $order_id;
+    // NO modificar estado de pago aquí; solo el admin lo marca como pagado con el botón
+    $sql = "UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?";
+    $params = [$status, $order_id];
     
     if (executeQuery($sql, $params)) {
         // Enviar correo al cliente
@@ -694,7 +676,7 @@ function updateOrderStatus() {
             'success' => true,
             'message' => 'Estado del pedido actualizado exitosamente',
             'new_status' => $status,
-            'payment_status' => $payment_status
+            'payment_status' => $order['payment_status']
         ]);
     } else {
         throw new Exception('Error al actualizar el estado del pedido');
@@ -1151,7 +1133,7 @@ function createExtra() {
         $price = floatval($_POST['price'] ?? 0);
         $category_id = intval($_POST['category_id'] ?? 0);
         
-        if (empty($name_en) || empty($name_es) || $price <= 0) {
+        if (empty($name_en) || empty($name_es) || $price < 0) {
             throw new Exception('Datos inválidos');
         }
         

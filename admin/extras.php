@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $price = floatval($_POST['price']);
                 $category_id = intval($_POST['category_id']);
                 
-                if (empty($name_en) || empty($name_es) || $price <= 0) {
+                if (empty($name_en) || empty($name_es) || $price < 0) {
                     throw new Exception(__('invalid_data'));
                 }
                 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $price = floatval($_POST['price']);
                 $category_id = intval($_POST['category_id']);
                 
-                if (empty($name_en) || empty($name_es) || $price <= 0) {
+                if (empty($name_en) || empty($name_es) || $price < 0) {
                     throw new Exception(__('invalid_data'));
                 }
                 
