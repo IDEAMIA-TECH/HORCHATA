@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Incluir conexión a BD
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Verificar autenticación
 session_start();
@@ -628,6 +629,12 @@ function updateOrderStatus() {
     $params[] = $order_id;
     
     if (executeQuery($sql, $params)) {
+        // Enviar correo al cliente
+        try {
+            sendAdminOrderStatusEmail($order_id, $status, $payment_status);
+        } catch (Exception $e) {
+            error_log('sendAdminOrderStatusEmail error: ' . $e->getMessage());
+        }
         echo json_encode([
             'success' => true,
             'message' => 'Estado del pedido actualizado exitosamente',
@@ -637,6 +644,49 @@ function updateOrderStatus() {
     } else {
         throw new Exception('Error al actualizar el estado del pedido');
     }
+}
+
+function sendAdminOrderStatusEmail(int $orderId, string $newStatus, string $paymentStatus) {
+    $siteUrl = defined('SITE_URL') ? SITE_URL : '';
+    $fromEmail = getSetting('email_from', 'orders@horchatamexicanfood.com');
+    $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
+    $logoUrl = $siteUrl . '/assets/images/LOGO.JPG';
+    $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
+    if (!$order) { throw new Exception('Order not found'); }
+    $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];
+    $itemsHtml = '';
+    foreach ($items as $it) {
+        $img = $it['image'] ?? '';
+        if ($img && str_starts_with($img, '../')) { $img = substr($img, 3); }
+        if ($img && !str_starts_with($img, 'http')) { $img = rtrim($siteUrl, '/') . '/' . ltrim($img, '/'); }
+        $itemsHtml .= '<tr>' .
+            '<td style="padding:10px; border-bottom:1px solid #eee;"><img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($it['product_name']) . '" style="width:70px;height:70px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">' .
+            '<strong>' . htmlspecialchars($it['product_name']) . '</strong><br><small>Cant: ' . (int)$it['quantity'] . '</small></td>' .
+            '<td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">$' . number_format($it['subtotal'], 2) . '</td>' .
+        '</tr>';
+    }
+    $subject = 'Order #' . $order['order_number'] . ' update: ' . ucfirst($newStatus);
+    $html = '<div style="font-family:Arial,Helvetica,sans-serif;background:#f7f7f7;padding:20px;">' .
+        '<table style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.08);" cellpadding="0" cellspacing="0" width="100%">' .
+            '<tr><td style="background:linear-gradient(135deg,#111,#333);padding:24px;text-align:center;">' .
+                '<img src="' . htmlspecialchars($logoUrl) . '" alt="Horchata Mexican Food" style="max-width:180px;border-radius:10px;background:#fff;padding:8px;box-shadow:0 4px 20px rgba(212,175,55,0.35);border:2px solid rgba(212,175,55,0.25);">' .
+                '<h2 style="color:#fff;margin:16px 0 0;font-weight:700;">Order Update</h2>' .
+                '<p style="color:#ddd;margin:8px 0 0;">Status: <strong style="color:#d4af37;">' . htmlspecialchars(ucfirst($newStatus)) . '</strong> &middot; Payment: <strong>' . htmlspecialchars(ucfirst($paymentStatus)) . '</strong></p>' .
+            '</td></tr>' .
+            '<tr><td style="padding:24px;">' .
+                '<p style="margin:0 0 12px;color:#333;">Order Number: <strong>#' . htmlspecialchars($order['order_number']) . '</strong></p>' .
+                '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">' .
+                    $itemsHtml .
+                '</table>' .
+            '</td></tr>' .
+            '<tr><td style="background:#fafafa;padding:16px;text-align:center;color:#777;font-size:12px;">Horchata Mexican Food &middot; This is an automated message.</td></tr>' .
+        '</table>' .
+    '</div>';
+    $headers = [];
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'Content-type: text/html; charset=UTF-8';
+    $headers[] = 'From: ' . $fromName . ' <' . $fromEmail . '>';
+    @mail($order['customer_email'], $subject, $html, implode("\r\n", $headers));
 }
 
 /**
