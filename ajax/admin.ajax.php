@@ -668,7 +668,8 @@ function updateOrderStatus() {
     if (executeQuery($sql, $params)) {
         // Enviar correo al cliente
         try {
-            sendAdminOrderStatusEmail($order_id, $status, $payment_status);
+            error_log("[updateOrderStatus] sending email. order_id={$order_id}, status={$status}, payment_status={$order['payment_status']}");
+            sendAdminOrderStatusEmail($order_id, $status, $order['payment_status']);
         } catch (Exception $e) {
             error_log('sendAdminOrderStatusEmail error: ' . $e->getMessage());
         }
