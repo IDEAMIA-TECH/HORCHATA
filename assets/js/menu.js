@@ -213,14 +213,7 @@ function displayMenuContent(products, categoryId = null) {
                         <p class="product-description">${product.description || ''}</p>
                         <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                         <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart-btn" 
-                                    data-product-id="${product.id}" 
-                                    data-product-name="${product.name || ''}" 
-                                    data-product-price="${parseFloat(product.price)}" 
-                                    data-product-image="${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}">
-                                <i class="fas fa-plus me-2"></i>Agregar al Carrito
-                            </button>
-                            <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
+                            <a href="product.php?id=${product.id}" class="btn btn-primary view-details-btn">
                                 <i class="fas fa-eye me-2"></i>Ver Detalles
                             </a>
                         </div>
@@ -270,14 +263,7 @@ function displayMenuContent(products, categoryId = null) {
                             <p class="product-description">${product.description || ''}</p>
                             <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
                             <div class="product-actions">
-                                <button class="btn btn-primary add-to-cart-btn" 
-                                        data-product-id="${product.id}" 
-                                        data-product-name="${product.name || ''}" 
-                                        data-product-price="${parseFloat(product.price)}" 
-                                        data-product-image="${product.image ? product.image.replace('../', '') : 'assets/images/placeholder.jpg'}">
-                                    <i class="fas fa-plus me-2"></i>Agregar al Carrito
-                                </button>
-                                <a href="product.php?id=${product.id}" class="btn btn-outline-primary view-details-btn">
+                                <a href="product.php?id=${product.id}" class="btn btn-primary view-details-btn">
                                     <i class="fas fa-eye me-2"></i>Ver Detalles
                                 </a>
                             </div>
@@ -297,22 +283,7 @@ function displayMenuContent(products, categoryId = null) {
     $('#loadingState').hide();
     $('#menuContent').show();
     
-    // Configurar event listeners para botones de agregar al carrito
-    $(document).off('click', '.add-to-cart-btn').on('click', '.add-to-cart-btn', function(e) {
-        e.preventDefault();
-        const productId = $(this).data('product-id');
-        const productName = $(this).data('product-name');
-        const productPrice = $(this).data('product-price');
-        const productImage = $(this).data('product-image');
-        
-        if (productId && productName && productPrice !== undefined) {
-            addToCart(productId, productName, productPrice, productImage);
-        } else {
-            console.error('❌ Menu: Datos del producto incompletos', {
-                productId, productName, productPrice, productImage
-            });
-        }
-    });
+    // Botón de agregar al carrito removido en menú; solo ver detalles
     
     console.log('✅ Menu: Contenido del menú mostrado');
 }
