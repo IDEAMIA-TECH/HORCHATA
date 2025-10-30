@@ -46,10 +46,8 @@
         
         // Auto-refresh cada 30 segundos
         setInterval(loadPendingNotifications, 30000);
-        // Solicitar permiso de notificaciones si no se tiene
-        if ("Notification" in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
+        // Preparar permisos de notificación/sonido
+        initAlertPermissionsUI();
     });
     
     function loadPendingNotifications() {
@@ -76,6 +74,77 @@
 
     // Guardar último conteo para detectar nuevos pedidos
     window.__lastPendingOrders = typeof window.__lastPendingOrders === 'number' ? window.__lastPendingOrders : null;
+    window.__alertsEnabled = false;
+
+    function initAlertPermissionsUI() {
+        // Botón flotante para habilitar sonido/notificaciones si están bloqueadas
+        const btnId = 'enableAlertsBtn';
+        if ($('#' + btnId).length === 0) {
+            const btn = $(
+                '<button id="'+btnId+'" class="btn btn-warning shadow position-fixed no-print" \
+                         style="bottom: 20px; right: 20px; z-index: 99999; display:none;">\
+                         <i class="fas fa-bell me-2"></i>Habilitar alertas\
+                 </button>'
+            );
+            $('body').append(btn);
+            btn.on('click', function(){
+                enableAlertsGesture();
+                requestBrowserNotifications();
+                $(this).fadeOut();
+            });
+        }
+        // Primer interacción del usuario: desbloquear audio
+        const onceHandler = function() {
+            enableAlertsGesture();
+            requestBrowserNotifications();
+            document.removeEventListener('click', onceHandler);
+            document.removeEventListener('touchstart', onceHandler);
+            document.removeEventListener('keydown', onceHandler);
+        };
+        document.addEventListener('click', onceHandler, { once: true });
+        document.addEventListener('touchstart', onceHandler, { once: true });
+        document.addEventListener('keydown', onceHandler, { once: true });
+
+        // Mostrar botón si falta permiso o el audio aún no está habilitado
+        setTimeout(function(){
+            const needNotif = ("Notification" in window) && Notification.permission !== 'granted';
+            if (!window.__alertsEnabled || needNotif) {
+                $('#'+btnId).fadeIn();
+            }
+        }, 1000);
+    }
+
+    function enableAlertsGesture() {
+        if (window.__alertsEnabled) return;
+        try {
+            // Intentar reproducir en silencio para desbloquear por gesto del usuario
+            const prevVol = alertAudio.volume; 
+            alertAudio.volume = 0.0;
+            const p = alertAudio.play();
+            if (p && typeof p.then === 'function') {
+                p.then(function(){
+                    alertAudio.pause();
+                    alertAudio.currentTime = 0;
+                    alertAudio.volume = prevVol;
+                    window.__alertsEnabled = true;
+                }).catch(function(){
+                    // Si falla, mostrar botón para reintentar
+                    $('#enableAlertsBtn').fadeIn();
+                });
+            } else {
+                window.__alertsEnabled = true;
+            }
+        } catch(e) {
+            $('#enableAlertsBtn').fadeIn();
+        }
+    }
+
+    function requestBrowserNotifications() {
+        if (!('Notification' in window)) return;
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    }
 
     function updateNotificationBadges(data) {
         if (data.pending_orders !== undefined) {
@@ -84,7 +153,13 @@
             $('#pendingOrdersBadge').text(curr);
             // Si hay incremento, reproducir sonido y notificación
             if (prev !== null && curr > prev) {
-                try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
+                // Reproducir solo si alertsEnabled
+                if (window.__alertsEnabled) {
+                    try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
+                } else {
+                    // Vibración como fallback en móviles
+                    if (navigator.vibrate) { try { navigator.vibrate(200); } catch(e) {} }
+                }
                 showNewOrderNotification(curr - prev);
             }
             window.__lastPendingOrders = curr;
