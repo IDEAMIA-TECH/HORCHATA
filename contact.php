@@ -55,7 +55,8 @@ include 'includes/header.php';
                     </div>
                     <h5 class="contact-card-title"><?php echo __('phone'); ?></h5>
                     <p class="contact-card-text">
-                        <a href="tel:+13102042659" class="contact-link"><?php echo __('phone_number'); ?></a>
+                        <?php $phone = getSetting('restaurant_phone', '+1 (310) 204-2659'); $tel = 'tel:' . preg_replace('/[^\d+]/', '', $phone); ?>
+                        <a href="<?php echo htmlspecialchars($tel); ?>" class="contact-link"><?php echo htmlspecialchars($phone); ?></a>
                     </p>
                 </div>
             </div>

@@ -27,7 +27,9 @@ $total = $_SESSION['cart_total'] ?? 0;
 
 // Si no hay totales en sesión, calcular
 if ($subtotal == 0) {
-    $tax_rate = 0.0825; // 8.25% de impuestos
+    // Impuesto dinámico desde settings (porcentaje) con fallback a 8.25%
+    $tax_rate_setting = getSetting('tax_rate', '8.25');
+    $tax_rate = is_numeric($tax_rate_setting) ? ((float)$tax_rate_setting) / 100 : 0.0825;
     $subtotal = 0;
     
     foreach ($cart_items as $item) {

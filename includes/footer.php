@@ -80,7 +80,7 @@
                     </div>
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-phone footer-icon me-2"></i>
-                        <span class="footer-text">+1 (310) 204-2659</span>
+                        <span class="footer-text"><?php echo htmlspecialchars(getSetting('restaurant_phone', '+1 (310) 204-2659')); ?></span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-envelope footer-icon me-2"></i>
