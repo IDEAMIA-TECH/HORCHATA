@@ -29,7 +29,7 @@ try {
 }
 
 // Configuración adicional
-define('SITE_URL', 'https://horchatamexicanfood.com');
+define('SITE_URL', 'https://horchatamexfood.com');
 define('ADMIN_URL', SITE_URL . '/admin');
 define('UPLOAD_PATH', 'assets/images/products/');
 define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB

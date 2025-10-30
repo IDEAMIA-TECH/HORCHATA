@@ -523,7 +523,7 @@ include 'includes/footer.php';
 $(document).ready(function() {
     console.log('Generando QR Code...');
     
-    const orderUrl = 'https://ideamia-dev.com/HORCHATA/admin/qr-scanner.php?order_id=<?php echo $order_id; ?>';
+    const orderUrl = 'https://horchatamexfood.com/admin/qr-scanner.php?order_id=<?php echo $order_id; ?>';
     
     // Generar QR Code
     new QRCode(document.getElementById("qrcode"), {

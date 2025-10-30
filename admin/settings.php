@@ -407,7 +407,7 @@ include 'includes/admin-header.php';
                                 <div class="mb-3">
                                     <label for="site_url" class="form-label"><?php echo __('site_url'); ?></label>
                                     <input type="url" class="form-control" id="site_url" name="site_url" 
-                                           value="<?php echo htmlspecialchars($settings['site_url'] ?? 'https://ideamia-dev.com/HORCHATA'); ?>">
+                                           value="<?php echo htmlspecialchars($settings['site_url'] ?? 'https://horchatamexfood.com'); ?>">
                                 </div>
                             </div>
                         </div>
@@ -494,7 +494,7 @@ include 'includes/admin-header.php';
                                 <div class="mb-3">
                                     <label for="restaurant_website" class="form-label">Website</label>
                                     <input type="url" class="form-control" id="restaurant_website" name="restaurant_website" 
-                                           value="<?php echo htmlspecialchars($settings['restaurant_website'] ?? 'https://ideamia-dev.com/HORCHATA'); ?>">
+                                           value="<?php echo htmlspecialchars($settings['restaurant_website'] ?? 'https://horchatamexfood.com'); ?>">
                                 </div>
                             </div>
                         </div>

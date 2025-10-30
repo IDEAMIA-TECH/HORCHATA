@@ -11,8 +11,8 @@ define('DEBUG', true);
 
 // Configuración de la base de datos
 define('DB_HOST', '173.231.22.109');
-define('DB_NAME', 'ideamiadev_horchata');
-define('DB_USER', 'ideamiadev_horchata');
+define('DB_NAME', 'horchatamexfood_horchata');
+define('DB_USER', 'horchatamexfood_horchata');
 define('DB_PASS', 'DfabGqB&gX3xM?ea');
 define('DB_CHARSET', 'utf8mb4');
 
