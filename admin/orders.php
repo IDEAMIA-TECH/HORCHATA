@@ -259,6 +259,12 @@ include 'includes/admin-header.php';
                                        class="btn btn-sm btn-outline-primary" title="<?php echo __('view'); ?>">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    <?php if (($order['payment_status'] ?? '') !== 'paid'): ?>
+                                    <button class="btn btn-sm btn-success" title="<?php echo __('mark_as_paid'); ?>"
+                                            onclick="openMarkPaidModal(<?php echo $order['id']; ?>, <?php echo (float)$order['total']; ?>)">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </button>
+                                    <?php endif; ?>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
                                                 type="button" data-bs-toggle="dropdown" title="<?php echo __('change_status'); ?>">
@@ -903,6 +909,20 @@ function markOrderAsPaid() {
             }
         });
     }
+}
+
+function openMarkPaidModal(orderId, total) {
+    // Set values and open modal from list view
+    const orderIdInput = document.getElementById('orderId');
+    if (orderIdInput) orderIdInput.value = orderId;
+    const amountInput = document.getElementById('paymentAmount');
+    if (amountInput) amountInput.value = total;
+    const methodSelect = document.getElementById('paymentMethod');
+    if (methodSelect) methodSelect.value = '';
+    const notesInput = document.getElementById('paymentNotes');
+    if (notesInput) notesInput.value = '';
+    const modal = new bootstrap.Modal(document.getElementById('markPaidModal'));
+    modal.show();
 }
 </script>
 

@@ -663,7 +663,9 @@ function updateOrderStatus() {
     
     // Determinar si también actualizar el estado de pago
     $payment_status = $order['payment_status'];
-    if ($status === 'confirmed' && $payment_status === 'pending') {
+    // Solo marcar pagado automáticamente si NO es pickup (es decir, fue online)
+    $isPickup = strtolower(trim($order['payment_method'])) === 'pickup';
+    if ($status === 'confirmed' && $payment_status === 'pending' && !$isPickup) {
         $payment_status = 'paid';
     } elseif ($status === 'cancelled' && $payment_status === 'paid') {
         $payment_status = 'refunded';
