@@ -334,25 +334,33 @@ function displayCategories(categories) {
     
     let html = '';
     
+    // Obtener idioma actual
+    const currentLang = getLanguage ? getLanguage() : (document.documentElement.lang || 'es');
+    
     categories.forEach((category, index) => {
         console.log(`🏠 Home: Procesando categoría ${index}:`, category);
+        
+        // Usar nombres según el idioma actual
+        const categoryName = currentLang === 'en' ? (category.name || category.name_es) : (category.name_es || category.name);
+        const categoryDescription = currentLang === 'en' ? (category.description || category.description_es) : (category.description_es || category.description);
+        const viewMenuText = currentLang === 'en' ? 'View Menu' : 'Ver Menú';
         
         html += `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="category-card" data-category-id="${category.id}">
                     <div class="category-image-container">
-                        <img src="${category.image}" alt="${category.name_es}" class="category-image" loading="lazy">
+                        <img src="${category.image}" alt="${categoryName}" class="category-image" loading="lazy">
                         <div class="category-overlay">
-                            <div class="category-icon" style="color: ${category.color};">
-                                <i class="${category.icon}"></i>
+                            <div class="category-icon" style="color: ${category.color || '#d4af37'};">
+                                <i class="${category.icon || 'fas fa-utensils'}"></i>
                             </div>
                         </div>
                     </div>
                     <div class="category-content">
-                        <h5 class="category-title">${category.name_es}</h5>
-                        <p class="category-description">${category.description_es}</p>
+                        <h5 class="category-title">${categoryName}</h5>
+                        <p class="category-description">${categoryDescription || ''}</p>
                         <a href="${category.url}" class="category-link">
-                            Ver Menú <i class="fas fa-arrow-right ms-1"></i>
+                            ${viewMenuText} <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
