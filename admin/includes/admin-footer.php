@@ -146,16 +146,29 @@
             });
         }
         // Primer interacción del usuario: desbloquear audio
-        const onceHandler = function() {
+        const onceHandler = function(e) {
+            console.log('👆 Usuario interactuó, habilitando alertas...');
             enableAlertsGesture();
             requestBrowserNotifications();
+            
+            // También intentar reproducir un beep de prueba para "desbloquear" el audio
+            try {
+                playBeep(100, 1000, 0.3);
+                console.log('✅ Beep de prueba reproducido');
+            } catch(err) {
+                console.log('⚠️ No se pudo reproducir beep de prueba:', err);
+            }
+            
             document.removeEventListener('click', onceHandler);
             document.removeEventListener('touchstart', onceHandler);
             document.removeEventListener('keydown', onceHandler);
+            document.removeEventListener('mousemove', onceHandler);
         };
+        // Agregar listeners para cualquier interacción del usuario
         document.addEventListener('click', onceHandler, { once: true });
         document.addEventListener('touchstart', onceHandler, { once: true });
         document.addEventListener('keydown', onceHandler, { once: true });
+        document.addEventListener('mousemove', onceHandler, { once: true });
 
         // Mostrar botón si falta permiso o el audio aún no está habilitado
         setTimeout(function(){
@@ -191,27 +204,69 @@
     }
 
     function enableAlertsGesture() {
-        if (window.__alertsEnabled) return;
+        if (window.__alertsEnabled) {
+            console.log('✅ Alertas ya están habilitadas');
+            return;
+        }
+        console.log('🔄 Habilitando alertas...');
         try {
+            // Inicializar WebAudio si no existe
+            if (!audioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                audioCtx = Ctx ? new Ctx() : null;
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(function() {
+                        console.log('✅ AudioContext reanudado');
+                    });
+                }
+            }
+            
             // Intentar reproducir en silencio para desbloquear por gesto del usuario
             const prevVol = alertAudio.volume; 
             alertAudio.volume = 0.0;
             const p = alertAudio.play();
             if (p && typeof p.then === 'function') {
                 p.then(function(){
+                    console.log('✅ Audio desbloqueado exitosamente');
                     alertAudio.pause();
                     alertAudio.currentTime = 0;
                     alertAudio.volume = prevVol;
                     window.__alertsEnabled = true;
-                }).catch(function(){
-                    // Si falla, mostrar botón para reintentar
-                    $('#enableAlertsBtn').fadeIn();
+                }).catch(function(err){
+                    console.log('⚠️ No se pudo desbloquear audio:', err.message);
+                    // Intentar con WebAudio directamente
+                    try {
+                        playBeep(50, 1000, 0.1);
+                        window.__alertsEnabled = true;
+                        console.log('✅ Audio habilitado vía WebAudio');
+                    } catch(e2) {
+                        console.log('⚠️ Tampoco funcionó WebAudio:', e2);
+                        // Si falla, mostrar botón para reintentar
+                        $('#enableAlertsBtn').fadeIn();
+                    }
                 });
             } else {
-                window.__alertsEnabled = true;
+                // Intentar con WebAudio directamente
+                try {
+                    playBeep(50, 1000, 0.1);
+                    window.__alertsEnabled = true;
+                    console.log('✅ Audio habilitado vía WebAudio (directo)');
+                } catch(e2) {
+                    console.log('⚠️ Error con WebAudio:', e2);
+                    window.__alertsEnabled = true; // Marcar como habilitado de todas formas
+                }
             }
         } catch(e) {
-            $('#enableAlertsBtn').fadeIn();
+            console.error('❌ Error en enableAlertsGesture:', e);
+            // Intentar habilitar de todas formas
+            try {
+                playBeep(50, 1000, 0.1);
+                window.__alertsEnabled = true;
+                console.log('✅ Audio habilitado vía WebAudio (catch)');
+            } catch(e2) {
+                console.error('❌ Error total habilitando audio:', e2);
+                $('#enableAlertsBtn').fadeIn();
+            }
         }
     }
 
@@ -233,23 +288,65 @@
             if (prev !== null && curr > prev) {
                 console.log('🔔 Nuevo pedido detectado! Incremento:', curr - prev);
                 
-                // Reproducir sonido PRIMERO (antes de la notificación)
-                if (window.__alertsEnabled) {
-                    console.log('🔊 Reproduciendo alarma...');
-                    // Patrón de alarma más largo e intenso
+                // Intentar habilitar alertas automáticamente si no están habilitadas
+                if (!window.__alertsEnabled) {
+                    console.log('⚠️ Alertas no habilitadas, intentando habilitar automáticamente...');
+                    enableAlertsGesture();
+                    // Dar un momento para que se habilite
+                    setTimeout(function() {
+                        if (!window.__alertsEnabled) {
+                            console.log('⚠️ No se pudo habilitar automáticamente');
+                        }
+                    }, 100);
+                }
+                
+                // Reproducir sonido (intentar siempre, incluso si no está "habilitado")
+                console.log('🔊 Intentando reproducir alarma...');
+                
+                // Siempre intentar reproducir sonido (WebAudio debería funcionar)
+                try {
                     playAlarm(6000);
+                    console.log('✅ Alarma WebAudio reproducida');
+                } catch(e) {
+                    console.error('❌ Error en WebAudio:', e);
+                }
+                
+                // También intentar reproducir con alertAudio si está habilitado
+                if (window.__alertsEnabled) {
                     try { 
                         alertAudio.currentTime = 0; 
                         alertAudio.play().catch(function(err) {
-                            console.error('Error reproduciendo audio:', err);
+                            console.error('Error reproduciendo alertAudio:', err);
                         });
                     } catch(e) { 
-                        console.error('Error en audio:', e);
+                        console.error('Error en alertAudio:', e);
                     }
                 } else {
-                    console.log('⚠️ Alertas no habilitadas, usando vibración');
-                    // Vibración como fallback en móviles
-                    if (navigator.vibrate) { try { navigator.vibrate(200); } catch(e) {} }
+                    // Intentar reproducir de todas formas (puede funcionar si el usuario ya interactuó)
+                    try {
+                        alertAudio.currentTime = 0;
+                        const playPromise = alertAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(function() {
+                                console.log('✅ alertAudio reproducido exitosamente');
+                                window.__alertsEnabled = true; // Marcar como habilitado si funciona
+                            }).catch(function(err) {
+                                console.log('⚠️ alertAudio no se pudo reproducir:', err.message);
+                            });
+                        }
+                    } catch(e) {
+                        console.log('⚠️ No se pudo reproducir alertAudio:', e.message);
+                    }
+                }
+                
+                // Vibración como fallback en móviles
+                if (navigator.vibrate) { 
+                    try { 
+                        navigator.vibrate([200, 100, 200]); 
+                        console.log('✅ Vibración activada');
+                    } catch(e) {
+                        console.error('Error en vibración:', e);
+                    }
                 }
                 
                 // Pasar el ID de la orden más reciente y el incremento (manejar null/undefined)
