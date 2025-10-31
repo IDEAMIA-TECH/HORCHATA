@@ -230,16 +230,6 @@ include 'includes/header.php';
                                             <!-- Los extras se cargarán dinámicamente según la categoría -->
                                         </div>
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold"><?php echo __('spice_level'); ?></label>
-                                        <select class="form-select" id="spiceLevel">
-                                            <option value="mild"><?php echo __('mild'); ?></option>
-                                            <option value="medium" selected><?php echo __('medium'); ?></option>
-                                            <option value="hot"><?php echo __('hot'); ?></option>
-                                            <option value="extra-hot"><?php echo __('extra_hot'); ?></option>
-                                        </select>
-                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -548,9 +538,7 @@ function handleConfirmAddToCart() {
         extras.push({ name: extraName, price: extraPrice });
     });
     
-    const spiceLevel = $('#spiceLevel').val();
-    
-    console.log('Customizations:', { specialInstructions, extras, spiceLevel });
+    console.log('Customizations:', { specialInstructions, extras });
     
     // Calcular precio adicional
     let extrasPrice = 0;
@@ -565,8 +553,7 @@ function handleConfirmAddToCart() {
             image: currentProduct.image,
             customizations: {
                 specialInstructions: specialInstructions,
-                extras: extras,
-                spiceLevel: spiceLevel
+                extras: extras
             }
         };
         
@@ -597,7 +584,6 @@ function handleConfirmAddToCart() {
     // Resetear modal
     $('#specialInstructions').val('');
     $('.extra-checkbox').prop('checked', false);
-    $('#spiceLevel').val('medium');
 }
 
 function setupQuantitySelector() {
