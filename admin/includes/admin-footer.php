@@ -65,55 +65,58 @@
         });
     }
     
-    // Audio de alerta (beep corto, inline base64)
-    const alertAudio = (function(){
-        const audio = new Audio('data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA//////////////////////////////////////////////8AAAADTEFNRTMuMTAwA8MAAAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////8AAAA=');
-        audio.preload = 'auto';
-        audio.volume = 1.0;
-        return audio;
-    })();
+    // Audio de alerta ya no se usa - WebAudio es más confiable
+    // Mantenemos la variable para compatibilidad pero no la usamos
+    const alertAudio = null;
 
-    // WebAudio fallback (más confiable para disparar desde gestos del usuario)
+    // WebAudio (método principal y más confiable)
     let audioCtx = null;
+    function initAudioContext() {
+        if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) {
+                audioCtx = new Ctx();
+            }
+        }
+        // Solo reanudar si está suspendido y después de interacción del usuario
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(function() {
+                // Ignorar error silenciosamente - el AudioContext se activará con la próxima interacción
+            });
+        }
+        return audioCtx;
+    }
+    
     function playBeep(durationMs = 500, freq = 1000, gainLevel = 0.7) {
         try {
-            if (!audioCtx) {
-                const Ctx = window.AudioContext || window.webkitAudioContext;
-                audioCtx = Ctx ? new Ctx() : null;
+            const ctx = initAudioContext();
+            if (!ctx) {
+                return; // No hay soporte para WebAudio
             }
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
-            if (!audioCtx) {
-                // Fallback a elemento <audio>
-                alertAudio.currentTime = 0; alertAudio.play();
-                return;
-            }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
             osc.type = 'square';
             osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(gainLevel, audioCtx.currentTime + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs/1000);
-            osc.connect(gain).connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(gainLevel, ctx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationMs/1000);
+            osc.connect(gain).connect(ctx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + durationMs/1000 + 0.02);
-        } catch(e) {}
+            osc.stop(ctx.currentTime + durationMs/1000 + 0.02);
+        } catch(e) {
+            // Silenciar error - puede fallar si no hay interacción del usuario
+        }
     }
 
     function playAlarm(totalMs = 5000) {
         // Patrón de alarma: ráfagas ascendentes y descendentes en bucle
-        try {
-            if (!audioCtx) {
-                const Ctx = window.AudioContext || window.webkitAudioContext;
-                audioCtx = Ctx ? new Ctx() : null;
-            }
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
-        } catch(e) {}
+        // Asegurar que AudioContext esté inicializado
+        initAudioContext();
         const start = Date.now();
         (function loop() {
             const elapsed = Date.now() - start;
             if (elapsed >= totalMs) return;
-            // sweep up
+            // Patrón de alarma (dos tonos alternados)
             playBeep(250, 1200, 0.9);
             setTimeout(function(){ playBeep(250, 900, 0.9); }, 260);
             setTimeout(loop, 600);
@@ -147,18 +150,10 @@
         }
         // Primer interacción del usuario: desbloquear audio
         const onceHandler = function(e) {
-            console.log('👆 Usuario interactuó, habilitando alertas...');
             enableAlertsGesture();
             requestBrowserNotifications();
             
-            // También intentar reproducir un beep de prueba para "desbloquear" el audio
-            try {
-                playBeep(100, 1000, 0.3);
-                console.log('✅ Beep de prueba reproducido');
-            } catch(err) {
-                console.log('⚠️ No se pudo reproducir beep de prueba:', err);
-            }
-            
+            // Limpiar listeners
             document.removeEventListener('click', onceHandler);
             document.removeEventListener('touchstart', onceHandler);
             document.removeEventListener('keydown', onceHandler);
@@ -205,68 +200,25 @@
 
     function enableAlertsGesture() {
         if (window.__alertsEnabled) {
-            console.log('✅ Alertas ya están habilitadas');
-            return;
+            return; // Ya está habilitado, no hacer nada
         }
-        console.log('🔄 Habilitando alertas...');
         try {
-            // Inicializar WebAudio si no existe
-            if (!audioCtx) {
-                const Ctx = window.AudioContext || window.webkitAudioContext;
-                audioCtx = Ctx ? new Ctx() : null;
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume().then(function() {
-                        console.log('✅ AudioContext reanudado');
-                    });
-                }
-            }
+            // Inicializar WebAudio (después de interacción del usuario)
+            const ctx = initAudioContext();
             
-            // Intentar reproducir en silencio para desbloquear por gesto del usuario
-            const prevVol = alertAudio.volume; 
-            alertAudio.volume = 0.0;
-            const p = alertAudio.play();
-            if (p && typeof p.then === 'function') {
-                p.then(function(){
-                    console.log('✅ Audio desbloqueado exitosamente');
-                    alertAudio.pause();
-                    alertAudio.currentTime = 0;
-                    alertAudio.volume = prevVol;
-                    window.__alertsEnabled = true;
-                }).catch(function(err){
-                    console.log('⚠️ No se pudo desbloquear audio:', err.message);
-                    // Intentar con WebAudio directamente
-                    try {
-                        playBeep(50, 1000, 0.1);
-                        window.__alertsEnabled = true;
-                        console.log('✅ Audio habilitado vía WebAudio');
-                    } catch(e2) {
-                        console.log('⚠️ Tampoco funcionó WebAudio:', e2);
-                        // Si falla, mostrar botón para reintentar
-                        $('#enableAlertsBtn').fadeIn();
-                    }
-                });
-            } else {
-                // Intentar con WebAudio directamente
-                try {
-                    playBeep(50, 1000, 0.1);
-                    window.__alertsEnabled = true;
-                    console.log('✅ Audio habilitado vía WebAudio (directo)');
-                } catch(e2) {
-                    console.log('⚠️ Error con WebAudio:', e2);
-                    window.__alertsEnabled = true; // Marcar como habilitado de todas formas
-                }
-            }
-        } catch(e) {
-            console.error('❌ Error en enableAlertsGesture:', e);
-            // Intentar habilitar de todas formas
+            // Intentar reproducir un beep de prueba con WebAudio para "desbloquear"
+            // Si funciona, significa que el audio está habilitado
             try {
                 playBeep(50, 1000, 0.1);
                 window.__alertsEnabled = true;
-                console.log('✅ Audio habilitado vía WebAudio (catch)');
-            } catch(e2) {
-                console.error('❌ Error total habilitando audio:', e2);
-                $('#enableAlertsBtn').fadeIn();
+            } catch(e) {
+                // Si falla, marcar como habilitado de todas formas
+                // El audio funcionará en la próxima interacción
+                window.__alertsEnabled = true;
             }
+        } catch(e) {
+            // Si hay un error, marcar como habilitado de todas formas
+            window.__alertsEnabled = true;
         }
     }
 
@@ -286,73 +238,38 @@
             $('#pendingOrdersBadge').text(curr);
             // Si hay incremento, reproducir sonido y notificación
             if (prev !== null && curr > prev) {
-                console.log('🔔 Nuevo pedido detectado! Incremento:', curr - prev);
-                
                 // Intentar habilitar alertas automáticamente si no están habilitadas
+                // (Aunque el sonido funcionará de todas formas con WebAudio)
                 if (!window.__alertsEnabled) {
-                    console.log('⚠️ Alertas no habilitadas, intentando habilitar automáticamente...');
                     enableAlertsGesture();
-                    // Dar un momento para que se habilite
-                    setTimeout(function() {
-                        if (!window.__alertsEnabled) {
-                            console.log('⚠️ No se pudo habilitar automáticamente');
-                        }
-                    }, 100);
                 }
                 
-                // Reproducir sonido (intentar siempre, incluso si no está "habilitado")
-                console.log('🔊 Intentando reproducir alarma...');
-                
-                // Siempre intentar reproducir sonido (WebAudio debería funcionar)
+                // Reproducir sonido (usar WebAudio que es más confiable)
+                // Asegurar que AudioContext esté inicializado y activo
                 try {
-                    playAlarm(6000);
-                    console.log('✅ Alarma WebAudio reproducida');
-                } catch(e) {
-                    console.error('❌ Error en WebAudio:', e);
-                }
-                
-                // También intentar reproducir con alertAudio si está habilitado
-                if (window.__alertsEnabled) {
-                    try { 
-                        alertAudio.currentTime = 0; 
-                        alertAudio.play().catch(function(err) {
-                            console.error('Error reproduciendo alertAudio:', err);
+                    const ctx = initAudioContext();
+                    if (ctx && ctx.state === 'suspended') {
+                        ctx.resume().catch(function() {
+                            // Ignorar error silenciosamente - se activará con la próxima interacción
                         });
-                    } catch(e) { 
-                        console.error('Error en alertAudio:', e);
                     }
-                } else {
-                    // Intentar reproducir de todas formas (puede funcionar si el usuario ya interactuó)
-                    try {
-                        alertAudio.currentTime = 0;
-                        const playPromise = alertAudio.play();
-                        if (playPromise !== undefined) {
-                            playPromise.then(function() {
-                                console.log('✅ alertAudio reproducido exitosamente');
-                                window.__alertsEnabled = true; // Marcar como habilitado si funciona
-                            }).catch(function(err) {
-                                console.log('⚠️ alertAudio no se pudo reproducir:', err.message);
-                            });
-                        }
-                    } catch(e) {
-                        console.log('⚠️ No se pudo reproducir alertAudio:', e.message);
-                    }
+                    playAlarm(6000);
+                } catch(e) {
+                    // Silenciar error - WebAudio puede fallar si no hay interacción previa
                 }
                 
                 // Vibración como fallback en móviles
                 if (navigator.vibrate) { 
                     try { 
                         navigator.vibrate([200, 100, 200]); 
-                        console.log('✅ Vibración activada');
                     } catch(e) {
-                        console.error('Error en vibración:', e);
+                        // Silenciar error
                     }
                 }
                 
                 // Pasar el ID de la orden más reciente y el incremento (manejar null/undefined)
                 const orderId = data.latest_order_id || null;
                 const orderNumber = data.latest_order_number || null;
-                console.log('📋 Mostrando notificación. Order ID:', orderId, 'Order Number:', orderNumber);
                 showNewOrderNotification(curr - prev, orderId, orderNumber);
             }
             window.__lastPendingOrders = curr;
@@ -368,8 +285,6 @@
 
     function showNewOrderNotification(increment, orderId, orderNumber) {
         try {
-            console.log('📬 showNewOrderNotification llamada con:', { increment, orderId, orderNumber });
-            
             const count = increment || 1;
             const title = count > 1 ? `${count} nuevos pedidos` : 'Nuevo pedido recibido';
             const orderInfo = (orderNumber && orderNumber !== 'null' && orderNumber !== null) ? ` (Pedido #${orderNumber})` : '';
@@ -386,7 +301,7 @@
                     // Mantener notificación más tiempo (30 segundos) pero aún con auto-cierre
                     setTimeout(() => n.close && n.close(), 30000);
                 } catch(e) { 
-                    console.error('Error en Notification API:', e); 
+                    // Silenciar error - las notificaciones pueden no estar disponibles
                 }
             }
             
@@ -419,11 +334,11 @@
                 '</div>'
             );
             $('body').append(notification);
-            console.log('✅ Notificación visual agregada correctamente');
             // NO cerrar automáticamente - solo cuando el usuario lo cierre manualmente
             // setTimeout removido - la notificación permanecerá hasta que se cierre manualmente
         } catch(e) { 
-            console.error('❌ Error en showNewOrderNotification:', e);
+            // Silenciar error - solo loguear en caso de error crítico
+            console.error('Error en showNewOrderNotification:', e);
         }
     }
     </script>
