@@ -901,7 +901,10 @@ function __($key, $default = '') {
         'order_not_found_check_number' => 'Pedido no encontrado. Por favor verifica el número de pedido o ID.',
         'please_provide_order_number' => 'Por favor proporciona un número de pedido o ID',
         'cannot_delete_product_with_orders' => 'No se puede eliminar un producto que tiene órdenes asociadas',
-        'method_not_allowed' => 'Método no permitido'
+        'method_not_allowed' => 'Método no permitido',
+        'added_to_cart' => 'agregado al carrito',
+        'added_to_cart_plural' => 'agregados al carrito',
+        'product_added_to_cart' => 'Producto agregado al carrito'
     ];
     
     // Textos en inglés
@@ -1704,7 +1707,10 @@ function __($key, $default = '') {
         'order_not_found_check_number' => 'Order not found. Please check the order number or ID.',
         'please_provide_order_number' => 'Please provide an order number or ID',
         'cannot_delete_product_with_orders' => 'Cannot delete a product that has associated orders',
-        'method_not_allowed' => 'Method not allowed'
+        'method_not_allowed' => 'Method not allowed',
+        'added_to_cart' => 'added to cart',
+        'added_to_cart_plural' => 'added to cart',
+        'product_added_to_cart' => 'Product added to cart'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

@@ -43,6 +43,15 @@ require_once 'includes/init.php';
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    
+    <!-- Global Translations for JavaScript -->
+    <script>
+        window.translations = {
+            addedToCart: <?php echo json_encode(__('added_to_cart')); ?>,
+            addedToCartPlural: <?php echo json_encode(__('added_to_cart_plural')); ?>,
+            productAddedToCart: <?php echo json_encode(__('product_added_to_cart')); ?>
+        };
+    </script>
 </head>
 <body>
     <!-- Navigation -->

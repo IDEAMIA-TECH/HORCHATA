@@ -578,7 +578,8 @@ function handleConfirmAddToCart() {
     $('#customizeModal').modal('hide');
     
     // Mostrar notificación
-    showNotification(`${quantity} ${currentProduct.name} agregado(s) al carrito`, 'success');
+    const addedText = quantity === 1 ? window.translations.addedToCart : window.translations.addedToCartPlural;
+    showNotification(`${quantity} ${currentProduct.name} ${addedText}`, 'success');
     
     // Resetear modal
     $('#specialInstructions').val('');
@@ -689,7 +690,8 @@ function addToCart(productId, productName, productPrice, productImage) {
 
 function showCartFeedback(button) {
     const originalText = button.html();
-    button.html('<i class="fas fa-check me-2"></i>Agregado').addClass('btn-success');
+    const addedText = window.translations ? window.translations.addedToCart : 'Agregado';
+    button.html(`<i class="fas fa-check me-2"></i>${addedText}`).addClass('btn-success');
     
     setTimeout(() => {
         button.html(originalText).removeClass('btn-success');

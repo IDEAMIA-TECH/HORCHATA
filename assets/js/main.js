@@ -158,7 +158,8 @@ function addToCart(productId, productName, productPrice, productImage) {
     updateCartDisplay();
     
     // Mostrar notificación
-    showNotification('Producto agregado al carrito', 'success');
+    const message = window.translations ? window.translations.productAddedToCart : 'Producto agregado al carrito';
+    showNotification(message, 'success');
 }
 
 /**

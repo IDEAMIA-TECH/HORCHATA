@@ -77,9 +77,12 @@ function setupAddToCart() {
         showCartFeedback($(this));
         
         // Mostrar notificación
+        const addedText = quantity === 1 
+            ? (window.translations ? window.translations.addedToCart : 'agregado al carrito')
+            : (window.translations ? window.translations.addedToCartPlural : 'agregados al carrito');
         const message = quantity === 1 
-            ? `${productName} agregado al carrito`
-            : `${quantity} ${productName} agregados al carrito`;
+            ? `${productName} ${addedText}`
+            : `${quantity} ${productName} ${addedText}`;
         showNotification(message, 'success');
     });
 }

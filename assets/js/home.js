@@ -232,7 +232,8 @@ function addToCart(productId, quantity = 1) {
         localStorage.setItem('horchata_cart', JSON.stringify(cart));
         
         // Mostrar notificación
-        showNotification('Producto agregado al carrito', 'success');
+        const message = window.translations ? window.translations.productAddedToCart : 'Producto agregado al carrito';
+        showNotification(message, 'success');
         
         // Actualizar contador del carrito
         updateCartDisplay();

@@ -437,10 +437,11 @@ function addToCart(productId, productName, productPrice, productImage) {
  */
 function showAddToCartNotification(productName) {
     // Crear notificación temporal
+    const addedText = window.translations ? window.translations.addedToCart : 'agregado al carrito';
     const notification = $(`
         <div class="alert alert-success position-fixed" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
             <i class="fas fa-check-circle me-2"></i>
-            <strong>${productName}</strong> agregado al carrito
+            <strong>${productName}</strong> ${addedText}
         </div>
     `);
     
