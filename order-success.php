@@ -398,20 +398,40 @@ include 'includes/header.php';
                         </h5>
                     </div>
                     <div class="card-body">
+                        <?php 
+                        // Obtener información de contacto del restaurante desde settings
+                        $restaurant_phone = getSetting('restaurant_phone', '+1 (310) 204-2659');
+                        $restaurant_email = getSetting('restaurant_email', 'contact@horchatamexicanfood.com');
+                        $restaurant_address = getSetting('restaurant_address', '10814 Jefferson Blvd, Culver City, CA 90232');
+                        $restaurant_tel = 'tel:' . preg_replace('/[^\d+]/', '', $restaurant_phone);
+                        ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('phone'); ?></h6>
-                                <p><i class="fas fa-phone me-2"></i>(555) 123-4567</p>
+                                <p>
+                                    <i class="fas fa-phone me-2"></i>
+                                    <a href="<?php echo $restaurant_tel; ?>" class="text-decoration-none">
+                                        <?php echo htmlspecialchars($restaurant_phone); ?>
+                                    </a>
+                                </p>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="text-muted"><?php echo __('email'); ?></h6>
-                                <p><i class="fas fa-envelope me-2"></i>orders@horchatamexicanfood.com</p>
+                                <p>
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <a href="mailto:<?php echo htmlspecialchars($restaurant_email); ?>" class="text-decoration-none">
+                                        <?php echo htmlspecialchars($restaurant_email); ?>
+                                    </a>
+                                </p>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-12">
                                 <h6 class="text-muted"><?php echo __('address'); ?></h6>
-                                <p><i class="fas fa-map-marker-alt me-2"></i>123 Main Street, Ciudad, Estado</p>
+                                <p>
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <?php echo htmlspecialchars($restaurant_address); ?>
+                                </p>
                             </div>
                         </div>
                     </div>

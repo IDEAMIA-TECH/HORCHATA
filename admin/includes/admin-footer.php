@@ -231,17 +231,32 @@
             $('#pendingOrdersBadge').text(curr);
             // Si hay incremento, reproducir sonido y notificación
             if (prev !== null && curr > prev) {
-                // Reproducir solo si alertsEnabled
+                console.log('🔔 Nuevo pedido detectado! Incremento:', curr - prev);
+                
+                // Reproducir sonido PRIMERO (antes de la notificación)
                 if (window.__alertsEnabled) {
+                    console.log('🔊 Reproduciendo alarma...');
                     // Patrón de alarma más largo e intenso
                     playAlarm(6000);
-                    try { alertAudio.currentTime = 0; alertAudio.play(); } catch(e) {}
+                    try { 
+                        alertAudio.currentTime = 0; 
+                        alertAudio.play().catch(function(err) {
+                            console.error('Error reproduciendo audio:', err);
+                        });
+                    } catch(e) { 
+                        console.error('Error en audio:', e);
+                    }
                 } else {
+                    console.log('⚠️ Alertas no habilitadas, usando vibración');
                     // Vibración como fallback en móviles
                     if (navigator.vibrate) { try { navigator.vibrate(200); } catch(e) {} }
                 }
-                // Pasar el ID de la orden más reciente y el incremento
-                showNewOrderNotification(curr - prev, data.latest_order_id, data.latest_order_number);
+                
+                // Pasar el ID de la orden más reciente y el incremento (manejar null/undefined)
+                const orderId = data.latest_order_id || null;
+                const orderNumber = data.latest_order_number || null;
+                console.log('📋 Mostrando notificación. Order ID:', orderId, 'Order Number:', orderNumber);
+                showNewOrderNotification(curr - prev, orderId, orderNumber);
             }
             window.__lastPendingOrders = curr;
             try { localStorage.setItem('admin_last_pending_orders', String(curr)); } catch(e) {}
@@ -255,29 +270,35 @@
     }
 
     function showNewOrderNotification(increment, orderId, orderNumber) {
-        const count = increment || 1;
-        const title = count > 1 ? `${count} nuevos pedidos` : 'Nuevo pedido recibido';
-        const orderInfo = orderNumber ? ` (Pedido #${orderNumber})` : '';
-        const options = {
-            body: 'Abre el panel para revisar y confirmar el pedido.',
-            icon: '../assets/images/LOGO.JPG',
-            badge: '../assets/images/LOGO.JPG',
-        };
-        // Intentar Notification API (si está permitido)
-        if ("Notification" in window && Notification.permission === 'granted') {
-            try {
-                const n = new Notification(title, options);
-                // Mantener notificación más tiempo (30 segundos) pero aún con auto-cierre
-                setTimeout(() => n.close && n.close(), 30000);
-            } catch(e) { console.log('Notification error', e); }
-        }
-        // Mostrar SIEMPRE un aviso visual dentro del panel (compatible con iOS/Android)
         try {
+            console.log('📬 showNewOrderNotification llamada con:', { increment, orderId, orderNumber });
+            
+            const count = increment || 1;
+            const title = count > 1 ? `${count} nuevos pedidos` : 'Nuevo pedido recibido';
+            const orderInfo = (orderNumber && orderNumber !== 'null' && orderNumber !== null) ? ` (Pedido #${orderNumber})` : '';
+            const options = {
+                body: 'Abre el panel para revisar y confirmar el pedido.',
+                icon: '../assets/images/LOGO.JPG',
+                badge: '../assets/images/LOGO.JPG',
+            };
+            
+            // Intentar Notification API (si está permitido)
+            if ("Notification" in window && Notification.permission === 'granted') {
+                try {
+                    const n = new Notification(title, options);
+                    // Mantener notificación más tiempo (30 segundos) pero aún con auto-cierre
+                    setTimeout(() => n.close && n.close(), 30000);
+                } catch(e) { 
+                    console.error('Error en Notification API:', e); 
+                }
+            }
+            
+            // Mostrar SIEMPRE un aviso visual dentro del panel (compatible con iOS/Android)
             const id = 'inlineOrderNotice_' + Date.now();
             
-            // Crear el contenido del botón/link si hay orderId
+            // Crear el contenido del botón/link si hay orderId (validar que sea válido)
             let actionButton = '';
-            if (orderId) {
+            if (orderId && orderId !== null && orderId !== 'null' && orderId !== undefined && !isNaN(orderId)) {
                 actionButton = `
                     <div class="mt-2">
                         <a href="orders.php?action=view&id=${orderId}" class="btn btn-sm btn-primary">
@@ -301,9 +322,12 @@
                 '</div>'
             );
             $('body').append(notification);
+            console.log('✅ Notificación visual agregada correctamente');
             // NO cerrar automáticamente - solo cuando el usuario lo cierre manualmente
             // setTimeout removido - la notificación permanecerá hasta que se cierre manualmente
-        } catch(e) { console.log('Inline notification error', e); }
+        } catch(e) { 
+            console.error('❌ Error en showNewOrderNotification:', e);
+        }
     }
     </script>
 </body>
