@@ -69,15 +69,28 @@ function loadCategoryFilters(activeCategory = null) {
         dataType: 'json',
         success: function(response) {
             console.log('✅ Menu: Categorías cargadas:', response);
-            if (response.success) {
-                displayCategoryFilters(response.data, activeCategory);
+            console.log('✅ Menu: Response.success:', response.success);
+            console.log('✅ Menu: Response.data:', response.data);
+            
+            if (response.success && response.data && Array.isArray(response.data)) {
+                if (response.data.length > 0) {
+                    displayCategoryFilters(response.data, activeCategory);
+                } else {
+                    console.warn('⚠️ Menu: No hay categorías disponibles');
+                    showCategoriesError();
+                }
             } else {
-                console.error('❌ Menu: Error al cargar categorías:', response.message);
+                console.error('❌ Menu: Error al cargar categorías:', response.message || 'Unknown error');
+                console.error('❌ Menu: Response completa:', response);
                 showCategoriesError();
             }
         },
         error: function(xhr, status, error) {
             console.error('❌ Menu: Error AJAX al cargar categorías:', error);
+            console.error('❌ Menu: Status:', status);
+            console.error('❌ Menu: XHR Response:', xhr.responseText);
+            console.error('❌ Menu: XHR Status:', xhr.status);
+            console.error('❌ Menu: XHR StatusText:', xhr.statusText);
             showCategoriesError();
         }
     });
