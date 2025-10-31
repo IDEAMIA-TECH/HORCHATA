@@ -40,7 +40,7 @@ include 'includes/header.php';
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="category-navigation-wrapper" style="position: relative; max-width: 90%; margin: 0 auto;">
+                <div class="category-navigation-wrapper" style="position: relative; max-width: 100%; margin: 0 auto;">
                     <!-- Botón de flecha izquierda -->
                     <button class="category-nav-arrow category-nav-arrow-left" id="categoryNavLeft" style="position: absolute; left: -40px; top: 50%; transform: translateY(-50%); background: #d4af37; color: #ffffff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; opacity: 0.6;" title="<?php echo __('scroll_left'); ?>">
                         <i class="fas fa-chevron-left"></i>
