@@ -59,7 +59,7 @@ function getCategories() {
             throw new Exception('Database connection not available');
         }
         
-        // Obtener límite opcional
+        // Obtener límite opcional (si no se especifica, mostrar todas las categorías)
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 0;
         
         // Consultar categorías desde la base de datos
@@ -98,6 +98,12 @@ function getCategories() {
         
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        // Log para debugging: mostrar todas las categorías encontradas
+        error_log("Categories found: " . count($categories));
+        foreach ($categories as $cat) {
+            error_log("Category ID: {$cat['id']}, Name EN: {$cat['name']}, Name ES: {$cat['name_es']}, Active: {$cat['is_active']}, Sort Order: {$cat['display_order']}");
+        }
+        
         // Si no hay categorías, retornar array vacío en lugar de error
         if (empty($categories)) {
             echo json_encode([
@@ -108,6 +114,43 @@ function getCategories() {
             ]);
             return;
         }
+        
+        // NOTA: Mostrar TODAS las categorías activas, incluso si no tienen productos
+        // Esto permite que se muestren categorías vacías si es necesario
+        // Si quieres filtrar solo categorías con productos, descomenta el código abajo
+        
+        // Verificar si hay categorías con productos (OPCIONAL - comentado para mostrar todas)
+        /*
+        $categoriesWithProducts = [];
+        foreach ($categories as $category) {
+            // Verificar si esta categoría tiene productos disponibles
+            $checkProducts = $pdo->prepare("SELECT COUNT(*) as count FROM products WHERE category_id = ? AND is_available = 1");
+            $checkProducts->execute([$category['id']]);
+            $productCount = $checkProducts->fetch(PDO::FETCH_ASSOC);
+            
+            // Solo agregar categorías que tienen productos
+            if ($productCount && $productCount['count'] > 0) {
+                $categoriesWithProducts[] = $category;
+                error_log("Category {$category['id']} ({$category['name']}) has {$productCount['count']} products");
+            } else {
+                error_log("Category {$category['id']} ({$category['name']}) has NO products - skipping");
+            }
+        }
+        
+        // Usar solo categorías con productos
+        $categories = $categoriesWithProducts;
+        
+        // Si después de filtrar no hay categorías, retornar array vacío
+        if (empty($categories)) {
+            echo json_encode([
+                'success' => true,
+                'data' => [],
+                'total' => 0,
+                'message' => 'No categories with products found'
+            ]);
+            return;
+        }
+        */
         
         // Formatear categorías para la respuesta
         $formatted_categories = [];
