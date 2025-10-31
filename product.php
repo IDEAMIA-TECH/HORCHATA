@@ -578,7 +578,16 @@ function handleConfirmAddToCart() {
     $('#customizeModal').modal('hide');
     
     // Mostrar notificación
-    const addedText = quantity === 1 ? window.translations.addedToCart : window.translations.addedToCartPlural;
+    let addedText;
+    if (quantity === 1) {
+        addedText = (window.translations && window.translations.addedToCart) 
+            ? window.translations.addedToCart 
+            : 'agregado al carrito';
+    } else {
+        addedText = (window.translations && window.translations.addedToCartPlural) 
+            ? window.translations.addedToCartPlural 
+            : 'agregados al carrito';
+    }
     showNotification(`${quantity} ${currentProduct.name} ${addedText}`, 'success');
     
     // Resetear modal
@@ -690,7 +699,9 @@ function addToCart(productId, productName, productPrice, productImage) {
 
 function showCartFeedback(button) {
     const originalText = button.html();
-    const addedText = window.translations ? window.translations.addedToCart : 'Agregado';
+    const addedText = (window.translations && window.translations.addedToCart) 
+        ? window.translations.addedToCart 
+        : 'agregado al carrito';
     button.html(`<i class="fas fa-check me-2"></i>${addedText}`).addClass('btn-success');
     
     setTimeout(() => {
