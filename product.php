@@ -578,15 +578,19 @@ function handleConfirmAddToCart() {
     $('#customizeModal').modal('hide');
     
     // Mostrar notificación
+    // Detectar idioma actual
+    const htmlLang = document.documentElement.lang || 'es';
+    const currentLang = (htmlLang === 'en' || htmlLang === 'es') ? htmlLang : 'es';
+    
     let addedText;
     if (quantity === 1) {
         addedText = (window.translations && window.translations.addedToCart) 
             ? window.translations.addedToCart 
-            : 'agregado al carrito';
+            : (currentLang === 'en' ? 'added to cart' : 'agregado al carrito');
     } else {
         addedText = (window.translations && window.translations.addedToCartPlural) 
             ? window.translations.addedToCartPlural 
-            : 'agregados al carrito';
+            : (currentLang === 'en' ? 'added to cart' : 'agregados al carrito');
     }
     showNotification(`${quantity} ${currentProduct.name} ${addedText}`, 'success');
     
@@ -699,9 +703,13 @@ function addToCart(productId, productName, productPrice, productImage) {
 
 function showCartFeedback(button) {
     const originalText = button.html();
+    // Detectar idioma actual
+    const htmlLang = document.documentElement.lang || 'es';
+    const currentLang = (htmlLang === 'en' || htmlLang === 'es') ? htmlLang : 'es';
+    
     const addedText = (window.translations && window.translations.addedToCart) 
         ? window.translations.addedToCart 
-        : 'agregado al carrito';
+        : (currentLang === 'en' ? 'added to cart' : 'agregado al carrito');
     button.html(`<i class="fas fa-check me-2"></i>${addedText}`).addClass('btn-success');
     
     setTimeout(() => {
