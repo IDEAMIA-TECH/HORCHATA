@@ -117,7 +117,19 @@ function initCart() {
             });
         } else {
             console.log('🛒 Checkout: Carrito vacío');
-            alert('Tu carrito está vacío. Agrega algunos productos antes de proceder al pago.');
+            // Detectar idioma actual
+            const htmlLang = document.documentElement.lang || 'es';
+            const currentLang = (htmlLang === 'en' || htmlLang === 'es') ? htmlLang : 'es';
+            
+            const emptyMessage = (window.translations && window.translations.cartEmpty) 
+                ? window.translations.cartEmpty 
+                : (currentLang === 'en' ? 'Your cart is empty' : 'Tu carrito está vacío');
+            
+            const addProductsMsg = currentLang === 'en' 
+                ? 'Add some products before proceeding to checkout.' 
+                : 'Agrega algunos productos antes de proceder al pago.';
+            
+            alert(`${emptyMessage} ${addProductsMsg}`);
         }
     });
 }
@@ -266,10 +278,18 @@ function updateCartOffcanvas(cart) {
     const cartItemsContainer = $('#cartItems');
     
     if (cart.length === 0) {
+        // Detectar idioma actual
+        const htmlLang = document.documentElement.lang || 'es';
+        const currentLang = (htmlLang === 'en' || htmlLang === 'es') ? htmlLang : 'es';
+        
+        const emptyMessage = (window.translations && window.translations.cartEmpty) 
+            ? window.translations.cartEmpty 
+            : (currentLang === 'en' ? 'Your cart is empty' : 'Tu carrito está vacío');
+        
         cartItemsContainer.html(`
             <div class="text-center text-muted py-4">
                 <i class="fas fa-shopping-cart fa-3x mb-3"></i>
-                <p>Tu carrito está vacío</p>
+                <p>${emptyMessage}</p>
             </div>
         `);
         return;

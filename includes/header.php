@@ -50,7 +50,8 @@ require_once 'includes/init.php';
             addedToCart: <?php echo json_encode(__('added_to_cart')); ?>,
             addedToCartPlural: <?php echo json_encode(__('added_to_cart_plural')); ?>,
             productAddedToCart: <?php echo json_encode(__('product_added_to_cart')); ?>,
-            productRemovedFromCart: <?php echo json_encode(__('product_removed_from_cart')); ?>
+            productRemovedFromCart: <?php echo json_encode(__('product_removed_from_cart')); ?>,
+            cartEmpty: <?php echo json_encode(__('cart_empty')); ?>
         };
     </script>
 </head>
