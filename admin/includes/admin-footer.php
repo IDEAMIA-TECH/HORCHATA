@@ -240,7 +240,8 @@
                     // Vibración como fallback en móviles
                     if (navigator.vibrate) { try { navigator.vibrate(200); } catch(e) {} }
                 }
-                showNewOrderNotification(curr - prev);
+                // Pasar el ID de la orden más reciente y el incremento
+                showNewOrderNotification(curr - prev, data.latest_order_id, data.latest_order_number);
             }
             window.__lastPendingOrders = curr;
             try { localStorage.setItem('admin_last_pending_orders', String(curr)); } catch(e) {}
@@ -253,9 +254,10 @@
         }
     }
 
-    function showNewOrderNotification(increment) {
+    function showNewOrderNotification(increment, orderId, orderNumber) {
         const count = increment || 1;
         const title = count > 1 ? `${count} nuevos pedidos` : 'Nuevo pedido recibido';
+        const orderInfo = orderNumber ? ` (Pedido #${orderNumber})` : '';
         const options = {
             body: 'Abre el panel para revisar y confirmar el pedido.',
             icon: '../assets/images/LOGO.JPG',
@@ -265,21 +267,42 @@
         if ("Notification" in window && Notification.permission === 'granted') {
             try {
                 const n = new Notification(title, options);
-                setTimeout(() => n.close && n.close(), 5000);
+                // Mantener notificación más tiempo (30 segundos) pero aún con auto-cierre
+                setTimeout(() => n.close && n.close(), 30000);
             } catch(e) { console.log('Notification error', e); }
         }
         // Mostrar SIEMPRE un aviso visual dentro del panel (compatible con iOS/Android)
         try {
             const id = 'inlineOrderNotice_' + Date.now();
+            
+            // Crear el contenido del botón/link si hay orderId
+            let actionButton = '';
+            if (orderId) {
+                actionButton = `
+                    <div class="mt-2">
+                        <a href="orders.php?action=view&id=${orderId}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye me-1"></i>Ver Orden
+                        </a>
+                    </div>
+                `;
+            }
+            
             const notification = $(
                 '<div id="'+id+'" class="alert alert-info alert-dismissible fade show position-fixed" \
-                     style="top: 20px; right: 20px; z-index: 99999; min-width: 300px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);" role="alert">' +
-                    '<i class="fas fa-bell me-2"></i>' + title +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                     style="top: 20px; right: 20px; z-index: 99999; min-width: 350px; max-width: 450px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);" role="alert">' +
+                    '<div class="d-flex align-items-start">' +
+                        '<div class="flex-grow-1">' +
+                            '<i class="fas fa-bell me-2"></i><strong>' + title + '</strong>' + orderInfo +
+                            '<p class="mb-0 mt-2">Abre el panel para revisar y confirmar el pedido.</p>' +
+                            actionButton +
+                        '</div>' +
+                        '<button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>' +
                 '</div>'
             );
             $('body').append(notification);
-            setTimeout(function(){ notification.alert('close'); }, 8000);
+            // NO cerrar automáticamente - solo cuando el usuario lo cierre manualmente
+            // setTimeout removido - la notificación permanecerá hasta que se cierre manualmente
         } catch(e) { console.log('Inline notification error', e); }
     }
     </script>

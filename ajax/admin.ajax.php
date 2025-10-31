@@ -202,6 +202,15 @@ function getNotifications() {
         WHERE status IN ('pending', 'confirmed')
     ") ?: ['count' => 0];
     
+    // Obtener el ID de la orden más reciente con status pending o confirmed
+    $latest_order = fetchOne("
+        SELECT id, order_number
+        FROM orders 
+        WHERE status IN ('pending', 'confirmed')
+        ORDER BY created_at DESC
+        LIMIT 1
+    ");
+    
     $pending_reviews = fetchOne("
         SELECT COUNT(*) as count
         FROM reviews 
@@ -219,7 +228,9 @@ function getNotifications() {
         'data' => [
             'pending_orders' => $pending_orders['count'],
             'pending_reviews' => $pending_reviews['count'],
-            'new_messages' => $new_messages['count']
+            'new_messages' => $new_messages['count'],
+            'latest_order_id' => $latest_order['id'] ?? null,
+            'latest_order_number' => $latest_order['order_number'] ?? null
         ]
     ]);
 }
