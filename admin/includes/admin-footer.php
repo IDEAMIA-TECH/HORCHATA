@@ -163,8 +163,8 @@
         if ($('#' + btnId).length === 0) {
             const btn = $(
                 '<button id="'+btnId+'" class="btn btn-warning shadow position-fixed no-print" \
-                         style="bottom: 20px; right: 20px; z-index: 99999; display:none;">\
-                         <i class="fas fa-bell me-2"></i>Habilitar alertas\
+                         style="bottom: 20px; right: 20px; z-index: 99999; display:none; font-weight: bold; padding: 12px 20px;">\
+                         <i class="fas fa-bell me-2"></i>🔊 Habilitar Alertas de Sonido\
                  </button>'
             );
             $('body').append(btn);
@@ -172,8 +172,24 @@
                 enableAlertsGesture();
                 requestBrowserNotifications();
                 // Sonido de confirmación inmediato
-                playBeep(300, 1200, 0.9);
+                setTimeout(function() {
+                    try {
+                        playBeep(300, 1200, 0.9);
+                    } catch(e) {
+                        console.log('Beep de confirmación no disponible aún');
+                    }
+                }, 100);
                 $(this).fadeOut();
+                // Mostrar mensaje de confirmación
+                const confirmMsg = $('<div class="alert alert-success position-fixed" style="top: 80px; right: 20px; z-index: 99999; min-width: 300px;">' +
+                    '<i class="fas fa-check-circle me-2"></i>Alertas habilitadas. El sonido funcionará en nuevos pedidos.' +
+                '</div>');
+                $('body').append(confirmMsg);
+                setTimeout(function() {
+                    confirmMsg.fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 3000);
             });
         }
         // Primer interacción del usuario: desbloquear audio
@@ -348,18 +364,6 @@
             if (prev !== null && curr > prev) {
                 console.log('🔔 Nuevo pedido detectado! Incremento:', curr - prev);
                 
-                // Intentar habilitar alertas automáticamente si no están habilitadas
-                if (!window.__alertsEnabled) {
-                    console.log('⚠️ Alertas no habilitadas, intentando habilitar automáticamente...');
-                    enableAlertsGesture();
-                    // Dar un momento para que se habilite
-                    setTimeout(function() {
-                        if (!window.__alertsEnabled) {
-                            console.log('⚠️ No se pudo habilitar automáticamente');
-                        }
-                    }, 100);
-                }
-                
                 // Reproducir sonido solo si el usuario ya interactuó con la página
                 if (window.__alertsEnabled) {
                     console.log('🔊 Reproduciendo alarma (usuario ya interactuó)...');
@@ -381,19 +385,26 @@
                     } catch(e) { 
                         console.error('Error en alertAudio:', e);
                     }
+                    
+                    // Vibración como fallback en móviles (solo si ya interactuó)
+                    if (navigator.vibrate) { 
+                        try { 
+                            navigator.vibrate([200, 100, 200]); 
+                            console.log('✅ Vibración activada');
+                        } catch(e) {
+                            console.error('Error en vibración:', e);
+                        }
+                    }
                 } else {
                     console.log('⚠️ Sonido deshabilitado - El usuario debe interactuar con la página primero');
-                    console.log('💡 El usuario puede hacer clic en cualquier parte de la página para habilitar las alertas de sonido');
-                }
-                
-                // Vibración como fallback en móviles
-                if (navigator.vibrate) { 
-                    try { 
-                        navigator.vibrate([200, 100, 200]); 
-                        console.log('✅ Vibración activada');
-                    } catch(e) {
-                        console.error('Error en vibración:', e);
-                    }
+                    console.log('💡 Haz clic en cualquier parte de la página para habilitar las alertas de sonido');
+                    // Mostrar botón de habilitación más prominentemente
+                    setTimeout(function() {
+                        $('#enableAlertsBtn').fadeIn().css({
+                            'animation': 'pulse 1s infinite',
+                            'box-shadow': '0 0 20px rgba(255, 193, 7, 0.8)'
+                        });
+                    }, 500);
                 }
                 
                 // Pasar el ID de la orden más reciente y el incremento (manejar null/undefined)
@@ -452,6 +463,19 @@
                 `;
             }
             
+            // Agregar mensaje sobre habilitar sonido si no está habilitado
+            let soundMessage = '';
+            if (!window.__alertsEnabled) {
+                soundMessage = `
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-volume-mute me-1"></i>
+                            Haz clic en cualquier parte de la página para habilitar las alertas de sonido
+                        </small>
+                    </div>
+                `;
+            }
+            
             const notification = $(
                 '<div id="'+id+'" class="alert alert-info alert-dismissible fade show position-fixed" \
                      style="top: 20px; right: 20px; z-index: 99999; min-width: 350px; max-width: 450px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);" role="alert">' +
@@ -460,6 +484,7 @@
                             '<i class="fas fa-bell me-2"></i><strong>' + title + '</strong>' + orderInfo +
                             '<p class="mb-0 mt-2">Abre el panel para revisar y confirmar el pedido.</p>' +
                             actionButton +
+                            soundMessage +
                         '</div>' +
                         '<button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>' +
                     '</div>' +
