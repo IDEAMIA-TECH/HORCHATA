@@ -904,7 +904,8 @@ function __($key, $default = '') {
         'method_not_allowed' => 'Método no permitido',
         'added_to_cart' => 'agregado al carrito',
         'added_to_cart_plural' => 'agregados al carrito',
-        'product_added_to_cart' => 'Producto agregado al carrito'
+        'product_added_to_cart' => 'Producto agregado al carrito',
+        'product_removed_from_cart' => 'Producto removido del carrito'
     ];
     
     // Textos en inglés
@@ -1710,7 +1711,8 @@ function __($key, $default = '') {
         'method_not_allowed' => 'Method not allowed',
         'added_to_cart' => 'added to cart',
         'added_to_cart_plural' => 'added to cart',
-        'product_added_to_cart' => 'Product added to cart'
+        'product_added_to_cart' => 'Product added to cart',
+        'product_removed_from_cart' => 'Product removed from cart'
     ];
     
     $texts = $lang === 'en' ? $texts_en : $texts_es;

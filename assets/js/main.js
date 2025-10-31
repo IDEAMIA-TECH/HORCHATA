@@ -201,7 +201,8 @@ function removeFromCart(productId) {
     saveCartToStorage(cart);
     updateCartDisplay();
     
-    showNotification('Producto removido del carrito', 'info');
+    const message = window.translations ? window.translations.productRemovedFromCart : 'Producto removido del carrito';
+    showNotification(message, 'info');
 }
 
 /**
