@@ -63,21 +63,81 @@ function getCategories() {
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 0;
         
         // Consultar categorías desde la base de datos
-        // Usar COALESCE para manejar campos opcionales que pueden no existir
-        $sql = "SELECT 
-                    id,
-                    name_en as name,
-                    COALESCE(name_es, name_en) as name_es,
-                    COALESCE(description_en, '') as description,
-                    COALESCE(description_es, '') as description_es,
-                    COALESCE(image, '') as image,
-                    COALESCE(icon, 'fas fa-utensils') as icon,
-                    COALESCE(color, '#d4af37') as color,
-                    is_active,
-                    COALESCE(display_order, 0) as display_order
-                FROM categories 
-                WHERE is_active = 1 
-                ORDER BY display_order ASC, name_en ASC";
+        // Primero verificar qué columnas existen en la tabla
+        $checkColumns = "SHOW COLUMNS FROM categories";
+        $columnStmt = $pdo->prepare($checkColumns);
+        $columnStmt->execute();
+        $columns = $columnStmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        // Construir SELECT solo con columnas que existen
+        $selectFields = ['id', 'name_en as name'];
+        
+        // Agregar campos opcionales si existen
+        if (in_array('name_es', $columns)) {
+            $selectFields[] = 'COALESCE(name_es, name_en) as name_es';
+        } else {
+            $selectFields[] = 'name_en as name_es';
+        }
+        
+        if (in_array('description_en', $columns)) {
+            $selectFields[] = 'COALESCE(description_en, \'\') as description';
+        } else {
+            $selectFields[] = '\'\' as description';
+        }
+        
+        if (in_array('description_es', $columns)) {
+            $selectFields[] = 'COALESCE(description_es, \'\') as description_es';
+        } else {
+            $selectFields[] = '\'\' as description_es';
+        }
+        
+        if (in_array('image', $columns)) {
+            $selectFields[] = 'COALESCE(image, \'\') as image';
+        } else {
+            $selectFields[] = '\'\' as image';
+        }
+        
+        if (in_array('icon', $columns)) {
+            $selectFields[] = 'COALESCE(icon, \'fas fa-utensils\') as icon';
+        } else {
+            $selectFields[] = '\'fas fa-utensils\' as icon';
+        }
+        
+        if (in_array('color', $columns)) {
+            $selectFields[] = 'COALESCE(color, \'#d4af37\') as color';
+        } else {
+            $selectFields[] = '\'#d4af37\' as color';
+        }
+        
+        if (in_array('is_active', $columns)) {
+            $selectFields[] = 'is_active';
+        }
+        
+        // Usar sort_order si existe, si no usar display_order, si no usar 0
+        if (in_array('sort_order', $columns)) {
+            $selectFields[] = 'COALESCE(sort_order, 0) as display_order';
+        } elseif (in_array('display_order', $columns)) {
+            $selectFields[] = 'COALESCE(display_order, 0) as display_order';
+        } else {
+            $selectFields[] = '0 as display_order';
+        }
+        
+        // Construir consulta SQL
+        $sql = "SELECT " . implode(', ', $selectFields) . " FROM categories";
+        
+        // Agregar WHERE si existe is_active
+        if (in_array('is_active', $columns)) {
+            $sql .= " WHERE is_active = 1";
+        }
+        
+        // Agregar ORDER BY - usar sort_order si existe, si no display_order, si no name_en
+        if (in_array('sort_order', $columns)) {
+            $sql .= " ORDER BY sort_order ASC, name_en ASC";
+        } elseif (in_array('display_order', $columns)) {
+            $sql .= " ORDER BY display_order ASC, name_en ASC";
+        } else {
+            $sql .= " ORDER BY name_en ASC";
+        }
         
         if ($limit > 0) {
             $sql .= " LIMIT " . $limit;
