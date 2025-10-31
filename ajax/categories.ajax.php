@@ -4,7 +4,9 @@
  * Maneja las operaciones de categorías
  */
 
-// No necesitamos base de datos para categorías estáticas
+// Incluir configuración de base de datos
+require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Configurar headers para AJAX
 header('Content-Type: application/json');
@@ -46,108 +48,73 @@ try {
 }
 
 /**
- * Obtener categorías con sus imágenes
+ * Obtener categorías con sus imágenes desde la base de datos
  */
 function getCategories() {
     global $pdo;
     
     try {
-        // Definir las categorías con sus imágenes
-        $categories = [
-            [
-                'id' => 'burritos',
-                'name' => 'Burritos',
-                'name_es' => 'Burritos',
-                'description' => 'Delicious burritos filled with authentic Mexican ingredients',
-                'description_es' => 'Deliciosos burritos rellenos con ingredientes auténticos mexicanos',
-                'image' => 'assets/images/categories/burritos.jpg',
-                'icon' => 'fas fa-bread-slice',
-                'color' => '#d4af37'
-            ],
-            [
-                'id' => 'tacos',
-                'name' => 'Tacos',
-                'name_es' => 'Tacos',
-                'description' => 'Traditional Mexican tacos with fresh ingredients',
-                'description_es' => 'Tacos mexicanos tradicionales con ingredientes frescos',
-                'image' => 'assets/images/categories/tacos.jpg',
-                'icon' => 'fas fa-utensils',
-                'color' => '#e74c3c'
-            ],
-            [
-                'id' => 'nachos',
-                'name' => 'Nachos',
-                'name_es' => 'Nachos',
-                'description' => 'Crispy nachos topped with cheese and jalapeños',
-                'description_es' => 'Nachos crujientes cubiertos con queso y jalapeños',
-                'image' => 'assets/images/categories/nachos.jpg',
-                'icon' => 'fas fa-cheese',
-                'color' => '#f39c12'
-            ],
-            [
-                'id' => 'seafood',
-                'name' => 'Seafood',
-                'name_es' => 'Mariscos',
-                'description' => 'Fresh seafood dishes with Mexican flavors',
-                'description_es' => 'Platos de mariscos frescos con sabores mexicanos',
-                'image' => 'assets/images/categories/seafood.jpg',
-                'icon' => 'fas fa-fish',
-                'color' => '#3498db'
-            ],
-            [
-                'id' => 'hamburger',
-                'name' => 'Hamburgers',
-                'name_es' => 'Hamburguesas',
-                'description' => 'Juicy burgers with Mexican-inspired toppings',
-                'description_es' => 'Hamburguesas jugosas con ingredientes inspirados en México',
-                'image' => 'assets/images/categories/hamburger.jpg',
-                'icon' => 'fas fa-hamburger',
-                'color' => '#8e44ad'
-            ],
-            [
-                'id' => 'combination_plates',
-                'name' => 'Combination Plates',
-                'name_es' => 'Platos Combinados',
-                'description' => 'Complete meals with multiple Mexican dishes',
-                'description_es' => 'Comidas completas con múltiples platillos mexicanos',
-                'image' => 'assets/images/categories/conbinaionplates.jpg',
-                'icon' => 'fas fa-plate-wheat',
-                'color' => '#27ae60'
-            ],
-            [
-                'id' => 'daily_special',
-                'name' => 'Daily Specials',
-                'name_es' => 'Especiales del Día',
-                'description' => 'Chef\'s special dishes that change daily',
-                'description_es' => 'Platillos especiales del chef que cambian diariamente',
-                'image' => 'assets/images/categories/dailyspecial.jpg',
-                'icon' => 'fas fa-star',
-                'color' => '#e67e22'
-            ],
-            [
-                'id' => 'desayunos',
-                'name' => 'Breakfast',
-                'name_es' => 'Desayunos',
-                'description' => 'Traditional Mexican breakfast dishes',
-                'description_es' => 'Platillos tradicionales de desayuno mexicano',
-                'image' => 'assets/images/categories/desayunos.png',
-                'icon' => 'fas fa-sun',
-                'color' => '#f1c40f'
-            ]
-        ];
+        // Obtener límite opcional
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 0;
+        
+        // Consultar categorías desde la base de datos
+        $sql = "SELECT 
+                    id,
+                    name_en as name,
+                    name_es,
+                    description_en as description,
+                    description_es,
+                    image,
+                    icon,
+                    color,
+                    is_active,
+                    display_order
+                FROM categories 
+                WHERE is_active = 1 
+                ORDER BY display_order ASC, name_en ASC";
+        
+        if ($limit > 0) {
+            $sql .= " LIMIT " . $limit;
+        }
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Formatear categorías para la respuesta
         $formatted_categories = [];
         foreach ($categories as $category) {
+            // Asegurar que la imagen tenga la ruta correcta
+            $image = $category['image'] ?? '';
+            if (!empty($image)) {
+                // Si la imagen comienza con '../', removerlo
+                $image = str_replace('../', '', $image);
+                // Si no comienza con 'http' o 'assets/', ajustar la ruta
+                if (strpos($image, 'http') === 0) {
+                    // URL externa, mantenerla tal cual
+                } elseif (strpos($image, 'assets/') !== 0) {
+                    // Si no comienza con 'assets/', usar la ruta relativa o generar una
+                    if (strpos($image, '/') !== false) {
+                        // Ya tiene una ruta, mantenerla
+                    } else {
+                        // Solo el nombre del archivo, agregar la ruta de categorías
+                        $image = 'assets/images/categories/' . $image;
+                    }
+                }
+            } else {
+                // Imagen por defecto si no hay imagen
+                $image = 'assets/images/categories/default.jpg';
+            }
+            
             $formatted_categories[] = [
                 'id' => $category['id'],
                 'name' => $category['name'],
-                'name_es' => $category['name_es'],
-                'description' => $category['description'],
-                'description_es' => $category['description_es'],
-                'image' => $category['image'],
-                'icon' => $category['icon'],
-                'color' => $category['color'],
+                'name_es' => $category['name_es'] ?? $category['name'],
+                'description' => $category['description'] ?? '',
+                'description_es' => $category['description_es'] ?? '',
+                'image' => $image,
+                'icon' => $category['icon'] ?? 'fas fa-utensils',
+                'color' => $category['color'] ?? '#d4af37',
                 'url' => 'menu.php?category=' . $category['id']
             ];
         }

@@ -65,7 +65,10 @@ try {
     
     
     // Construir consulta
-    $sql = "SELECT p.*, c.name_en as category_name 
+    $sql = "SELECT p.*, 
+                   c.name_en as category_name_en,
+                   c.name_es as category_name_es,
+                   c.name_en as category_name 
             FROM products p 
             LEFT JOIN categories c ON p.category_id = c.id 
             WHERE p.is_available = 1";
@@ -136,7 +139,9 @@ try {
             'price' => number_format($product['price'], 2),
             'image' => $product['image'] ? str_replace('../', '', $product['image']) : 'assets/images/placeholder.jpg',
             'category_id' => $product['category_id'],
-            'category_name' => $product['category_name'],
+            'category_name' => $product['category_name'] ?? $product['category_name_en'] ?? '',
+            'category_name_en' => $product['category_name_en'] ?? '',
+            'category_name_es' => $product['category_name_es'] ?? '',
             'is_featured' => (bool)$product['is_featured']
         ];
     }

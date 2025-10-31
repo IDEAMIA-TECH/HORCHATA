@@ -190,8 +190,9 @@ function displayMenuContent(products, categoryId = null) {
     // Si se está filtrando por una categoría específica, mostrar solo esa categoría
     if (categoryId && categoryId !== 'all') {
         console.log('🔍 Menu: Mostrando solo categoría filtrada:', categoryId);
-        // Obtener el nombre de la categoría del primer producto
-        const categoryName = products[0]?.category_name || 'Categoría';
+        // Obtener el nombre de la categoría del primer producto según el idioma
+        const currentLang = getLanguage();
+        const categoryName = products[0] ? (currentLang === 'en' ? (products[0].category_name_en || products[0].category_name || 'Category') : (products[0].category_name_es || products[0].category_name || 'Categoría')) : (currentLang === 'en' ? 'Category' : 'Categoría');
         
         html += `
             <div class="menu-category">
@@ -231,11 +232,17 @@ function displayMenuContent(products, categoryId = null) {
         
         // Agrupar productos por categoría
         const categories = {};
+        const currentLang = getLanguage();
         products.forEach(product => {
             if (!categories[product.category_id]) {
+                // Usar el nombre correcto según el idioma
+                const categoryName = currentLang === 'en' 
+                    ? (product.category_name_en || product.category_name || 'Category')
+                    : (product.category_name_es || product.category_name || 'Categoría');
+                
                 categories[product.category_id] = {
                     id: product.category_id,
-                    name: product.category_name,
+                    name: categoryName,
                     products: []
                 };
             }
