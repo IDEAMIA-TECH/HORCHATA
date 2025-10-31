@@ -127,7 +127,7 @@ try {
             updateOrderStatus();
             break;
         default:
-            throw new Exception('Acción no válida');
+            throw new Exception(__('invalid_action'));
     }
     
 } catch (Exception $e) {
@@ -137,7 +137,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Error del servidor: ' . $e->getMessage(),
+        'message' => __('server_error') . ': ' . $e->getMessage(),
         'error' => $e->getMessage()
     ]);
 }
@@ -152,7 +152,7 @@ function createOrder() {
     
     if (empty($order_data_raw)) {
         error_log("orders.ajax.php: order_data está vacío o no existe");
-        throw new Exception('Datos de orden no recibidos');
+        throw new Exception(__('order_data_not_received'));
     }
     
     $order_data = json_decode($order_data_raw, true);
@@ -160,18 +160,18 @@ function createOrder() {
     if (json_last_error() !== JSON_ERROR_NONE) {
         error_log("orders.ajax.php: Error JSON decode: " . json_last_error_msg());
         error_log("orders.ajax.php: order_data_raw = " . substr($order_data_raw, 0, 200));
-        throw new Exception('Datos de orden no válidos: ' . json_last_error_msg());
+        throw new Exception(__('invalid_order_data') . ': ' . json_last_error_msg());
     }
     
     if (!$order_data) {
-        throw new Exception('Datos de orden no válidos');
+        throw new Exception(__('invalid_order_data'));
     }
     
     // Validar datos requeridos
     $required_fields = ['customer', 'items', 'totals', 'payment'];
     foreach ($required_fields as $field) {
         if (!isset($order_data[$field])) {
-            throw new Exception("Campo requerido faltante: $field");
+            throw new Exception(str_replace('{field}', $field, __('required_field_missing')));
         }
     }
     
@@ -233,7 +233,7 @@ function createOrder() {
         
         $order_stmt = executeQuery($order_sql, $order_params);
         if ($order_stmt === false) {
-            throw new Exception('Error al insertar la orden');
+            throw new Exception(__('error_inserting_order'));
         }
         $order_id = $pdo->lastInsertId();
         
@@ -263,7 +263,7 @@ function createOrder() {
             
             $item_stmt = executeQuery($item_sql, $item_params);
             if ($item_stmt === false) {
-                throw new Exception('Error al insertar item de la orden: ' . ($item['name'] ?? 'desconocido'));
+                throw new Exception(str_replace('{item}', ($item['name'] ?? 'desconocido'), __('error_inserting_order_item')));
             }
         }
         
@@ -280,7 +280,7 @@ function createOrder() {
         $update_token_sql = "UPDATE orders SET review_token = ? WHERE id = ?";
         $token_stmt = executeQuery($update_token_sql, [$review_token, $order_id]);
         if ($token_stmt === false) {
-            throw new Exception('Error al actualizar el token de revisión');
+            throw new Exception(__('error_updating_review_token'));
         }
         
         // Confirmar transacción
@@ -295,7 +295,7 @@ function createOrder() {
             'order_id' => $order_id,
             'order_number' => $order_number,
             'review_token' => $review_token,
-            'message' => 'Orden creada exitosamente'
+            'message' => __('order_created_successfully')
         ]);
         
     } catch (Exception $e) {
@@ -311,7 +311,7 @@ function getOrder() {
     $order_id = $_GET['order_id'] ?? 0;
     
     if (!$order_id) {
-        throw new Exception('ID de orden requerido');
+        throw new Exception(__('order_id_required'));
     }
     
     // Obtener información de la orden
@@ -325,7 +325,7 @@ function getOrder() {
     ", [$order_id]);
     
     if (!$order) {
-        throw new Exception('Orden no encontrada');
+        throw new Exception(__('order_not_found'));
     }
     
     // Obtener items de la orden
@@ -351,12 +351,12 @@ function updateOrderStatus() {
     $status = $_POST['status'] ?? '';
     
     if (!$order_id || !$status) {
-        throw new Exception('ID de orden y estado requeridos');
+        throw new Exception(__('order_id_status_required'));
     }
     
     $valid_statuses = ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
     if (!in_array($status, $valid_statuses)) {
-        throw new Exception('Estado no válido');
+        throw new Exception(__('invalid_status'));
     }
     
     $sql = "UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?";
@@ -371,7 +371,7 @@ function updateOrderStatus() {
     
     echo json_encode([
         'success' => true,
-        'message' => 'Estado actualizado exitosamente'
+        'message' => __('status_updated_successfully')
     ]);
 }
 
@@ -476,7 +476,7 @@ function sendOrderStatusEmail(int $orderId, string $newStatus) {
     
     // Obtener orden + items + imágenes
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
-    if (!$order) { throw new Exception('Order not found'); }
+    if (!$order) { throw new Exception(__('order_not_found')); }
     $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];
     
     $itemsHtml = '';

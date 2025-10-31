@@ -21,7 +21,7 @@ require_once '../includes/init.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('Método no permitido');
+        throw new Exception(__('method_not_allowed'));
     }
     
     // Obtener datos del formulario
@@ -68,7 +68,7 @@ try {
     ]);
     
     if ($stmt === false) {
-        throw new Exception('Error al guardar el mensaje');
+        throw new Exception(__('error_saving_message'));
     }
     
     // Obtener email del restaurante desde settings

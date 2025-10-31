@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Configurar headers para AJAX
 header('Content-Type: application/json');
@@ -44,7 +45,7 @@ try {
             break;
             
         default:
-            throw new Exception('Acción no válida');
+            throw new Exception(__('invalid_action'));
     }
     
 } catch (Exception $e) {
@@ -62,37 +63,40 @@ function prepareCheckout() {
     $cart_data = $_POST['cart_data'] ?? '';
     
     if (empty($cart_data)) {
-        throw new Exception('No hay datos del carrito');
+        throw new Exception(__('no_cart_data'));
     }
     
     // Decodificar datos del carrito
     $cart_items = json_decode($cart_data, true);
     
     if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Error al decodificar datos del carrito');
+        throw new Exception(__('error_decoding_cart'));
     }
     
     if (empty($cart_items)) {
-        throw new Exception('El carrito está vacío');
+        throw new Exception(__('cart_empty'));
     }
     
     // Guardar en sesión
     $_SESSION['cart'] = $cart_items;
     $_SESSION['cart_timestamp'] = time();
     
-    // Calcular totales
+    // Calcular totales usando impuesto de settings
+    $tax_rate_setting = getSetting('tax_rate', '8.25');
+    $tax_rate = is_numeric($tax_rate_setting) ? ((float)$tax_rate_setting) / 100 : 0.0825;
+    
     $subtotal = 0;
     foreach ($cart_items as $item) {
         $subtotal += $item['price'] * $item['quantity'];
     }
     
     $_SESSION['cart_subtotal'] = $subtotal;
-    $_SESSION['cart_tax'] = $subtotal * 0.0825; // 8.25% de impuestos
+    $_SESSION['cart_tax'] = $subtotal * $tax_rate;
     $_SESSION['cart_total'] = $subtotal + $_SESSION['cart_tax'];
     
     echo json_encode([
         'success' => true,
-        'message' => 'Carrito preparado para checkout',
+        'message' => __('cart_prepared'),
         'cart_count' => count($cart_items),
         'subtotal' => $subtotal,
         'total' => $_SESSION['cart_total']
@@ -127,7 +131,7 @@ function updateCart() {
     
     echo json_encode([
         'success' => true,
-        'message' => 'Carrito actualizado'
+        'message' => __('cart_updated')
     ]);
 }
 
@@ -143,7 +147,7 @@ function clearCart() {
     
     echo json_encode([
         'success' => true,
-        'message' => 'Carrito limpiado'
+        'message' => __('cart_cleared')
     ]);
 }
 ?>

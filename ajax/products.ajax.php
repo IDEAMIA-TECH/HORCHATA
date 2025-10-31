@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Incluir conexión a BD
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 try {
     // Verificar si es una solicitud de extras
@@ -24,7 +25,7 @@ try {
         $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
         
         if ($product_id <= 0) {
-            throw new Exception('ID de producto inválido');
+            throw new Exception(__('invalid_product_id'));
         }
         
         // Obtener extras asignados al producto
@@ -155,7 +156,7 @@ try {
     
     echo json_encode([
         'success' => false,
-        'message' => 'Error al cargar productos',
+        'message' => __('error_loading_products'),
         'error' => $e->getMessage()
     ]);
 }

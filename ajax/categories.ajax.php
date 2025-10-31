@@ -30,7 +30,7 @@ try {
         default:
             echo json_encode([
                 'success' => false,
-                'message' => 'Acción no válida'
+                'message' => __('invalid_action')
             ]);
             break;
     }
@@ -40,7 +40,7 @@ try {
     
     echo json_encode([
         'success' => false,
-        'message' => 'Error interno del servidor',
+        'message' => __('internal_server_error'),
         'error' => $e->getMessage()
     ]);
 }
@@ -163,7 +163,7 @@ function getCategories() {
         
         echo json_encode([
             'success' => false,
-            'message' => 'Error al cargar las categorías',
+            'message' => __('error_loading_categories'),
             'error' => $e->getMessage()
         ]);
     }

@@ -77,7 +77,7 @@ session_start();
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     echo json_encode([
         'success' => false,
-        'message' => 'No autorizado'
+        'message' => __('unauthorized')
     ]);
     exit;
 }
@@ -179,7 +179,7 @@ try {
             deleteContactMessage();
             break;
         default:
-            throw new Exception('Acción no válida');
+            throw new Exception(__('invalid_action'));
     }
     
 } catch (Exception $e) {
@@ -187,7 +187,7 @@ try {
     
     echo json_encode([
         'success' => false,
-        'message' => 'Error del servidor',
+        'message' => __('server_error'),
         'error' => $e->getMessage()
     ]);
 }
@@ -242,7 +242,7 @@ function createProduct() {
         
         // Validaciones
         if (empty($name_en) || empty($name_es) || $category_id <= 0 || $price <= 0) {
-            throw new Exception('Datos requeridos faltantes');
+            throw new Exception(__('all_fields_required'));
         }
         
         // Procesar imagen si se subió una
@@ -257,10 +257,10 @@ function createProduct() {
         if (executeQuery($sql, $params)) {
             echo json_encode([
                 'success' => true,
-                'message' => 'Producto creado exitosamente'
+                'message' => __('product_created_successfully')
             ]);
         } else {
-            throw new Exception('Error al crear el producto');
+            throw new Exception(__('error_creating_product'));
         }
     } catch (Exception $e) {
         error_log("Error en createProduct: " . $e->getMessage());
@@ -294,7 +294,7 @@ function updateProduct() {
         error_log("🔄 Product ID: $product_id, Name EN: $name_en, Name ES: $name_es, Category: $category_id, Price: $price");
         
         if ($product_id <= 0) {
-            throw new Exception('ID de producto inválido');
+            throw new Exception(__('invalid_product_id'));
         }
         
         // Validaciones
@@ -304,7 +304,7 @@ function updateProduct() {
             if (empty($name_es)) $errors[] = "name_es vacío";
             if ($category_id <= 0) $errors[] = "category_id inválido ($category_id)";
             if ($price <= 0) $errors[] = "price inválido ($price)";
-            throw new Exception('Datos requeridos faltantes: ' . implode(', ', $errors));
+            throw new Exception(__('all_fields_required') . ': ' . implode(', ', $errors));
         }
         
         // Procesar imagen si se subió una nueva
@@ -332,11 +332,11 @@ function updateProduct() {
             error_log("✅ Product updated successfully");
             echo json_encode([
                 'success' => true,
-                'message' => 'Producto actualizado exitosamente'
+                'message' => __('product_updated_successfully')
             ]);
         } else {
             error_log("❌ Error executing query");
-            throw new Exception('Error al actualizar el producto');
+            throw new Exception(__('error_updating_product'));
         }
     } catch (Exception $e) {
         error_log("❌ Error en updateProduct: " . $e->getMessage());
@@ -354,7 +354,7 @@ function deleteProduct() {
     $product_id = (int)($_POST['product_id'] ?? 0);
     
     if ($product_id <= 0) {
-        throw new Exception('ID de producto inválido');
+        throw new Exception(__('invalid_product_id'));
     }
     
     // Verificar si el producto tiene órdenes asociadas
@@ -366,16 +366,16 @@ function deleteProduct() {
     ", [$product_id]) ?: ['count' => 0];
     
     if ($orders_count['count'] > 0) {
-        throw new Exception('No se puede eliminar un producto que tiene órdenes asociadas');
+        throw new Exception(__('cannot_delete_product_with_orders'));
     }
     
     if (executeQuery("DELETE FROM products WHERE id = ?", [$product_id])) {
         echo json_encode([
             'success' => true,
-            'message' => 'Producto eliminado exitosamente'
+            'message' => __('product_deleted_successfully')
         ]);
     } else {
-        throw new Exception('Error al eliminar el producto');
+        throw new Exception(__('error_deleting_product'));
     }
 }
 
@@ -389,7 +389,7 @@ function toggleProductStatus() {
     error_log("🔄 Toggle Product Status - Product ID: $product_id, Is Available: $is_available");
     
     if ($product_id <= 0) {
-        throw new Exception('ID de producto inválido');
+        throw new Exception(__('invalid_product_id'));
     }
     
     // Convertir el valor de is_available (puede venir como string 'true'/'false')
@@ -404,15 +404,15 @@ function toggleProductStatus() {
     error_log("🔄 Final value - Is Available: $is_available");
     
     if (executeQuery("UPDATE products SET is_available = ? WHERE id = ?", [$is_available, $product_id])) {
-        $status = $is_available ? 'activado' : 'desactivado';
+        $status = $is_available ? __('product_activated') : __('product_deactivated');
         error_log("✅ Product status updated successfully - Status: $status");
         echo json_encode([
             'success' => true,
-            'message' => "Producto {$status} exitosamente"
+            'message' => $status . ' ' . __('status_updated_successfully')
         ]);
     } else {
         error_log("❌ Error updating product status");
-        throw new Exception('Error al actualizar el estado del producto');
+        throw new Exception(__('error_updating_product_status'));
     }
 }
 
@@ -421,7 +421,7 @@ function toggleProductStatus() {
  */
 function uploadImage() {
     if (!isset($_FILES['image']) || $_FILES['image']['error'] !== 0) {
-        throw new Exception('No se subió ninguna imagen');
+        throw new Exception(__('no_image_uploaded'));
     }
     
     $image_url = processImageUpload();
@@ -429,7 +429,7 @@ function uploadImage() {
     echo json_encode([
         'success' => true,
         'image_url' => $image_url,
-        'message' => 'Imagen subida exitosamente'
+        'message' => __('image_uploaded_successfully')
     ]);
 }
 
@@ -442,7 +442,7 @@ function processImageUpload() {
     // Verificar si $_FILES está vacío
     if (!isset($_FILES['image'])) {
         error_log("❌ [processImageUpload] No file uploaded (image not set)");
-        throw new Exception('No se subió ninguna imagen');
+        throw new Exception(__('no_image_uploaded'));
     }
     
     $file = $_FILES['image'];
@@ -451,7 +451,7 @@ function processImageUpload() {
     // Verificar errores de subida
     if ($file['error'] !== 0) {
         error_log("❌ [processImageUpload] Upload error code: " . $file['error']);
-        throw new Exception('Error en la subida del archivo (código: ' . $file['error'] . ')');
+        throw new Exception(str_replace('{code}', $file['error'], __('error_file_upload')));
     }
     
     $upload_dir = '../assets/images/products/';
@@ -507,7 +507,7 @@ function processImageUpload() {
         error_log("❌ [processImageUpload] Failed to move uploaded file");
         error_log("❌ [processImageUpload] temp_name: " . $file['tmp_name']);
         error_log("❌ [processImageUpload] destination: " . $filepath);
-        throw new Exception('Error al guardar el archivo en el servidor');
+        throw new Exception(__('error_saving_file'));
     }
 }
 
@@ -523,7 +523,7 @@ function autoSave() {
     
     echo json_encode([
         'success' => true,
-        'message' => 'Datos guardados automáticamente'
+        'message' => __('data_saved_automatically')
     ]);
 }
 
@@ -536,7 +536,7 @@ function updateStatus() {
     $item_type = $_POST['item_type'] ?? 'elemento';
     
     if ($element_id <= 0) {
-        throw new Exception('ID de elemento inválido');
+        throw new Exception(__('invalid_element_id'));
     }
     
     // Implementar según el tipo de elemento
@@ -551,12 +551,12 @@ function updateStatus() {
             executeQuery("UPDATE reviews SET is_approved = ? WHERE id = ?", [$new_status, $element_id]);
             break;
         default:
-            throw new Exception('Tipo de elemento no válido');
+            throw new Exception(__('invalid_element_type'));
     }
     
     echo json_encode([
         'success' => true,
-        'message' => 'Estado actualizado exitosamente'
+        'message' => __('status_updated_successfully')
     ]);
 }
 
@@ -568,7 +568,7 @@ function deleteElement() {
     $item_type = $_POST['item_type'] ?? 'elemento';
     
     if ($element_id <= 0) {
-        throw new Exception('ID de elemento inválido');
+        throw new Exception(__('invalid_element_id'));
     }
     
     // Implementar según el tipo de elemento
@@ -583,12 +583,12 @@ function deleteElement() {
             executeQuery("DELETE FROM reviews WHERE id = ?", [$element_id]);
             break;
         default:
-            throw new Exception('Tipo de elemento no válido');
+            throw new Exception(__('invalid_element_type'));
     }
     
     echo json_encode([
         'success' => true,
-        'message' => 'Elemento eliminado exitosamente'
+        'message' => __('item_deleted_successfully')
     ]);
 }
 
@@ -608,7 +608,7 @@ function exportData() {
             exportToExcel($table);
             break;
         default:
-            throw new Exception('Formato de exportación no válido');
+            throw new Exception(__('invalid_export_format'));
     }
 }
 
@@ -647,18 +647,18 @@ function updateOrderStatus() {
     
     // Validar datos
     if ($order_id <= 0) {
-        throw new Exception('ID de pedido inválido');
+        throw new Exception(__('invalid_order_id'));
     }
     
     $valid_statuses = ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
     if (!in_array($status, $valid_statuses)) {
-        throw new Exception('Estado de pedido no válido');
+        throw new Exception(__('invalid_status'));
     }
     
     // Verificar que el pedido existe
     $order = fetchOne("SELECT id, status, payment_status FROM orders WHERE id = ?", [$order_id]);
     if (!$order) {
-        throw new Exception('Pedido no encontrado');
+        throw new Exception(__('order_not_found'));
     }
     
     // NO modificar estado de pago aquí; solo el admin lo marca como pagado con el botón
@@ -675,12 +675,12 @@ function updateOrderStatus() {
         }
         echo json_encode([
             'success' => true,
-            'message' => 'Estado del pedido actualizado exitosamente',
+            'message' => __('order_status_updated_successfully'),
             'new_status' => $status,
             'payment_status' => $order['payment_status']
         ]);
     } else {
-        throw new Exception('Error al actualizar el estado del pedido');
+        throw new Exception(__('error_updating_order_status'));
     }
 }
 
@@ -690,7 +690,7 @@ function sendAdminOrderStatusEmail(int $orderId, string $newStatus, string $paym
     $fromName = getSetting('email_from_name', 'Horchata Mexican Food');
     $logoUrl = resolveLogoDataUriAdmin();
     $order = fetchOne("SELECT * FROM orders WHERE id = ?", [$orderId]);
-    if (!$order) { throw new Exception('Order not found'); }
+    if (!$order) { throw new Exception(__('order_not_found')); }
     $items = fetchAll("SELECT oi.*, p.image FROM order_items oi LEFT JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?", [$orderId]) ?: [];
     $itemsHtml = '';
     foreach ($items as $it) {
@@ -736,26 +736,26 @@ function markOrderAsPaid() {
     
     // Validar datos
     if ($order_id <= 0) {
-        throw new Exception('Invalid order ID');
+        throw new Exception(__('invalid_order_id'));
     }
     
     $valid_payment_methods = ['cash', 'card', 'online'];
     if (!in_array($payment_method, $valid_payment_methods)) {
-        throw new Exception('Invalid payment method');
+        throw new Exception(__('invalid_payment_method'));
     }
     
     if ($payment_amount <= 0) {
-        throw new Exception('Invalid payment amount');
+        throw new Exception(__('invalid_payment_amount'));
     }
     
     // Verificar que el pedido existe
     $order = fetchOne("SELECT id, payment_status, total FROM orders WHERE id = ?", [$order_id]);
     if (!$order) {
-        throw new Exception('Order not found');
+        throw new Exception(__('order_not_found'));
     }
     
     if ($order['payment_status'] === 'paid') {
-        throw new Exception('Order is already marked as paid');
+        throw new Exception(__('order_already_paid'));
     }
     
     // Actualizar estado de pago y método de pago
@@ -774,12 +774,12 @@ function markOrderAsPaid() {
     if (executeQuery($sql, $params)) {
         echo json_encode([
             'success' => true,
-            'message' => 'Order marked as paid successfully',
+            'message' => __('order_marked_paid_successfully'),
             'payment_method' => $payment_method,
             'payment_amount' => $payment_amount
         ]);
     } else {
-        throw new Exception('Error updating payment status');
+        throw new Exception(__('error_updating_payment_status'));
     }
 }
 
@@ -788,7 +788,7 @@ function getOrderDetails() {
     $order_id = (int)($_POST['order_id'] ?? 0);
     
     if ($order_id <= 0) {
-        throw new Exception('Invalid order ID');
+        throw new Exception(__('invalid_order_id'));
     }
     
     try {
@@ -802,7 +802,7 @@ function getOrderDetails() {
         ", [$order_id]);
         
         if (!$order) {
-            throw new Exception('Order not found');
+            throw new Exception(__('order_not_found'));
         }
         
         echo json_encode([
@@ -823,7 +823,7 @@ function searchOrder() {
     $search_value = trim($_POST['search_value'] ?? '');
     
     if (empty($search_value)) {
-        throw new Exception('Please provide an order number or ID');
+        throw new Exception(__('please_provide_order_number'));
     }
     
     try {
@@ -837,7 +837,7 @@ function searchOrder() {
         ", [$search_value, (int)$search_value]);
         
         if (!$order) {
-            throw new Exception('Order not found. Please check the order number or ID.');
+            throw new Exception(__('order_not_found_check_number'));
         }
         
         echo json_encode([
@@ -874,21 +874,21 @@ function createUser() {
         
         // Validaciones
         if (empty($first_name) || empty($last_name) || empty($username) || empty($email) || empty($password)) {
-            throw new Exception('All required fields must be filled');
+            throw new Exception(__('all_fields_required'));
         }
         
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Invalid email address');
+            throw new Exception(__('invalid_email_address'));
         }
         
         if (strlen($password) < 6) {
-            throw new Exception('Password must be at least 6 characters');
+            throw new Exception(__('password_min_length'));
         }
         
         // Verificar si el usuario o email ya existe
         $existing = fetchOne("SELECT COUNT(*) as count FROM users WHERE username = ? OR email = ?", [$username, $email]);
         if ($existing['count'] > 0) {
-            throw new Exception('Username or email already exists');
+            throw new Exception(__('username_email_exists'));
         }
         
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -900,10 +900,10 @@ function createUser() {
             error_log("✅ User created successfully");
             echo json_encode([
                 'success' => true,
-                'message' => 'User created successfully'
+                'message' => __('user_created_successfully')
             ]);
         } else {
-            throw new Exception('Error creating user');
+            throw new Exception(__('error_creating_user'));
         }
     } catch (Exception $e) {
         error_log("❌ Error en createUser: " . $e->getMessage());
@@ -935,22 +935,22 @@ function updateUser() {
         error_log("📦 User data: ID: $user_id, Name: $first_name $last_name, Username: $username, Email: $email, Role: $role");
         
         if ($user_id <= 0) {
-            throw new Exception('Invalid user ID');
+            throw new Exception(__('invalid_user_id'));
         }
         
         // Validaciones
         if (empty($first_name) || empty($last_name) || empty($username) || empty($email)) {
-            throw new Exception('All required fields must be filled');
+            throw new Exception(__('all_fields_required'));
         }
         
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Invalid email address');
+            throw new Exception(__('invalid_email_address'));
         }
         
         // Verificar si el usuario o email ya existe (excluyendo el usuario actual)
         $existing = fetchOne("SELECT COUNT(*) as count FROM users WHERE (username = ? OR email = ?) AND id != ?", [$username, $email, $user_id]);
         if ($existing['count'] > 0) {
-            throw new Exception('Username or email already exists');
+            throw new Exception(__('username_email_exists'));
         }
         
         // Si se proporciona una nueva contraseña, actualizarla
@@ -959,7 +959,7 @@ function updateUser() {
         
         if (!empty($password)) {
             if (strlen($password) < 6) {
-                throw new Exception('Password must be at least 6 characters');
+                throw new Exception(__('password_min_length'));
             }
             $sql .= ", password = ?";
             $params[] = password_hash($password, PASSWORD_DEFAULT);
@@ -972,10 +972,10 @@ function updateUser() {
             error_log("✅ User updated successfully");
             echo json_encode([
                 'success' => true,
-                'message' => 'User updated successfully'
+                'message' => __('user_updated_successfully')
             ]);
         } else {
-            throw new Exception('Error updating user');
+            throw new Exception(__('error_updating_user'));
         }
     } catch (Exception $e) {
         error_log("❌ Error en updateUser: " . $e->getMessage());
@@ -996,21 +996,21 @@ function deleteUser() {
         $user_id = (int)($_POST['user_id'] ?? 0);
         
         if ($user_id <= 0) {
-            throw new Exception('Invalid user ID');
+            throw new Exception(__('invalid_user_id'));
         }
         
         // Prevenir eliminar la propia cuenta
         if (isset($_SESSION['admin_id']) && $user_id == $_SESSION['admin_id']) {
-            throw new Exception('Cannot delete your own account');
+            throw new Exception(__('cannot_delete_own_account'));
         }
         
         if (executeQuery("DELETE FROM users WHERE id = ?", [$user_id])) {
             echo json_encode([
                 'success' => true,
-                'message' => 'User deleted successfully'
+                'message' => __('user_deleted_successfully')
             ]);
         } else {
-            throw new Exception('Error deleting user');
+            throw new Exception(__('error_deleting_user'));
         }
     } catch (Exception $e) {
         error_log("❌ Error en deleteUser: " . $e->getMessage());
@@ -1032,21 +1032,21 @@ function toggleUserStatus() {
         $status = $_POST['status'] === 'true' ? 1 : 0;
         
         if ($user_id <= 0) {
-            throw new Exception('Invalid user ID');
+            throw new Exception(__('invalid_user_id'));
         }
         
         // Prevenir desactivar la propia cuenta
         if (isset($_SESSION['admin_id']) && $user_id == $_SESSION['admin_id'] && $status == 0) {
-            throw new Exception('Cannot deactivate your own account');
+            throw new Exception(__('cannot_deactivate_own_account'));
         }
         
         if (executeQuery("UPDATE users SET is_active = ?, updated_at = NOW() WHERE id = ?", [$status, $user_id])) {
             echo json_encode([
                 'success' => true,
-                'message' => 'User status updated successfully'
+                'message' => __('user_status_updated_successfully')
             ]);
         } else {
-            throw new Exception('Error updating user status');
+            throw new Exception(__('error_updating_user_status'));
         }
     } catch (Exception $e) {
         error_log("❌ Error en toggleUserStatus: " . $e->getMessage());
@@ -1096,7 +1096,7 @@ function getProductExtras() {
         $product_id = (int)($_GET['product_id'] ?? 0);
         
         if ($product_id <= 0) {
-            throw new Exception('Invalid product ID');
+            throw new Exception(__('invalid_product_id'));
         }
         
         $sql = "SELECT e.id, e.name_en, e.name_es, e.price 
@@ -1144,7 +1144,7 @@ function createExtra() {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Extra creado exitosamente'
+            'message' => __('extra_created_successfully')
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en createExtra: " . $e->getMessage());
@@ -1166,7 +1166,7 @@ function assignExtraToProduct() {
         $extra_id = (int)($_POST['extra_id'] ?? 0);
         
         if ($product_id <= 0 || $extra_id <= 0) {
-            throw new Exception('IDs inválidos');
+            throw new Exception(__('invalid_ids'));
         }
         
         $sql = "INSERT INTO product_extra_relations (product_id, extra_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE is_active = 1";
@@ -1175,7 +1175,7 @@ function assignExtraToProduct() {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Extra asignado al producto'
+            'message' => __('extra_assigned_to_product')
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en assignExtraToProduct: " . $e->getMessage());
@@ -1197,7 +1197,7 @@ function removeExtraFromProduct() {
         $extra_id = (int)($_POST['extra_id'] ?? 0);
         
         if ($product_id <= 0 || $extra_id <= 0) {
-            throw new Exception('IDs inválidos');
+            throw new Exception(__('invalid_ids'));
         }
         
         $sql = "UPDATE product_extra_relations SET is_active = 0 WHERE product_id = ? AND extra_id = ?";
@@ -1206,7 +1206,7 @@ function removeExtraFromProduct() {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Extra removido del producto'
+            'message' => __('extra_removed_from_product')
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en removeExtraFromProduct: " . $e->getMessage());
@@ -1230,26 +1230,26 @@ function updateContactMessageStatus() {
         error_log("📝 updateContactMessageStatus - message_id: $message_id, status: $status");
         
         if ($message_id <= 0 || empty($status)) {
-            throw new Exception('Datos inválidos');
+            throw new Exception(__('invalid_data'));
         }
         
         $valid_statuses = ['new', 'read', 'replied', 'archived'];
         if (!in_array($status, $valid_statuses)) {
-            throw new Exception('Estado inválido: ' . $status);
+            throw new Exception(__('invalid_status') . ': ' . $status);
         }
         
         $sql = "UPDATE contact_messages SET status = ? WHERE id = ?";
         $stmt = executeQuery($sql, [$status, $message_id]);
         
         if ($stmt === false) {
-            throw new Exception('Error al actualizar el estado del mensaje');
+            throw new Exception(__('error_updating_message_status'));
         }
         
         error_log("✅ updateContactMessageStatus - Estado actualizado correctamente");
         
         echo json_encode([
             'success' => true,
-            'message' => 'Estado actualizado correctamente'
+            'message' => __('message_status_updated')
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en updateContactMessageStatus: " . $e->getMessage());
@@ -1275,21 +1275,21 @@ function deleteContactMessage() {
         error_log("📝 deleteContactMessage - message_id: $message_id");
         
         if ($message_id <= 0) {
-            throw new Exception('ID inválido');
+            throw new Exception(__('invalid_data'));
         }
         
         $sql = "DELETE FROM contact_messages WHERE id = ?";
         $stmt = executeQuery($sql, [$message_id]);
         
         if ($stmt === false) {
-            throw new Exception('Error al eliminar el mensaje');
+            throw new Exception(__('error_deleting_message'));
         }
         
         error_log("✅ deleteContactMessage - Mensaje eliminado correctamente");
         
         echo json_encode([
             'success' => true,
-            'message' => 'Mensaje eliminado correctamente'
+            'message' => __('message_deleted_successfully')
         ]);
     } catch (Exception $e) {
         error_log("❌ Error en deleteContactMessage: " . $e->getMessage());

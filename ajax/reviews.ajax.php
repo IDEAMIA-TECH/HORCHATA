@@ -6,6 +6,7 @@
 
 // Incluir configuración
 require_once '../includes/db_connect.php';
+require_once '../includes/init.php';
 
 // Configurar headers para AJAX
 header('Content-Type: application/json');
@@ -41,7 +42,7 @@ try {
             break;
             
         default:
-            throw new Exception('Acción no válida');
+            throw new Exception(__('invalid_action'));
     }
     
 } catch (Exception $e) {
@@ -62,15 +63,15 @@ function submitReview() {
     $review_text = trim($_POST['review_text'] ?? '');
     
     if (empty($token)) {
-        throw new Exception('Token requerido');
+        throw new Exception(__('token_required'));
     }
     
     if ($rating < 1 || $rating > 5) {
-        throw new Exception('Calificación inválida');
+        throw new Exception(__('invalid_rating'));
     }
     
     if (empty($review_text)) {
-        throw new Exception('Texto de reseña requerido');
+        throw new Exception(__('review_text_required'));
     }
     
     // Verificar que la orden existe y el token es válido
@@ -81,7 +82,7 @@ function submitReview() {
     ", [$token]);
     
     if (!$order) {
-        throw new Exception('Token inválido o expirado');
+        throw new Exception(__('invalid_or_expired_token'));
     }
     
     // Verificar si ya existe una reseña para esta orden
@@ -91,7 +92,7 @@ function submitReview() {
     ", [$order['id']]);
     
     if ($existing_review) {
-        throw new Exception('Ya existe una reseña para esta orden');
+        throw new Exception(__('review_already_exists'));
     }
     
     // Obtener nombre del cliente desde la orden
@@ -123,12 +124,12 @@ function submitReview() {
     $review_id = $pdo->lastInsertId();
     
     if (!$review_id) {
-        throw new Exception('Error al guardar la reseña');
+        throw new Exception(__('error_saving_review'));
     }
     
     echo json_encode([
         'success' => true,
-        'message' => 'Reseña enviada exitosamente',
+        'message' => __('review_submitted_successfully'),
         'review_id' => $review_id
     ]);
 }
@@ -325,7 +326,7 @@ function getPublicReviews() {
         
         echo json_encode([
             'success' => false,
-            'message' => 'Error al cargar las reseñas públicas',
+            'message' => __('error_loading_public_reviews'),
             'error' => $e->getMessage()
         ]);
     }
