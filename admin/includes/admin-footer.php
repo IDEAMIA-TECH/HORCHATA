@@ -107,15 +107,44 @@
                 const Ctx = window.AudioContext || window.webkitAudioContext;
                 audioCtx = Ctx ? new Ctx() : null;
             }
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
-        } catch(e) {}
+            // Verificar si el AudioContext está en estado 'running' antes de intentar reproducir
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') {
+                    // Intentar reanudar, pero si falla, no reproducir
+                    audioCtx.resume().catch(function(err) {
+                        console.log('⚠️ No se puede reanudar AudioContext sin interacción del usuario');
+                        return; // Salir de la función si no se puede reanudar
+                    });
+                }
+                // Solo reproducir si el contexto está 'running'
+                if (audioCtx.state !== 'running') {
+                    console.log('⚠️ AudioContext no está activo (state:', audioCtx.state + '), no se puede reproducir sonido');
+                    return;
+                }
+            } else {
+                console.log('⚠️ AudioContext no disponible');
+                return;
+            }
+        } catch(e) {
+            console.log('⚠️ Error inicializando AudioContext:', e);
+            return;
+        }
         const start = Date.now();
         (function loop() {
             const elapsed = Date.now() - start;
             if (elapsed >= totalMs) return;
+            // Verificar que el contexto siga activo antes de cada beep
+            if (!audioCtx || audioCtx.state !== 'running') {
+                console.log('⚠️ AudioContext se suspendió durante la reproducción');
+                return;
+            }
             // sweep up
             playBeep(250, 1200, 0.9);
-            setTimeout(function(){ playBeep(250, 900, 0.9); }, 260);
+            setTimeout(function(){ 
+                if (audioCtx && audioCtx.state === 'running') {
+                    playBeep(250, 900, 0.9); 
+                }
+            }, 260);
             setTimeout(loop, 600);
         })();
     }
@@ -124,7 +153,9 @@
     // Cargar último conteo desde localStorage para que persista entre recargas
     const lastStored = localStorage.getItem('admin_last_pending_orders');
     window.__lastPendingOrders = lastStored !== null ? parseInt(lastStored, 10) : null;
-    window.__alertsEnabled = false;
+    // Verificar si el usuario ya interactuó con la página (para habilitar audio)
+    const userInteracted = localStorage.getItem('admin_user_interacted') === 'true';
+    window.__alertsEnabled = userInteracted;
 
     function initAlertPermissionsUI() {
         // Botón flotante para habilitar sonido/notificaciones si están bloqueadas
@@ -148,13 +179,37 @@
         // Primer interacción del usuario: desbloquear audio
         const onceHandler = function(e) {
             console.log('👆 Usuario interactuó, habilitando alertas...');
+            // Marcar que el usuario ya interactuó
+            try {
+                localStorage.setItem('admin_user_interacted', 'true');
+            } catch(err) {
+                console.log('⚠️ No se pudo guardar estado de interacción:', err);
+            }
+            
             enableAlertsGesture();
             requestBrowserNotifications();
             
             // También intentar reproducir un beep de prueba para "desbloquear" el audio
             try {
-                playBeep(100, 1000, 0.3);
-                console.log('✅ Beep de prueba reproducido');
+                // Inicializar AudioContext si no existe
+                if (!audioCtx) {
+                    const Ctx = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = Ctx ? new Ctx() : null;
+                }
+                // Reanudar si está suspendido
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(function() {
+                        playBeep(100, 1000, 0.3);
+                        console.log('✅ Beep de prueba reproducido');
+                        window.__alertsEnabled = true;
+                    }).catch(function(err) {
+                        console.log('⚠️ No se pudo reproducir beep de prueba:', err);
+                    });
+                } else if (audioCtx && audioCtx.state === 'running') {
+                    playBeep(100, 1000, 0.3);
+                    console.log('✅ Beep de prueba reproducido');
+                    window.__alertsEnabled = true;
+                }
             } catch(err) {
                 console.log('⚠️ No se pudo reproducir beep de prueba:', err);
             }
@@ -214,11 +269,33 @@
             if (!audioCtx) {
                 const Ctx = window.AudioContext || window.webkitAudioContext;
                 audioCtx = Ctx ? new Ctx() : null;
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume().then(function() {
-                        console.log('✅ AudioContext reanudado');
-                    });
+            }
+            
+            // Si el AudioContext está suspendido, intentar reanudarlo
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().then(function() {
+                    console.log('✅ AudioContext reanudado');
+                    window.__alertsEnabled = true;
+                    try {
+                        localStorage.setItem('admin_user_interacted', 'true');
+                    } catch(err) {}
+                }).catch(function(err) {
+                    console.log('⚠️ No se pudo reanudar AudioContext:', err);
+                    $('#enableAlertsBtn').fadeIn();
+                });
+                return;
+            }
+            
+            // Si el AudioContext ya está running, marcar como habilitado
+            if (audioCtx && audioCtx.state === 'running') {
+                window.__alertsEnabled = true;
+                try {
+                    localStorage.setItem('admin_user_interacted', 'true');
+                    console.log('✅ Audio habilitado (AudioContext ya está activo)');
+                } catch(err) {
+                    console.log('⚠️ No se pudo guardar estado:', err);
                 }
+                return;
             }
             
             // Intentar reproducir en silencio para desbloquear por gesto del usuario
@@ -232,41 +309,24 @@
                     alertAudio.currentTime = 0;
                     alertAudio.volume = prevVol;
                     window.__alertsEnabled = true;
+                    try {
+                        localStorage.setItem('admin_user_interacted', 'true');
+                    } catch(err) {}
                 }).catch(function(err){
                     console.log('⚠️ No se pudo desbloquear audio:', err.message);
-                    // Intentar con WebAudio directamente
-                    try {
-                        playBeep(50, 1000, 0.1);
-                        window.__alertsEnabled = true;
-                        console.log('✅ Audio habilitado vía WebAudio');
-                    } catch(e2) {
-                        console.log('⚠️ Tampoco funcionó WebAudio:', e2);
-                        // Si falla, mostrar botón para reintentar
-                        $('#enableAlertsBtn').fadeIn();
-                    }
+                    $('#enableAlertsBtn').fadeIn();
                 });
             } else {
-                // Intentar con WebAudio directamente
+                // Si no hay promesa, asumir que está habilitado
+                window.__alertsEnabled = true;
                 try {
-                    playBeep(50, 1000, 0.1);
-                    window.__alertsEnabled = true;
-                    console.log('✅ Audio habilitado vía WebAudio (directo)');
-                } catch(e2) {
-                    console.log('⚠️ Error con WebAudio:', e2);
-                    window.__alertsEnabled = true; // Marcar como habilitado de todas formas
-                }
+                    localStorage.setItem('admin_user_interacted', 'true');
+                    console.log('✅ Audio habilitado (sin promesa)');
+                } catch(err) {}
             }
         } catch(e) {
             console.error('❌ Error en enableAlertsGesture:', e);
-            // Intentar habilitar de todas formas
-            try {
-                playBeep(50, 1000, 0.1);
-                window.__alertsEnabled = true;
-                console.log('✅ Audio habilitado vía WebAudio (catch)');
-            } catch(e2) {
-                console.error('❌ Error total habilitando audio:', e2);
-                $('#enableAlertsBtn').fadeIn();
-            }
+            $('#enableAlertsBtn').fadeIn();
         }
     }
 
@@ -300,19 +360,19 @@
                     }, 100);
                 }
                 
-                // Reproducir sonido (intentar siempre, incluso si no está "habilitado")
-                console.log('🔊 Intentando reproducir alarma...');
-                
-                // Siempre intentar reproducir sonido (WebAudio debería funcionar)
-                try {
-                    playAlarm(6000);
-                    console.log('✅ Alarma WebAudio reproducida');
-                } catch(e) {
-                    console.error('❌ Error en WebAudio:', e);
-                }
-                
-                // También intentar reproducir con alertAudio si está habilitado
+                // Reproducir sonido solo si el usuario ya interactuó con la página
                 if (window.__alertsEnabled) {
+                    console.log('🔊 Reproduciendo alarma (usuario ya interactuó)...');
+                    
+                    // Intentar reproducir con WebAudio
+                    try {
+                        playAlarm(6000);
+                        console.log('✅ Alarma WebAudio iniciada');
+                    } catch(e) {
+                        console.error('❌ Error en WebAudio:', e);
+                    }
+                    
+                    // También intentar reproducir con alertAudio
                     try { 
                         alertAudio.currentTime = 0; 
                         alertAudio.play().catch(function(err) {
@@ -322,21 +382,8 @@
                         console.error('Error en alertAudio:', e);
                     }
                 } else {
-                    // Intentar reproducir de todas formas (puede funcionar si el usuario ya interactuó)
-                    try {
-                        alertAudio.currentTime = 0;
-                        const playPromise = alertAudio.play();
-                        if (playPromise !== undefined) {
-                            playPromise.then(function() {
-                                console.log('✅ alertAudio reproducido exitosamente');
-                                window.__alertsEnabled = true; // Marcar como habilitado si funciona
-                            }).catch(function(err) {
-                                console.log('⚠️ alertAudio no se pudo reproducir:', err.message);
-                            });
-                        }
-                    } catch(e) {
-                        console.log('⚠️ No se pudo reproducir alertAudio:', e.message);
-                    }
+                    console.log('⚠️ Sonido deshabilitado - El usuario debe interactuar con la página primero');
+                    console.log('💡 El usuario puede hacer clic en cualquier parte de la página para habilitar las alertas de sonido');
                 }
                 
                 // Vibración como fallback en móviles
