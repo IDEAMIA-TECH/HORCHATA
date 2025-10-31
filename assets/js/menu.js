@@ -34,6 +34,10 @@ $(document).ready(function() {
     console.log('🔍 Menu: Configurando filtros...');
     setupCategoryFilters();
     
+    // Configurar navegación de categorías (flechas)
+    console.log('🔍 Menu: Configurando navegación de categorías...');
+    setupCategoryNavigation();
+    
     // Configurar carrito
     console.log('🔍 Menu: Configurando carrito...');
     setupCart();
@@ -130,8 +134,15 @@ function displayCategoryFilters(categories, activeCategory = null) {
     
     console.log('🔍 Menu: HTML generado:', html);
     container.html(html);
-    console.log('✅ Menu: Filtros de categoría mostrados');
-}
+            console.log('✅ Menu: Filtros de categoría mostrados');
+            
+            // Actualizar visibilidad de flechas después de cargar categorías
+            setTimeout(function() {
+                if (window.updateCategoryNavArrows && typeof window.updateCategoryNavArrows === 'function') {
+                    window.updateCategoryNavArrows();
+                }
+            }, 300);
+    }
 
 /**
  * Mostrar error de categorías
@@ -420,6 +431,101 @@ function setupCategoryFilters() {
         console.log('🔍 Menu: Iniciando carga de productos para categoría:', categoryId);
         loadMenuContent(categoryId);
     });
+}
+
+// Variable global para la función de actualización de flechas
+window.updateCategoryNavArrows = null;
+
+/**
+ * Configurar navegación de categorías (flechas izquierda/derecha)
+ */
+function setupCategoryNavigation() {
+    console.log('🔍 Menu: Configurando navegación de categorías...');
+    
+    const container = document.getElementById('categoryFiltersContainer');
+    const leftArrow = document.getElementById('categoryNavLeft');
+    const rightArrow = document.getElementById('categoryNavRight');
+    
+    if (!container || !leftArrow || !rightArrow) {
+        console.warn('⚠️ Menu: Elementos de navegación de categorías no encontrados');
+        return;
+    }
+    
+    // Función para actualizar visibilidad de las flechas
+    function updateArrowVisibility() {
+        const scrollLeft = container.scrollLeft;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+        const maxScroll = scrollWidth - clientWidth;
+        
+        // Mostrar/ocultar flecha izquierda
+        if (scrollLeft > 10) {
+            leftArrow.style.opacity = '1';
+            leftArrow.style.pointerEvents = 'auto';
+            leftArrow.style.cursor = 'pointer';
+        } else {
+            leftArrow.style.opacity = '0.3';
+            leftArrow.style.pointerEvents = 'none';
+            leftArrow.style.cursor = 'default';
+        }
+        
+        // Mostrar/ocultar flecha derecha
+        if (scrollLeft < maxScroll - 10) {
+            rightArrow.style.opacity = '1';
+            rightArrow.style.pointerEvents = 'auto';
+            rightArrow.style.cursor = 'pointer';
+        } else {
+            rightArrow.style.opacity = '0.3';
+            rightArrow.style.pointerEvents = 'none';
+            rightArrow.style.cursor = 'default';
+        }
+    }
+    
+    // Guardar función globalmente para poder llamarla desde otros lugares
+    window.updateCategoryNavArrows = updateArrowVisibility;
+    
+    // Evento de scroll para actualizar visibilidad de flechas
+    container.addEventListener('scroll', updateArrowVisibility);
+    
+    // Botón izquierdo - scroll hacia la izquierda
+    leftArrow.addEventListener('click', function() {
+        if (leftArrow.style.pointerEvents === 'none') return;
+        const scrollAmount = container.clientWidth * 0.8; // Scroll 80% del ancho visible
+        container.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Botón derecho - scroll hacia la derecha
+    rightArrow.addEventListener('click', function() {
+        if (rightArrow.style.pointerEvents === 'none') return;
+        const scrollAmount = container.clientWidth * 0.8; // Scroll 80% del ancho visible
+        container.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Actualizar visibilidad inicial
+    setTimeout(updateArrowVisibility, 500); // Esperar a que se carguen las categorías
+    
+    // Actualizar cuando se carguen nuevas categorías (usando MutationObserver en lugar de DOMNodeInserted que está deprecado)
+    const observer = new MutationObserver(function() {
+        setTimeout(updateArrowVisibility, 100);
+    });
+    
+    observer.observe(container, {
+        childList: true,
+        subtree: true
+    });
+    
+    // También actualizar en resize
+    $(window).on('resize', function() {
+        updateArrowVisibility();
+    });
+    
+    console.log('✅ Menu: Navegación de categorías configurada');
 }
 
 /**

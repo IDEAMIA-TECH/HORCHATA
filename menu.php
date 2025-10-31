@@ -40,18 +40,31 @@ include 'includes/header.php';
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="category-filters-container" style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; gap: 0.8rem; align-items: center; overflow-x: auto; padding: 1rem 1rem; white-space: nowrap; max-width: 90%; margin: 0 auto; background: #f8f9fa; border-radius: 8px; -webkit-overflow-scrolling: touch; scrollbar-width: thin;">
-                    <button class="category-filter-btn active" data-category="all" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 10px; border: none; border-radius: 12px; background: #d4af37; color: #ffffff; transition: all 0.3s ease; cursor: pointer; width: 100px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);">
-                        <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: #ffffff;">
-                            <i class="fas fa-th"></i>
-                        </div>
-                        <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.3px; color: #ffffff; white-space: normal; word-wrap: break-word; hyphens: auto;">
-                            <?php echo __('all_categories'); ?>
-                        </div>
+                <div class="category-navigation-wrapper" style="position: relative; max-width: 90%; margin: 0 auto;">
+                    <!-- Botón de flecha izquierda -->
+                    <button class="category-nav-arrow category-nav-arrow-left" id="categoryNavLeft" style="position: absolute; left: -40px; top: 50%; transform: translateY(-50%); background: #d4af37; color: #ffffff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; opacity: 0.6;" title="<?php echo __('scroll_left'); ?>">
+                        <i class="fas fa-chevron-left"></i>
                     </button>
-                    <div id="categoryFilters" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.8rem; align-items: center;">
-                        <!-- Categorías se cargarán aquí via AJAX -->
+                    
+                    <!-- Contenedor de categorías con scroll -->
+                    <div class="category-filters-container" id="categoryFiltersContainer" style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; gap: 0.8rem; align-items: center; overflow-x: auto; padding: 1rem 1rem; white-space: nowrap; background: #f8f9fa; border-radius: 8px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scroll-behavior: smooth;">
+                        <button class="category-filter-btn active" data-category="all" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 10px; border: none; border-radius: 12px; background: #d4af37; color: #ffffff; transition: all 0.3s ease; cursor: pointer; width: 100px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);">
+                            <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 6px; transition: all 0.3s ease; color: #ffffff;">
+                                <i class="fas fa-th"></i>
+                            </div>
+                            <div class="category-name" style="font-size: 0.7rem; font-weight: 600; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.3px; color: #ffffff; white-space: normal; word-wrap: break-word; hyphens: auto;">
+                                <?php echo __('all_categories'); ?>
+                            </div>
+                        </button>
+                        <div id="categoryFilters" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.8rem; align-items: center;">
+                            <!-- Categorías se cargarán aquí via AJAX -->
+                        </div>
                     </div>
+                    
+                    <!-- Botón de flecha derecha -->
+                    <button class="category-nav-arrow category-nav-arrow-right" id="categoryNavRight" style="position: absolute; right: -40px; top: 50%; transform: translateY(-50%); background: #d4af37; color: #ffffff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; opacity: 0.6;" title="<?php echo __('scroll_right'); ?>">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>

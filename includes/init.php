@@ -752,6 +752,8 @@ function __($key, $default = '') {
         'order_not_found' => 'Pedido No Encontrado',
         'search_by_order_number' => 'Buscar por Número de Pedido',
         'enter_order_number' => 'Ingresar número de pedido',
+        'scroll_left' => 'Desplazar hacia la izquierda',
+        'scroll_right' => 'Desplazar hacia la derecha',
         'search' => 'Buscar',
         // Reports
         'reports' => 'Reportes',
@@ -1559,6 +1561,8 @@ function __($key, $default = '') {
         'order_not_found' => 'Order Not Found',
         'search_by_order_number' => 'Search by Order Number',
         'enter_order_number' => 'Enter order number',
+        'scroll_left' => 'Scroll left',
+        'scroll_right' => 'Scroll right',
         'search' => 'Search',
         // Reports
         'reports' => 'Reports',
