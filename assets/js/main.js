@@ -201,7 +201,14 @@ function removeFromCart(productId) {
     saveCartToStorage(cart);
     updateCartDisplay();
     
-    const message = window.translations ? window.translations.productRemovedFromCart : 'Producto removido del carrito';
+    // Obtener mensaje traducido
+    let message = 'Producto removido del carrito'; // Fallback en español
+    if (window.translations && window.translations.productRemovedFromCart) {
+        message = window.translations.productRemovedFromCart;
+    } else if (getLanguage() === 'en') {
+        message = 'Product removed from cart'; // Fallback en inglés
+    }
+    
     showNotification(message, 'info');
 }
 
